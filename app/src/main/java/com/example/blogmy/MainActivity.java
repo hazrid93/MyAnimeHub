@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,6 +21,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
@@ -28,17 +33,27 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private FirebaseAuth mAuth;
     private DatabaseReference userRef;
+    private ImageButton addNewPost;
+
+    // nav profile part
+    private CircleImageView navProfileImage;
+    private TextView navProfileName;
+
+    String currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+        currentUserId = mAuth.getCurrentUser().getUid();
         userRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Home");
+
+        addNewPost = (ImageButton) findViewById(R.id.add_new_post_button);
 
         // Find view by id must be done inside OnCreate and not before this during class instantiation because the UI has not been inflated.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawable_layout);
@@ -52,6 +67,29 @@ public class MainActivity extends AppCompatActivity {
         // Storing nav header into View
         // Set the header manually in the code but can also do by the xml attribute  app:headerLayout="@layout/navigation_header"
         View navView = navigationView.inflateHeaderView(R.layout.navigation_header);
+        navProfileImage = (CircleImageView) navView.findViewById(R.id.nav_profile_image);
+        navProfileName = (TextView) navView.findViewById(R.id.nav_user_full_name);
+        userRef.child(currentUserId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    if(dataSnapshot.hasChild("fullname")) {
+                        String fullName = dataSnapshot.child("fullname").getValue().toString();
+                        navProfileName.setText(fullName);
+                    }
+
+                    if(dataSnapshot.hasChild("profileimage")){
+                        String image = dataSnapshot.child("profileimage").getValue().toString();
+                        Picasso.with(MainActivity.this).load(image).placeholder(R.drawable.profile).into(navProfileImage);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -59,6 +97,13 @@ public class MainActivity extends AppCompatActivity {
                 // Pass current selected item
                 UserMenuSelector(menuItem);
                 return false;
+            }
+        });
+
+        addNewPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendUserToPostActivity();
             }
         });
     }
@@ -97,6 +142,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    private void sendUserToPostActivity(){
+        Intent postIntent = new Intent(MainActivity.this, PostActivity.class);
+        startActivity(postIntent);
+    }
 
     private void sendUserToSetupActivity(){
         Intent setupIntent = new Intent(MainActivity.this, SetupActivity.class);
@@ -129,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.nav_post:
+                sendUserToPostActivity();
                 break;
 
             case R.id.nav_home:
