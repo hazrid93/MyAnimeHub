@@ -1,19 +1,26 @@
 package com.example.blogmy;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -44,6 +51,8 @@ public class SetupActivity extends AppCompatActivity {
     private StorageReference userProfileImageRef;
     String currentUserId;
     final static int Gallery_Pick = 1;
+    final int REQUEST_CODE = 123;
+    private String downloadUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +81,21 @@ public class SetupActivity extends AppCompatActivity {
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, Gallery_Pick);
+                Log.d("Blogmy", "profile image clicked");
+                // Check for gallery permission
+                if (ActivityCompat.checkSelfPermission(SetupActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    ActivityCompat.requestPermissions(SetupActivity.this,
+                            new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
+                } else {
+                    openGallery();
+                }
             }
         });
 
@@ -96,14 +116,36 @@ public class SetupActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void openGallery(){
+        Intent galleryIntent = new Intent();
+        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, Gallery_Pick);
+    }
+    // when request permission complete
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == REQUEST_CODE) {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Log.d("Blogmy", "onRequestPermissionsResult() called / PASSED");
+                openGallery();
+            } else {
+                Log.d("Blogmy", "onRequestPermissionsResult() called / DENIED");
+            }
+        }
+    }
+
     // when startactivity for result completes.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null){
             Uri imageUri = data.getData();
-            CropImage.activity()
-                    .setGuidelines(CropImageView.Guidelines.ON)
+            CropImage.activity(imageUri)
+                 //   .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1,1)
                     .start(this);
         }
@@ -115,22 +157,34 @@ public class SetupActivity extends AppCompatActivity {
                 loadingBar.show();
                 loadingBar.setCanceledOnTouchOutside(true);
 
-                Uri resultUri = result.getUri();
+                final Uri resultUri = result.getUri();
+
                 // format to save a file as
-                StorageReference filePath = userProfileImageRef.child(currentUserId + ".jpg");
+                final StorageReference filePath = userProfileImageRef.child(currentUserId + ".jpg");
                 filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
                         if(task.isSuccessful()){
+                            filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    downloadUrl = uri.toString();
+                                }
+                            });
                             Toast.makeText(SetupActivity.this, "User profile image successfully uploaded", Toast.LENGTH_SHORT).show();
-                            final String downloadUrl = task.getResult().getStorage().getDownloadUrl().toString();
+
                             userRef.child("profileimage").setValue(downloadUrl)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if(task.isSuccessful()){
-                                                Intent selfIntent = new Intent(SetupActivity.this, SetupActivity.class);
-                                                startActivity(selfIntent);
+                                               //  Intent selfIntent = new Intent(SetupActivity.this, SetupActivity.class);
+                                               //  startActivity(selfIntent);
+
+                                                // requires the URI to set to null first if not it will reset back to default
+                                                profileImage.setImageURI(null);
+                                                profileImage.setImageURI(resultUri);
                                                 Toast.makeText(SetupActivity.this, "Your image is stored into Firebase successfuly", Toast.LENGTH_SHORT).show();
                                                 loadingBar.dismiss();
                                             } else {
@@ -141,9 +195,6 @@ public class SetupActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
-                        }else{
-                            String message = task.getException().getMessage();
-                            Toast.makeText(SetupActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -159,16 +210,22 @@ public class SetupActivity extends AppCompatActivity {
         String user_full_name = userFullName.getText().toString();
         String user_country = userCountry.getText().toString();
 
+        // Check if current image is default image
+        Drawable.ConstantState user_profile_image = profileImage.getDrawable().getConstantState();
+
         if(TextUtils.isEmpty(user_name)){
             Toast.makeText(this, "Please write your username...", Toast.LENGTH_SHORT).show();
 
         }
-        if(TextUtils.isEmpty(user_full_name)){
+        else if(TextUtils.isEmpty(user_full_name)){
             Toast.makeText(this, "Please write your full name...", Toast.LENGTH_SHORT).show();
 
         }
-        if(TextUtils.isEmpty(user_country)){
+        else if(TextUtils.isEmpty(user_country)) {
             Toast.makeText(this, "Please write your country...", Toast.LENGTH_SHORT).show();
+        }
+        else if(user_profile_image == getResources().getDrawable(R.drawable.profile).getConstantState()){
+            Toast.makeText(this, "Please set your profile picture...", Toast.LENGTH_SHORT).show();
 
         } else {
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -27,6 +28,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -47,7 +49,7 @@ public class PostActivity extends AppCompatActivity {
     private Button updatePostButton;
     private EditText postDescription;
     final static int Gallery_Pick = 1;
-
+    String description;
     private Uri imageUri;
     private StorageReference postImageReference;
     private DatabaseReference usersRef, postRef;
@@ -94,7 +96,7 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void validatePostInfo() {
-        String description = postDescription.getText().toString();
+        description = postDescription.getText().toString();
         if(imageUri == null){
             Toast.makeText(this, "Please select image to post", Toast.LENGTH_SHORT).show();
         } else if(TextUtils.isEmpty(description)){
@@ -117,16 +119,23 @@ public class PostActivity extends AppCompatActivity {
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
         saveCurrentTime = currentTime.format(calForTime.getTime());
 
-        postRandomName = saveCurrentDate + saveCurrentTime;
+        postRandomName = saveCurrentDate + "-" + saveCurrentTime;
         // getLastPathSegment <-- the image name
-        StorageReference filePath = postImageReference.child("Post Images").child(imageUri.getLastPathSegment() + postRandomName + ".jpg");
+        final StorageReference filePath = postImageReference.child("Post Images").child(imageUri.getLastPathSegment() + postRandomName + ".jpg");
 
         // save post to firebase storage.
         filePath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if(task.isSuccessful()){
-                    downloadUrl = task.getResult().getStorage().getDownloadUrl().toString();
+                    filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            downloadUrl = uri.toString();
+                            Log.i("image: ", downloadUrl);
+                        }
+                    });
+
                     Toast.makeText(PostActivity.this, "Image is uploaded successfully", Toast.LENGTH_SHORT).show();
                     savePostInformation();
                 } else {
@@ -138,7 +147,8 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private void savePostInformation() {
-        usersRef.child(current_user_id).addValueEventListener(new ValueEventListener() {
+        usersRef.child(current_user_id).addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
@@ -149,7 +159,7 @@ public class PostActivity extends AppCompatActivity {
                     postMap.put("uid",current_user_id);
                     postMap.put("date", saveCurrentDate);
                     postMap.put("time", saveCurrentTime);
-                    postMap.put("description", postDescription);
+                    postMap.put("description", description);
                     postMap.put("postimage", downloadUrl);
                     postMap.put("fullname", userFullName);
                     postMap.put("profileimage", userProfileImage);
@@ -163,10 +173,10 @@ public class PostActivity extends AppCompatActivity {
                                         Toast.makeText(PostActivity.this, "Post is created succesfully", Toast.LENGTH_SHORT).show();
                                         loadingBar.dismiss();
                                     } else {
-                                    String messsage = task.getException().getMessage();
-                                    Toast.makeText(PostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
-                                    loadingBar.dismiss();
-                                }
+                                        String messsage = task.getException().getMessage();
+                                        Toast.makeText(PostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
+                                        loadingBar.dismiss();
+                                    }
                                 }
                             });
 

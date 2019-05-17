@@ -2,16 +2,26 @@ package com.example.blogmy;
 
 import android.content.Intent;
 import androidx.annotation.NonNull;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.navigation.NavigationView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +35,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+// https://stackoverflow.com/questions/55894959/firebase-recyclerview-image-not-showing-rest-of-the-information-is
 public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
@@ -32,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private FirebaseAuth mAuth;
-    private DatabaseReference userRef;
+    private DatabaseReference userRef, postRef;
     private ImageButton addNewPost;
+    private FirebaseRecyclerOptions<Posts> options;
+    private FirebaseRecyclerAdapter<Posts, PostsViewHolder> firebaseRecyclerAdapter;
 
     // nav profile part
     private CircleImageView navProfileImage;
@@ -48,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
         userRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        postRef = FirebaseDatabase.getInstance().getReference().child("Posts");
 
         mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
@@ -63,6 +77,14 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
+
+        //all user post view
+        postList = (RecyclerView) findViewById(R.id.all_users_post_list);
+        postList.setHasFixedSize(false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        postList.setLayoutManager(linearLayoutManager);
 
         // Storing nav header into View
         // Set the header manually in the code but can also do by the xml attribute  app:headerLayout="@layout/navigation_header"
@@ -106,6 +128,72 @@ public class MainActivity extends AppCompatActivity {
                 sendUserToPostActivity();
             }
         });
+
+
+    }
+
+    // using firebaseUI library
+    private void displayAllUsersPost(){
+        options = new FirebaseRecyclerOptions.Builder<Posts>().setQuery(postRef, Posts.class).build();
+        firebaseRecyclerAdapter =
+               new FirebaseRecyclerAdapter<Posts, PostsViewHolder>(options) {
+
+                        // call PostsViewHolder static class
+                       @Override
+                       protected void onBindViewHolder(@NonNull PostsViewHolder postsViewHolder, int i, @NonNull Posts posts) {
+                           postsViewHolder.setData(posts);
+                       }
+
+                       @NonNull
+                       @Override
+                       public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                           View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.all_post_layout,parent,false);
+                           PostsViewHolder viewHolder = new PostsViewHolder(view);
+                           return viewHolder;
+                       }
+
+                   };
+        postList.setAdapter(firebaseRecyclerAdapter);
+        firebaseRecyclerAdapter.startListening();
+
+    }
+    // has to use same method name as Posts model because FirebaseRecyclerAdapter/onBindViewHolder will call PostsViewHolder every scroll
+    public class PostsViewHolder extends RecyclerView.ViewHolder{
+        TextView username,date,time,description;
+        CircleImageView profileimage;
+        ImageView postimage;
+
+        public PostsViewHolder(View itemView) {
+            super(itemView);
+
+            username = itemView.findViewById(R.id.post_user_name);
+            date = itemView.findViewById(R.id.post_date);
+            time = itemView.findViewById(R.id.post_time);
+            description = itemView.findViewById(R.id.post_description);
+            postimage = (ImageView) itemView.findViewById(R.id.post_image);
+            profileimage = (CircleImageView) itemView.findViewById(R.id.post_profile_image);
+        }
+
+        public void setData(Posts postViewHolderData){
+            username.setText(postViewHolderData.getFullname());
+            time.setText(" " + postViewHolderData.getTime());
+            date.setText(" "+ postViewHolderData.getDate());
+            description.setText(postViewHolderData.getDescription());
+            postimage.setImageURI(null);
+            profileimage.setImageURI(null);
+            //
+            System.out.println("azad1: " + postViewHolderData.getProfileimage() );
+            System.out.println("azad2: " + postViewHolderData.getPostimage() );
+            // https://github.com/square/picasso/issues/1291 seems like require runtime permission.
+            Picasso.with(getApplicationContext()).load(postViewHolderData.getProfileimage()).fit().centerCrop().into(profileimage);
+            Picasso.with(getApplicationContext()).load(postViewHolderData.getPostimage()).fit().centerCrop().into(postimage);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        firebaseRecyclerAdapter.stopListening();
     }
 
     @Override
@@ -119,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
             sendToLogin();
         } else {
             checkUserExistence();
+            displayAllUsersPost();
         }
 
     }
