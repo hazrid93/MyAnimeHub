@@ -3,4 +3,5 @@
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
     <string name="title_activity_post">PostActivity</string>
+    <string name="title_activity_click_post">ClickPostActivity</string>
 </resources>

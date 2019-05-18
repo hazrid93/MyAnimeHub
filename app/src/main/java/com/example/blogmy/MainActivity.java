@@ -9,7 +9,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -80,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         //all user post view
         postList = (RecyclerView) findViewById(R.id.all_users_post_list);
-        postList.setHasFixedSize(false);
+        postList.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
@@ -141,7 +140,17 @@ public class MainActivity extends AppCompatActivity {
                         // call PostsViewHolder static class
                        @Override
                        protected void onBindViewHolder(@NonNull PostsViewHolder postsViewHolder, int i, @NonNull Posts posts) {
+                           // get the key of the particular snapshot data at this index
+                           final String postKey = getRef(i).getKey();
                            postsViewHolder.setData(posts);
+                           postsViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                               @Override
+                               public void onClick(View v) {
+                                   Intent clickPostIntent = new Intent(MainActivity.this,ClickPostActivity.class);
+                                   clickPostIntent.putExtra("PostKey", postKey);
+                                   startActivity(clickPostIntent);
+                               }
+                           });
                        }
 
                        @NonNull
@@ -169,8 +178,8 @@ public class MainActivity extends AppCompatActivity {
             username = itemView.findViewById(R.id.post_user_name);
             date = itemView.findViewById(R.id.post_date);
             time = itemView.findViewById(R.id.post_time);
-            description = itemView.findViewById(R.id.post_description);
-            postimage = (ImageView) itemView.findViewById(R.id.post_image);
+            description = itemView.findViewById(R.id.click_post_description);
+            postimage = (ImageView) itemView.findViewById(R.id.click_post_image);
             profileimage = (CircleImageView) itemView.findViewById(R.id.post_profile_image);
         }
 
@@ -179,14 +188,10 @@ public class MainActivity extends AppCompatActivity {
             time.setText(" " + postViewHolderData.getTime());
             date.setText(" "+ postViewHolderData.getDate());
             description.setText(postViewHolderData.getDescription());
-            postimage.setImageURI(null);
-            profileimage.setImageURI(null);
-            //
-            System.out.println("azad1: " + postViewHolderData.getProfileimage() );
-            System.out.println("azad2: " + postViewHolderData.getPostimage() );
+
             // https://github.com/square/picasso/issues/1291 seems like require runtime permission.
-            Picasso.with(getApplicationContext()).load(postViewHolderData.getProfileimage()).fit().centerCrop().into(profileimage);
-            Picasso.with(getApplicationContext()).load(postViewHolderData.getPostimage()).fit().centerCrop().into(postimage);
+            Picasso.with(getApplicationContext()).load(postViewHolderData.getProfileimage()).into(profileimage);
+            Picasso.with(getApplicationContext()).load(postViewHolderData.getPostimage()).into(postimage);
         }
     }
 

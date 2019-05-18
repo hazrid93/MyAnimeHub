@@ -15,9 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ClickPostActivity"
+            android:label="@string/title_activity_click_post"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".PostActivity"
             android:label="@string/title_activity_post"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SetupActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>

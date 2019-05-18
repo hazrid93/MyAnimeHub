@@ -5,12 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,7 +23,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -35,8 +31,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -69,7 +63,7 @@ public class PostActivity extends AppCompatActivity {
 
         selectPostImage = (ImageButton) findViewById(R.id.select_post_image);
         updatePostButton = (Button) findViewById(R.id.update_post_button);
-        postDescription = (EditText) findViewById(R.id.post_description);
+        postDescription = (EditText) findViewById(R.id.click_post_description);
         loadingBar = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
@@ -133,11 +127,11 @@ public class PostActivity extends AppCompatActivity {
                         public void onSuccess(Uri uri) {
                             downloadUrl = uri.toString();
                             Log.i("image: ", downloadUrl);
+                            Toast.makeText(PostActivity.this, "Image is uploaded successfully", Toast.LENGTH_SHORT).show();
+                            savePostInformation();
                         }
                     });
 
-                    Toast.makeText(PostActivity.this, "Image is uploaded successfully", Toast.LENGTH_SHORT).show();
-                    savePostInformation();
                 } else {
                     String messsage = task.getException().getMessage();
                     Toast.makeText(PostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();

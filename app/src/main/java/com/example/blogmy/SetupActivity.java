@@ -103,7 +103,7 @@ public class SetupActivity extends AppCompatActivity {
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                if(dataSnapshot.exists() && dataSnapshot.hasChild("profileimage")){
                     String image = dataSnapshot.child("profileimage").getValue().toString();
                     Picasso.with(SetupActivity.this).load(image).placeholder(R.drawable.profile).into(profileImage);
 
@@ -170,31 +170,34 @@ public class SetupActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     downloadUrl = uri.toString();
+                                    Log.i("user image:" , downloadUrl);
+                                    Toast.makeText(SetupActivity.this, "User profile image successfully uploaded", Toast.LENGTH_SHORT).show();
+
+                                    userRef.child("profileimage").setValue(downloadUrl)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if(task.isSuccessful()){
+                                                        Log.i("create profileimage:" ,downloadUrl );
+                                                        //  Intent selfIntent = new Intent(SetupActivity.this, SetupActivity.class);
+                                                        //  startActivity(selfIntent);
+
+                                                        // requires the URI to set to null first if not it will reset back to default
+                                                        profileImage.setImageURI(null);
+                                                        profileImage.setImageURI(resultUri);
+                                                        Toast.makeText(SetupActivity.this, "Your image is stored into Firebase successfuly", Toast.LENGTH_SHORT).show();
+                                                        loadingBar.dismiss();
+                                                    } else {
+                                                        String message = task.getException().getMessage();
+                                                        Toast.makeText(SetupActivity.this, message, Toast.LENGTH_SHORT).show();
+                                                        loadingBar.dismiss();
+
+                                                    }
+                                                }
+                                            });
                                 }
                             });
-                            Toast.makeText(SetupActivity.this, "User profile image successfully uploaded", Toast.LENGTH_SHORT).show();
 
-                            userRef.child("profileimage").setValue(downloadUrl)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if(task.isSuccessful()){
-                                               //  Intent selfIntent = new Intent(SetupActivity.this, SetupActivity.class);
-                                               //  startActivity(selfIntent);
-
-                                                // requires the URI to set to null first if not it will reset back to default
-                                                profileImage.setImageURI(null);
-                                                profileImage.setImageURI(resultUri);
-                                                Toast.makeText(SetupActivity.this, "Your image is stored into Firebase successfuly", Toast.LENGTH_SHORT).show();
-                                                loadingBar.dismiss();
-                                            } else {
-                                                String message = task.getException().getMessage();
-                                                Toast.makeText(SetupActivity.this, message, Toast.LENGTH_SHORT).show();
-                                                loadingBar.dismiss();
-
-                                            }
-                                        }
-                                    });
                         }
                     }
                 });
