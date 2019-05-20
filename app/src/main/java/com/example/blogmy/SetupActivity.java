@@ -154,8 +154,9 @@ public class SetupActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK){
                 loadingBar.setTitle("Profile Image");
                 loadingBar.setMessage("Please wait...");
-                loadingBar.show();
                 loadingBar.setCanceledOnTouchOutside(true);
+                loadingBar.show();
+
 
                 final Uri resultUri = result.getUri();
 

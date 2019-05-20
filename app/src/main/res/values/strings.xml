@@ -4,4 +4,7 @@
     <string name="drawer_close">Drawer Close</string>
     <string name="title_activity_post">PostActivity</string>
     <string name="title_activity_click_post">ClickPostActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_find_friends">FindFriendsActivity</string>
 </resources>

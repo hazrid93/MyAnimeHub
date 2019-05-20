@@ -269,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
     private void UserMenuSelector(MenuItem menuItem){
         switch(menuItem.getItemId()){
             case R.id.nav_profile:
+                sendUserToProfileActivity();
                 break;
 
             case R.id.nav_post:
@@ -282,12 +283,14 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.nav_find_friends:
+                sendUserToFindFriends();
                 break;
 
             case R.id.nav_messages:
                 break;
 
             case R.id.nav_settings:
+                sendUserToSettingsActivity();
                 break;
 
             case R.id.nav_logout:
@@ -300,5 +303,20 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private void sendUserToFindFriends() {
+        Intent findFriendsIntent = new Intent(MainActivity.this, FindFriendsActivity.class);
+        startActivity(findFriendsIntent);
+    }
+
+    private void sendUserToProfileActivity() {
+        Intent profileIntent = new Intent(MainActivity.this, ProfileActivity.class);
+        startActivity(profileIntent);
+    }
+
+    private void sendUserToSettingsActivity(){
+        Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(settingsIntent);
     }
 }
