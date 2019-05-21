@@ -9,4 +9,5 @@
     <string name="title_activity_find_friends">FindFriendsActivity</string>
     <string name="title_activity_comments">CommentsActivity</string>
     <string name="title_activity_reset_password">ResetPasswordActivity</string>
+    <string name="title_activity_person_profile">PersonProfileActivity</string>
 </resources>

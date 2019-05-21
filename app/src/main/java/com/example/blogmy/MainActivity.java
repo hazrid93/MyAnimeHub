@@ -29,6 +29,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -135,7 +136,8 @@ public class MainActivity extends AppCompatActivity {
 
     // using firebaseUI library
     private void displayAllUsersPost(){
-        options = new FirebaseRecyclerOptions.Builder<Posts>().setQuery(postRef, Posts.class).build();
+        Query sortPostsInDescendingOrder = postRef.orderByChild("counter");
+        options = new FirebaseRecyclerOptions.Builder<Posts>().setQuery(sortPostsInDescendingOrder, Posts.class).build();
         firebaseRecyclerAdapter =
                new FirebaseRecyclerAdapter<Posts, PostsViewHolder>(options) {
 

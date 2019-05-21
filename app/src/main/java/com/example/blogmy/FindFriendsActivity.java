@@ -1,5 +1,6 @@
 package com.example.blogmy;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -73,8 +74,19 @@ public class FindFriendsActivity extends AppCompatActivity {
         options = new FirebaseRecyclerOptions.Builder<FindFriends>().setQuery(searchPeopleAndFriendsQuery, FindFriends.class).build();
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<FindFriends, FindFriendsViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull FindFriendsViewHolder findFriendsViewHolder, int i, @NonNull FindFriends findFriends) {
+            protected void onBindViewHolder(@NonNull FindFriendsViewHolder findFriendsViewHolder, final int i, @NonNull FindFriends findFriends) {
                 findFriendsViewHolder.setData(findFriends);
+                findFriendsViewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String visit_user_id = getRef(i).getKey();
+
+                        Intent profileIntent = new Intent(FindFriendsActivity.this, PersonProfileActivity.class);
+                        profileIntent.putExtra("visit_user_id", visit_user_id);
+                        startActivity(profileIntent);
+
+                    }
+                });
             }
 
             //this method will create view that will be populated by onBindViewHolder
