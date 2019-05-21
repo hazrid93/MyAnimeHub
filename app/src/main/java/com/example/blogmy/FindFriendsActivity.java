@@ -87,6 +87,9 @@ public class FindFriendsActivity extends AppCompatActivity {
             }
         };
 
+        searchResultList.setAdapter(firebaseRecyclerAdapter);
+        firebaseRecyclerAdapter.startListening();
+
 
     }
 

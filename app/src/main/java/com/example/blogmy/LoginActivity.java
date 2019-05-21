@@ -34,7 +34,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private EditText userEmail, userPassword;
-    private TextView newAccountLink;
+    private TextView newAccountLink, forgotPasswordLink;
     private FirebaseAuth mAuth;
     private ProgressDialog loadingBar;
     private ImageView googleSignInButton;
@@ -54,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         userEmail = (EditText) findViewById(R.id.login_email);
         userPassword = (EditText) findViewById(R.id.login_password);
         loginButton = (Button) findViewById(R.id.login_button);
+        forgotPasswordLink = (TextView) findViewById(R.id.forget_password_link);
 
         // Set login button click listener
         newAccountLink.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +69,13 @@ public class LoginActivity extends AppCompatActivity {
                 allowUserLogin();
             }
         });
+        forgotPasswordLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, ResetPasswordActivity.class));
+            }
+        });
+
 
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

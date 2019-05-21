@@ -7,4 +7,6 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_find_friends">FindFriendsActivity</string>
+    <string name="title_activity_comments">CommentsActivity</string>
+    <string name="title_activity_reset_password">ResetPasswordActivity</string>
 </resources>
