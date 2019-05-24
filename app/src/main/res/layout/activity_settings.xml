@@ -131,7 +131,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="6dp"
                 android:background="@drawable/inputs"
-                android:hint="Gender"
+                android:hint="Relationship"
                 android:padding="12dp"
                 android:textColor="@android:color/background_dark"
                 android:textSize="20sp"

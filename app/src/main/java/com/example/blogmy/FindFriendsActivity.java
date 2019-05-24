@@ -1,5 +1,6 @@
 package com.example.blogmy;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -68,14 +69,16 @@ public class FindFriendsActivity extends AppCompatActivity {
 
         // set the query criteria
         // https://firebase.google.com/docs/database/rest/retrieve-data#range-queries = for \uf8ff
-        Query searchPeopleAndFriendsQuery = allUsersDatabaseRef.orderByChild("fullname").startAt(searchBoxInput).endAt(searchBoxInput + "\uf8ff");
+        Query searchPeopleAndFriendsQuery = allUsersDatabaseRef.orderByChild("username").startAt(searchBoxInput).endAt(searchBoxInput + "\uf8ff");
 
         // set the custom query inside setQuery  method
         options = new FirebaseRecyclerOptions.Builder<FindFriends>().setQuery(searchPeopleAndFriendsQuery, FindFriends.class).build();
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<FindFriends, FindFriendsViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull FindFriendsViewHolder findFriendsViewHolder, final int i, @NonNull FindFriends findFriends) {
-                findFriendsViewHolder.setData(findFriends);
+                System.out.println("data: " + findFriends);
+                findFriendsViewHolder.setData(getApplicationContext(), findFriends);
+
                 findFriendsViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -113,15 +116,22 @@ public class FindFriendsActivity extends AppCompatActivity {
         public FindFriendsViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
+
+            fullname = (TextView) itemView.findViewById(R.id.all_users_profile_full_name);
+            status = (TextView) itemView.findViewById(R.id.all_users_status);
+            profileimage = (CircleImageView) itemView.findViewById(R.id.all_users_profile_image);
         }
 
-        public void setData(FindFriends friendsViewHolderData){
+        public void setData(Context ctx, FindFriends friendsViewHolderData){
             fullname.setText(friendsViewHolderData.getFullname());
+            System.out.println(friendsViewHolderData.getFullname());
             status.setText(friendsViewHolderData.getStatus());
+            System.out.println(friendsViewHolderData.getStatus());
 
             // https://github.com/square/picasso/issues/1291 seems like require runtime permission.
-            Picasso.with(FindFriendsActivity.this).load(friendsViewHolderData.getProfileimage()).into(profileimage);
+            Picasso.with(ctx).load(friendsViewHolderData.getProfileimage()).placeholder(R.drawable.profile).into(profileimage);
         }
+
     }
 
 }

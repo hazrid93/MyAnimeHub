@@ -10,4 +10,5 @@
     <string name="title_activity_comments">CommentsActivity</string>
     <string name="title_activity_reset_password">ResetPasswordActivity</string>
     <string name="title_activity_person_profile">PersonProfileActivity</string>
+    <string name="title_activity_friends">FriendsActivity</string>
 </resources>

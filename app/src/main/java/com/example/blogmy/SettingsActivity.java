@@ -57,8 +57,9 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         mAuth = FirebaseAuth.getInstance();
+        currentUserId = mAuth.getCurrentUser().getUid();
         // ref to database at user node.
-        settingsUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child("currentUserId");
+        settingsUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
         loadingBar = new ProgressDialog(this);
         mToolbar = (Toolbar) findViewById(R.id.settings_toolbar);
         // link the activity view with toolbar view
@@ -139,6 +140,7 @@ public class SettingsActivity extends AppCompatActivity {
         String dob = userDOB.getText().toString();
         String relation = userRelationship.getText().toString();
 
+        /*
         if(TextUtils.isEmpty(username)){
             Toast.makeText(SettingsActivity.this, "Please write your username", Toast.LENGTH_SHORT).show();
         } else if(TextUtils.isEmpty(profilename)){
@@ -161,6 +163,13 @@ public class SettingsActivity extends AppCompatActivity {
             loadingBar.show();
             updateAccountInfo(username, profilename, status, country, gender, dob , relation);
         }
+        */
+
+        loadingBar.setTitle("Profile Image");
+        loadingBar.setMessage("Please wait...");
+        loadingBar.setCanceledOnTouchOutside(true);
+        loadingBar.show();
+        updateAccountInfo(username, profilename, status, country, gender, dob , relation);
     }
 
     private void updateAccountInfo(String username,String profilename,String status,String country,String gender,String dob,String relation) {

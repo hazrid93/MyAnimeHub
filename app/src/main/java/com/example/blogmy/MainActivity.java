@@ -362,6 +362,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.nav_friends:
+                sendUserToFriendsActivity();
                 break;
 
             case R.id.nav_find_friends:
@@ -400,5 +401,10 @@ public class MainActivity extends AppCompatActivity {
     private void sendUserToSettingsActivity(){
         Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
         startActivity(settingsIntent);
+    }
+
+    private void sendUserToFriendsActivity(){
+        Intent friendIntent = new Intent(MainActivity.this, FriendsActivity.class);
+        startActivity(friendIntent);
     }
 }
