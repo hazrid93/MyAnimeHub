@@ -3,6 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/nav_anime_search"
+        android:title="Search Anime's"
+        android:icon="@drawable/search_anime"/>
+
+    <item
         android:id="@+id/nav_post"
         android:title="Add New Post"
         android:icon="@drawable/add_post"/>

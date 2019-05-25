@@ -383,6 +383,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void UserMenuSelector(MenuItem menuItem){
         switch(menuItem.getItemId()){
+
+            case R.id.nav_anime_search:
+                sendUserToSearchAnimeActivity();
+                break;
+
             case R.id.nav_profile:
                 sendUserToProfileActivity();
                 break;
@@ -420,6 +425,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private void sendUserToSearchAnimeActivity() {
+        Intent searchAnimeIntent = new Intent(MainActivity.this, SearchAnime.class);
+        startActivity(searchAnimeIntent);
     }
 
     private void sendUserToFindFriends() {

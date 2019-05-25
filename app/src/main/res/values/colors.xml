@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ed4c54</color>
-    <color name="colorPrimaryDark">#67c415</color>
-    <color name="colorAccent">#E9EBEE</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
     <color name="colorProfile">#3B4041</color>
     <color name="colorGreyishWhite">#999696</color>
     <color name="mainBackground">#D7D7D7</color>
     <color name="senderColor">#A0179E</color>
+
+    <color name="blue">#348af7</color>
+
+    <color name="temperature_background">@color/blue</color>
+    <color name="temperature_text">@android:color/white</color>
+
+    <color name="green_dot_big">@color/blue</color>
+    <color name="green_dot_small">@color/blue</color>
 </resources>
