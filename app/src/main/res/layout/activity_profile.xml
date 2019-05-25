@@ -111,6 +111,36 @@
                 android:textStyle="bold"
                 android:textColor="@android:color/white"/>
 
+            <Button
+                android:id="@+id/my_post_button"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="20dp"
+                android:text="No Of Posts"
+                android:layout_below="@id/my_relationship_status"
+                android:background="@color/colorPrimaryDark"
+                android:textSize="16sp"
+                android:textColor="@android:color/background_light"
+                android:textStyle="bold"
+                android:layout_marginTop="50dp"/>
+
+            <Button
+                android:id="@+id/my_friends_button"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+                android:text="No Of Friends"
+                android:layout_below="@id/my_relationship_status"
+                android:background="@color/colorPrimaryDark"
+                android:textSize="16sp"
+                android:textColor="@android:color/background_light"
+                android:textStyle="bold"
+                android:layout_marginTop="50dp"/>
+
 
 
         </RelativeLayout>
