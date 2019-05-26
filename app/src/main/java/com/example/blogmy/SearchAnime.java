@@ -15,15 +15,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.webkit.URLUtil;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
@@ -32,17 +29,12 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.example.blogmy.cards.SliderAdapter;
-import com.example.blogmy.model.TopAiringAnime;
 import com.example.blogmy.utils.DecodeBitmapTask;
 import com.example.blogmy.cards.CardSliderLayoutManager;
 import com.example.blogmy.cards.CardSnapHelper;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,12 +43,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
 
 import cz.msebera.android.httpclient.Header;
 
@@ -72,15 +61,12 @@ public class SearchAnime extends AppCompatActivity {
     private Map<Integer,JSONObject> topAiringAnime = null;
 
     private final List<String> picsList = new ArrayList<String>();
-    private final int[] maps = {R.drawable.map_paris, R.drawable.map_seoul, R.drawable.map_london, R.drawable.map_beijing, R.drawable.map_greece};
-    private final int[] descriptions = {R.string.text1, R.string.text2, R.string.text3, R.string.text4, R.string.text5};
+    private final List<String> typeList = new ArrayList<String>();
     private final List<String> titleList = new ArrayList<String>();
-
-    private final String[] places = {"The Louvre", "Gwanghwamun", "Tower Bridge", "Temple of Heaven", "Aegeana Sea"};
-
+    private final List<String> scoreList = new ArrayList<String>();
     private final List<String> rankList = new ArrayList<String>();
-
-    private final String[] times = {"Aug 1 - Dec 15    7:00-18:00", "Sep 5 - Nov 10    8:00-16:00", "Mar 8 - May 21    7:00-18:00"};
+    private final List<String> startTimeList = new ArrayList<String>();
+    private final List<String> endTimeList = new ArrayList<String>();
 
     private SliderAdapter sliderAdapter = null;
 
@@ -92,11 +78,11 @@ public class SearchAnime extends AppCompatActivity {
     private TextSwitcher clockSwitcher;
     private TextSwitcher descriptionsSwitcher;
 
-    private TextView country1TextView;
-    private TextView country2TextView;
-    private int countryOffset1;
-    private int countryOffset2;
-    private long countryAnimDuration;
+    private TextView title1TextView;
+    private TextView title2TextView;
+    private int titleOffset1;
+    private int titleOffset2;
+    private long titleAnimDuration;
     private int currentPosition;
 
     private DecodeBitmapTask decodeMapBitmapTask;
@@ -153,6 +139,21 @@ public class SearchAnime extends AppCompatActivity {
                         picsList.add(topAiringAnime.get(i).get("image_url").toString());
                         titleList.add(topAiringAnime.get(i).get("title").toString());
                         rankList.add(topAiringAnime.get(i).get("rank").toString());
+                        scoreList.add(topAiringAnime.get(i).get("score").toString());
+                        typeList.add(topAiringAnime.get(i).get("type").toString());
+                        if(topAiringAnime.get(i).get("start_date").toString().equals("null")){
+                            startTimeList.add("?");
+                        } else {
+                            startTimeList.add(topAiringAnime.get(i).get("start_date").toString());
+                        }
+
+                        if(topAiringAnime.get(i).get("end_date").toString().equals("null")){
+                            endTimeList.add("?");
+                        }else{
+                            endTimeList.add(topAiringAnime.get(i).get("end_date").toString());
+                        }
+                       // startTimeList.add(topAiringAnime.get(i).get("start_date").toString());
+                       // endTimeList.add(topAiringAnime.get(i).get("end_date").toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -161,7 +162,7 @@ public class SearchAnime extends AppCompatActivity {
                 Log.d("SearchAnime", "Size:" +topAiringAnime.size());
                 sliderAdapter = new SliderAdapter(SearchAnime.this, picsList, topAiringAnime.size(), new OnCardClickListener());
                 initRecyclerView();
-                initCountryText();
+                initTitleText();
                 initSwitchers();
 
             }
@@ -205,21 +206,21 @@ public class SearchAnime extends AppCompatActivity {
     private void initSwitchers() {
         temperatureSwitcher = (TextSwitcher) findViewById(R.id.ts_temperature);
         temperatureSwitcher.setFactory(new TextViewFactory(R.style.TemperatureTextView, true));
-        temperatureSwitcher.setCurrentText(rankList.get(0));
+        temperatureSwitcher.setCurrentText("Rank: " + rankList.get(0) + "/" + topAiringAnime.size());
 
         placeSwitcher = (TextSwitcher) findViewById(R.id.ts_place);
         placeSwitcher.setFactory(new TextViewFactory(R.style.PlaceTextView, false));
-        placeSwitcher.setCurrentText(places[0]);
+        placeSwitcher.setCurrentText("Score: " + scoreList.get(0) + "/10");
 
         clockSwitcher = (TextSwitcher) findViewById(R.id.ts_clock);
         clockSwitcher.setFactory(new TextViewFactory(R.style.ClockTextView, false));
-        clockSwitcher.setCurrentText(times[0]);
+        clockSwitcher.setCurrentText(startTimeList.get(0) + " ~ " + endTimeList.get(0));
 
         descriptionsSwitcher = (TextSwitcher) findViewById(R.id.ts_description);
         descriptionsSwitcher.setInAnimation(this, android.R.anim.fade_in);
         descriptionsSwitcher.setOutAnimation(this, android.R.anim.fade_out);
         descriptionsSwitcher.setFactory(new TextViewFactory(R.style.DescriptionTextView, false));
-        descriptionsSwitcher.setCurrentText(getString(descriptions[0]));
+        descriptionsSwitcher.setCurrentText("Type: " + typeList.get(0));
 
         mapSwitcher = (ImageSwitcher) findViewById(R.id.ts_map);
         mapSwitcher.setInAnimation(this, R.anim.fade_in);
@@ -229,40 +230,40 @@ public class SearchAnime extends AppCompatActivity {
 
     }
 
-    private void initCountryText() {
-        countryAnimDuration = getResources().getInteger(R.integer.labels_animation_duration);
-        countryOffset1 = getResources().getDimensionPixelSize(R.dimen.left_offset);
-        countryOffset2 = getResources().getDimensionPixelSize(R.dimen.card_width);
-        country1TextView = (TextView) findViewById(R.id.tv_country_1);
-        country2TextView = (TextView) findViewById(R.id.tv_country_2);
+    private void initTitleText() {
+        titleAnimDuration = getResources().getInteger(R.integer.labels_animation_duration);
+        titleOffset1 = getResources().getDimensionPixelSize(R.dimen.left_offset);
+        titleOffset2 = getResources().getDimensionPixelSize(R.dimen.card_width);
+        title1TextView = (TextView) findViewById(R.id.tv_title_1);
+        title2TextView = (TextView) findViewById(R.id.tv_title_2);
 
-        country1TextView.setX(countryOffset1);
-        country2TextView.setX(countryOffset2);
-        country1TextView.setText(titleList.get(0));
-        country2TextView.setAlpha(0f);
+        title1TextView.setX(titleOffset1);
+        title2TextView.setX(titleOffset2);
+        title1TextView.setText(titleList.get(0));
+        title2TextView.setAlpha(0f);
 
-        country1TextView.setTypeface(Typeface.createFromAsset(getAssets(), "open-sans-extrabold.ttf"));
-        country2TextView.setTypeface(Typeface.createFromAsset(getAssets(), "open-sans-extrabold.ttf"));
+        title1TextView.setTypeface(Typeface.createFromAsset(getAssets(), "open-sans-extrabold.ttf"));
+        title2TextView.setTypeface(Typeface.createFromAsset(getAssets(), "open-sans-extrabold.ttf"));
     }
 
 
-    private void setCountryText(String text, boolean left2right) {
+    private void setTitleText(String text, boolean left2right) {
         final TextView invisibleText;
         final TextView visibleText;
-        if (country1TextView.getAlpha() > country2TextView.getAlpha()) {
-            visibleText = country1TextView;
-            invisibleText = country2TextView;
+        if (title1TextView.getAlpha() > title2TextView.getAlpha()) {
+            visibleText = title1TextView;
+            invisibleText = title2TextView;
         } else {
-            visibleText = country2TextView;
-            invisibleText = country1TextView;
+            visibleText = title2TextView;
+            invisibleText = title1TextView;
         }
 
         final int vOffset;
         if (left2right) {
             invisibleText.setX(0);
-            vOffset = countryOffset2;
+            vOffset = titleOffset2;
         } else {
-            invisibleText.setX(countryOffset2);
+            invisibleText.setX(titleOffset2);
             vOffset = 0;
         }
 
@@ -270,12 +271,12 @@ public class SearchAnime extends AppCompatActivity {
 
         final ObjectAnimator iAlpha = ObjectAnimator.ofFloat(invisibleText, "alpha", 1f);
         final ObjectAnimator vAlpha = ObjectAnimator.ofFloat(visibleText, "alpha", 0f);
-        final ObjectAnimator iX = ObjectAnimator.ofFloat(invisibleText, "x", countryOffset1);
+        final ObjectAnimator iX = ObjectAnimator.ofFloat(invisibleText, "x", titleOffset1);
         final ObjectAnimator vX = ObjectAnimator.ofFloat(visibleText, "x", vOffset);
 
         final AnimatorSet animSet = new AnimatorSet();
         animSet.playTogether(iAlpha, vAlpha, iX, vX);
-        animSet.setDuration(countryAnimDuration);
+        animSet.setDuration(titleAnimDuration);
         animSet.start();
     }
 
@@ -301,21 +302,21 @@ public class SearchAnime extends AppCompatActivity {
             animV[1] = R.anim.slide_out_top;
         }
 
-        setCountryText(titleList.get(pos), left2right);
+        setTitleText(titleList.get(pos), left2right);
 
         temperatureSwitcher.setInAnimation(SearchAnime.this, animH[0]);
         temperatureSwitcher.setOutAnimation(SearchAnime.this, animH[1]);
-        temperatureSwitcher.setText(rankList.get(pos));
+        temperatureSwitcher.setText("Rank: " + rankList.get(pos) + "/" + topAiringAnime.size());
 
         placeSwitcher.setInAnimation(SearchAnime.this, animV[0]);
         placeSwitcher.setOutAnimation(SearchAnime.this, animV[1]);
-        placeSwitcher.setText(places[pos % places.length]);
+        placeSwitcher.setText("Score: " + scoreList.get(pos)+ "/10");
 
         clockSwitcher.setInAnimation(SearchAnime.this, animV[0]);
         clockSwitcher.setOutAnimation(SearchAnime.this, animV[1]);
-        clockSwitcher.setText(times[pos % times.length]);
+        clockSwitcher.setText(startTimeList.get(pos) + " ~ " + endTimeList.get(pos));
 
-        descriptionsSwitcher.setText(getString(descriptions[pos % descriptions.length]));
+        descriptionsSwitcher.setText("Type: " + typeList.get(pos));
 
         showMap(picsList.get(pos));
 

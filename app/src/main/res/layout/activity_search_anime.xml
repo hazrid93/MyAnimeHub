@@ -14,7 +14,7 @@
         android:layout_marginTop="30dp">
 
         <FrameLayout
-            android:id="@+id/countries"
+            android:id="@+id/anime_titles"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
@@ -22,25 +22,27 @@
             android:layout_toStartOf="@+id/frameLayout">
 
             <TextView
-                android:id="@+id/tv_country_1"
+                android:id="@+id/tv_title_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:textSize="28sp"
+                android:textSize="26sp"
+                android:padding="2dp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_country_2"
+                android:id="@+id/tv_title_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="28sp"
+                android:textSize="26sp"
                 android:textStyle="bold"
+                android:padding="2dp"
                 android:layout_gravity="center_vertical"/>
 
         </FrameLayout>
 
         <FrameLayout
-            android:layout_width="85dp"
+            android:layout_width="110dp"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:background="@drawable/temperature_background"
@@ -51,6 +53,7 @@
                 android:id="@+id/ts_temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="2dp"
                 android:layout_gravity="center"/>
 
         </FrameLayout>
