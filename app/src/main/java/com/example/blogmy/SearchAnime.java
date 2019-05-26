@@ -72,9 +72,9 @@ public class SearchAnime extends AppCompatActivity {
 
     private CardSliderLayoutManager layoutManger;
     private RecyclerView recyclerView;
-    private ImageSwitcher mapSwitcher;
-    private TextSwitcher temperatureSwitcher;
-    private TextSwitcher placeSwitcher;
+    private ImageSwitcher previewImgSwitcher;
+    private TextSwitcher rankSwitcher;
+    private TextSwitcher scoreSwitcher;
     private TextSwitcher clockSwitcher;
     private TextSwitcher descriptionsSwitcher;
 
@@ -85,17 +85,12 @@ public class SearchAnime extends AppCompatActivity {
     private long titleAnimDuration;
     private int currentPosition;
 
-    private DecodeBitmapTask decodeMapBitmapTask;
-    private DecodeBitmapTask.Listener mapLoadListener;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_anime);
-
         // get initial top airing during activity launch
         initGetTopAiring();
-
     }
 
     // using JIKAN api
@@ -152,8 +147,7 @@ public class SearchAnime extends AppCompatActivity {
                         }else{
                             endTimeList.add(topAiringAnime.get(i).get("end_date").toString());
                         }
-                       // startTimeList.add(topAiringAnime.get(i).get("start_date").toString());
-                       // endTimeList.add(topAiringAnime.get(i).get("end_date").toString());
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -198,19 +192,16 @@ public class SearchAnime extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (isFinishing() && decodeMapBitmapTask != null) {
-            decodeMapBitmapTask.cancel(true);
-        }
     }
 
     private void initSwitchers() {
-        temperatureSwitcher = (TextSwitcher) findViewById(R.id.ts_temperature);
-        temperatureSwitcher.setFactory(new TextViewFactory(R.style.TemperatureTextView, true));
-        temperatureSwitcher.setCurrentText("Rank: " + rankList.get(0) + "/" + topAiringAnime.size());
+        rankSwitcher = (TextSwitcher) findViewById(R.id.ts_rank);
+        rankSwitcher.setFactory(new TextViewFactory(R.style.RankTextView, true));
+        rankSwitcher.setCurrentText("Rank: " + rankList.get(0) + "/" + topAiringAnime.size());
 
-        placeSwitcher = (TextSwitcher) findViewById(R.id.ts_place);
-        placeSwitcher.setFactory(new TextViewFactory(R.style.PlaceTextView, false));
-        placeSwitcher.setCurrentText("Score: " + scoreList.get(0) + "/10");
+        scoreSwitcher = (TextSwitcher) findViewById(R.id.ts_score);
+        scoreSwitcher.setFactory(new TextViewFactory(R.style.ScoreTextView, false));
+        scoreSwitcher.setCurrentText("Score: " + scoreList.get(0) + "/10");
 
         clockSwitcher = (TextSwitcher) findViewById(R.id.ts_clock);
         clockSwitcher.setFactory(new TextViewFactory(R.style.ClockTextView, false));
@@ -222,10 +213,10 @@ public class SearchAnime extends AppCompatActivity {
         descriptionsSwitcher.setFactory(new TextViewFactory(R.style.DescriptionTextView, false));
         descriptionsSwitcher.setCurrentText("Type: " + typeList.get(0));
 
-        mapSwitcher = (ImageSwitcher) findViewById(R.id.ts_map);
-        mapSwitcher.setInAnimation(this, R.anim.fade_in);
-        mapSwitcher.setOutAnimation(this, R.anim.fade_out);
-        mapSwitcher.setFactory(new ImageViewFactory());
+        previewImgSwitcher = (ImageSwitcher) findViewById(R.id.ts_preview_image);
+        previewImgSwitcher.setInAnimation(this, R.anim.fade_in);
+        previewImgSwitcher.setOutAnimation(this, R.anim.fade_out);
+        previewImgSwitcher.setFactory(new ImageViewFactory());
         showMap(picsList.get(0));
 
     }
@@ -304,13 +295,13 @@ public class SearchAnime extends AppCompatActivity {
 
         setTitleText(titleList.get(pos), left2right);
 
-        temperatureSwitcher.setInAnimation(SearchAnime.this, animH[0]);
-        temperatureSwitcher.setOutAnimation(SearchAnime.this, animH[1]);
-        temperatureSwitcher.setText("Rank: " + rankList.get(pos) + "/" + topAiringAnime.size());
+        rankSwitcher.setInAnimation(SearchAnime.this, animH[0]);
+        rankSwitcher.setOutAnimation(SearchAnime.this, animH[1]);
+        rankSwitcher.setText("Rank: " + rankList.get(pos) + "/" + topAiringAnime.size());
 
-        placeSwitcher.setInAnimation(SearchAnime.this, animV[0]);
-        placeSwitcher.setOutAnimation(SearchAnime.this, animV[1]);
-        placeSwitcher.setText("Score: " + scoreList.get(pos)+ "/10");
+        scoreSwitcher.setInAnimation(SearchAnime.this, animV[0]);
+        scoreSwitcher.setOutAnimation(SearchAnime.this, animV[1]);
+        scoreSwitcher.setText("Score: " + scoreList.get(pos)+ "/10");
 
         clockSwitcher.setInAnimation(SearchAnime.this, animV[0]);
         clockSwitcher.setOutAnimation(SearchAnime.this, animV[1]);
@@ -325,8 +316,8 @@ public class SearchAnime extends AppCompatActivity {
 
     private void showMap(String resId) {
 
-        final int w = mapSwitcher.getWidth();
-        final int h = mapSwitcher.getHeight();
+        final int w = previewImgSwitcher.getWidth();
+        final int h = previewImgSwitcher.getHeight();
 
         InputStream in = null;
         try {
@@ -335,7 +326,7 @@ public class SearchAnime extends AppCompatActivity {
             e.printStackTrace();
         }
         Bitmap bitmap = BitmapFactory.decodeStream(in);
-        mapSwitcher.setImageDrawable(new BitmapDrawable(getResources(), bitmap));
+        previewImgSwitcher.setImageDrawable(new BitmapDrawable(getResources(), bitmap));
 
     }
 

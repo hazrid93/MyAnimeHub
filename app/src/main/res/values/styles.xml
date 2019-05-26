@@ -18,13 +18,13 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="TemperatureTextView">
+    <style name="RankTextView">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/temperature_text</item>
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="PlaceTextView">
+    <style name="ScoreTextView">
         <item name="android:textSize">24sp</item>
         <item name="android:gravity">center</item>
     </style>

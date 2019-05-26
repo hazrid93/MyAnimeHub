@@ -50,7 +50,7 @@
             android:id="@+id/frameLayout">
 
             <TextSwitcher
-                android:id="@+id/ts_temperature"
+                android:id="@+id/ts_rank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="2dp"
@@ -85,7 +85,7 @@
             android:scaleType="fitCenter"/>
 
         <TextSwitcher
-            android:id="@+id/ts_place"
+            android:id="@+id/ts_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -100,7 +100,7 @@
         android:animateLayoutChanges="true">
 
         <ImageSwitcher
-            android:id="@+id/ts_map"
+            android:id="@+id/ts_preview_image"
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
             android:layout_marginLeft="25dp"
