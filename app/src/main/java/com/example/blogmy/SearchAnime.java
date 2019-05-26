@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,19 +24,45 @@ import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.example.blogmy.cards.SliderAdapter;
+import com.example.blogmy.model.TopAiringAnime;
 import com.example.blogmy.utils.DecodeBitmapTask;
 import com.example.blogmy.cards.CardSliderLayoutManager;
 import com.example.blogmy.cards.CardSnapHelper;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
+import cz.msebera.android.httpclient.Header;
+
 public class SearchAnime extends AppCompatActivity {
-    private final int[][] dotCoords = new int[5][2];
+
+    // Constants:
+    // schema REST for top anime, https://jikan.docs.apiary.io/#reference/0/schedule/top-request-example+schema?console=1
+    private String JIKAN_URL = "https://api.jikan.moe/v3";
+    private String JIKAN_TYPE = "anime";
+    private String JIKAN_PAGE = "1";
+    private String JIKAN_AIRING = "airing";
+
+    private Map<Integer,JSONObject> topAiringAnime = null;
+
     private final int[] pics = {R.drawable.p1, R.drawable.p2, R.drawable.p3, R.drawable.p4, R.drawable.p5};
+    private final List<String> picsList = new ArrayList<String>();
     private final int[] maps = {R.drawable.map_paris, R.drawable.map_seoul, R.drawable.map_london, R.drawable.map_beijing, R.drawable.map_greece};
     private final int[] descriptions = {R.string.text1, R.string.text2, R.string.text3, R.string.text4, R.string.text5};
     private final String[] countries = {"PARIS", "SEOUL", "LONDON", "BEIJING", "THIRA"};
@@ -43,7 +70,7 @@ public class SearchAnime extends AppCompatActivity {
     private final String[] temperatures = {"21°C", "19°C", "17°C", "23°C", "20°C"};
     private final String[] times = {"Aug 1 - Dec 15    7:00-18:00", "Sep 5 - Nov 10    8:00-16:00", "Mar 8 - May 21    7:00-18:00"};
 
-    private final SliderAdapter sliderAdapter = new SliderAdapter(pics, 20, new OnCardClickListener());
+    private SliderAdapter sliderAdapter = null;
 
     private CardSliderLayoutManager layoutManger;
     private RecyclerView recyclerView;
@@ -52,7 +79,6 @@ public class SearchAnime extends AppCompatActivity {
     private TextSwitcher placeSwitcher;
     private TextSwitcher clockSwitcher;
     private TextSwitcher descriptionsSwitcher;
-    private View greenDot;
 
     private TextView country1TextView;
     private TextView country2TextView;
@@ -69,10 +95,70 @@ public class SearchAnime extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_anime);
 
-        initRecyclerView();
-        initCountryText();
-        initSwitchers();
-        initGreenDot();
+        // get initial top airing during activity launch
+        initGetTopAiring();
+
+    }
+
+    // using JIKAN api
+    private void initGetTopAiring() {
+        RequestParams params = new RequestParams();
+        String JIKAN_TOP_AIRING_DEFAULT = JIKAN_URL + "/top/anime/" + JIKAN_PAGE + "/" + JIKAN_AIRING;
+       // params.put("type", JIKAN_TYPE);
+       // params.put("page", JIKAN_PAGE);
+       // params.put("subtype", JIKAN_SUBTYPE);
+        letsDoSomeNetworking(params, JIKAN_TOP_AIRING_DEFAULT);
+    }
+
+    // TODO: Add letsDoSomeNetworking(RequestParams params) here:
+    private void letsDoSomeNetworking(RequestParams params, String URL){
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(URL, params, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+              //  Log.d("SearchAnime", "Success: " + response.toString());
+                Toast.makeText(SearchAnime.this, "Request Successful", Toast.LENGTH_SHORT).show();
+
+                // add top airing anime data into the List topAiringAnime
+                topAiringAnime = new LinkedHashMap<Integer, JSONObject>();
+                JSONArray jArray = null;
+                try {
+                    jArray = (JSONArray)response.getJSONArray("top");
+                    if (jArray != null) {
+                        for (int i=0;i<jArray.length();i++){
+                            topAiringAnime.put(i,jArray.getJSONObject(i));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                //Log.d("SearchAnime", "Success: " + topAiringAnime.toString());
+
+                for(int i=0; i < topAiringAnime.size(); i++){
+                    try {
+                        picsList.add(topAiringAnime.get(i).get("image_url").toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                Log.d("SearchAnime", "Size:" +topAiringAnime.size());
+                sliderAdapter = new SliderAdapter(SearchAnime.this, picsList, topAiringAnime.size(), new OnCardClickListener());
+                initRecyclerView();
+                initCountryText();
+                initSwitchers();
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
+                Log.e("SearchAnime", "Fail" + e.toString());
+                Log.e("SearchAnime", "Status code: " + statusCode);
+                Toast.makeText(SearchAnime.this, "Request Failed", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void initRecyclerView() {
@@ -152,32 +238,6 @@ public class SearchAnime extends AppCompatActivity {
         country2TextView.setTypeface(Typeface.createFromAsset(getAssets(), "open-sans-extrabold.ttf"));
     }
 
-    private void initGreenDot() {
-        mapSwitcher.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                mapSwitcher.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
-                final int viewLeft = mapSwitcher.getLeft();
-                final int viewTop = mapSwitcher.getTop() + mapSwitcher.getHeight() / 3;
-
-                final int border = 100;
-                final int xRange = Math.max(1, mapSwitcher.getWidth() - border * 2);
-                final int yRange = Math.max(1, (mapSwitcher.getHeight() / 3) * 2 - border * 2);
-
-                final Random rnd = new Random();
-
-                for (int i = 0, cnt = dotCoords.length; i < cnt; i++) {
-                    dotCoords[i][0] = viewLeft + border + rnd.nextInt(xRange);
-                    dotCoords[i][1] = viewTop + border + rnd.nextInt(yRange);
-                }
-
-                greenDot = findViewById(R.id.green_dot);
-                greenDot.setX(dotCoords[0][0]);
-                greenDot.setY(dotCoords[0][1]);
-            }
-        });
-    }
 
     private void setCountryText(String text, boolean left2right) {
         final TextView invisibleText;
@@ -252,10 +312,7 @@ public class SearchAnime extends AppCompatActivity {
 
         showMap(maps[pos % maps.length]);
 
-        ViewCompat.animate(greenDot)
-                .translationX(dotCoords[pos % dotCoords.length][0])
-                .translationY(dotCoords[pos % dotCoords.length][1])
-                .start();
+
 
         currentPosition = pos;
     }

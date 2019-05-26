@@ -1,6 +1,7 @@
 package com.example.blogmy.cards;
 
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,14 +10,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blogmy.R;
 
+import java.util.List;
+
 
 public class SliderAdapter extends RecyclerView.Adapter<SliderCard> {
 
-    private final int count;
-    private final int[] content;
+    private int count;
+    private Context ctx;
+    private List<String> content;
     private final View.OnClickListener listener;
 
-    public SliderAdapter(int[] content, int count, View.OnClickListener listener) {
+    public SliderAdapter(Context ctx, List<String> content, int count, View.OnClickListener listener) {
+        this.ctx = ctx;
         this.content = content;
         this.count = count;
         this.listener = listener;
@@ -42,12 +47,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderCard> {
 
     @Override
     public void onBindViewHolder(SliderCard holder, int position) {
-        holder.setContent(content[position % content.length]);
-    }
-
-    @Override
-    public void onViewRecycled(SliderCard holder) {
-        holder.clearContent();
+        holder.setContent(ctx, content.get(position));
     }
 
     @Override

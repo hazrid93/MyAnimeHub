@@ -1,6 +1,8 @@
 package com.example.blogmy.cards;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -8,10 +10,12 @@ import android.widget.ImageView;
 import androidx.annotation.DrawableRes;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.blogmy.ProfileActivity;
 import com.example.blogmy.R;
 import com.example.blogmy.utils.DecodeBitmapTask;
+import com.squareup.picasso.Picasso;
 
-public class SliderCard extends RecyclerView.ViewHolder implements DecodeBitmapTask.Listener {
+public class SliderCard extends RecyclerView.ViewHolder{
 
     private static int viewWidth = 0;
     private static int viewHeight = 0;
@@ -25,7 +29,8 @@ public class SliderCard extends RecyclerView.ViewHolder implements DecodeBitmapT
         imageView = (ImageView) itemView.findViewById(R.id.image);
     }
 
-    void setContent(@DrawableRes final int resId) {
+    void setContent(final Context ctx, final String resId) {
+
         if (viewWidth == 0) {
             itemView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -34,28 +39,19 @@ public class SliderCard extends RecyclerView.ViewHolder implements DecodeBitmapT
 
                     viewWidth = itemView.getWidth();
                     viewHeight = itemView.getHeight();
-                    loadBitmap(resId);
+
+                    Log.d("SearchAnime", "URL: " + resId);
+                    Picasso.with(ctx).load(resId).into(imageView);
+                  //  loadBitmap(resId);
                 }
             });
         } else {
-            loadBitmap(resId);
+            Log.d("SearchAnime", "URL: " + resId);
+            Picasso.with(ctx).load(resId).into(imageView);
         }
+
     }
 
-    void clearContent() {
-        if (task != null) {
-            task.cancel(true);
-        }
-    }
 
-    private void loadBitmap(@DrawableRes int resId) {
-        task = new DecodeBitmapTask(itemView.getResources(), resId, viewWidth, viewHeight, this);
-        task.execute();
-    }
-
-    @Override
-    public void onPostExecuted(Bitmap bitmap) {
-        imageView.setImageBitmap(bitmap);
-    }
 
 }
