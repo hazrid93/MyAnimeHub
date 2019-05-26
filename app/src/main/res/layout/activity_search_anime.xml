@@ -99,12 +99,15 @@
         <ImageSwitcher
             android:id="@+id/ts_map"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:scaleType="centerCrop"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_height="200dp" />
 
         <View
             android:id="@+id/gradient_top"
             android:layout_width="match_parent"
-            android:layout_height="90dp"
+            android:layout_height="50dp"
             android:background="@android:color/white"/>
 
         <View
