@@ -60,6 +60,7 @@ public class SearchAnime extends AppCompatActivity {
 
     private Map<Integer,JSONObject> topAiringAnime = null;
 
+    private final List<String> animeIdList = new ArrayList<String>();
     private final List<String> picsList = new ArrayList<String>();
     private final List<String> typeList = new ArrayList<String>();
     private final List<String> titleList = new ArrayList<String>();
@@ -131,6 +132,7 @@ public class SearchAnime extends AppCompatActivity {
 
                 for(int i=0; i < topAiringAnime.size(); i++){
                     try {
+                        animeIdList.add(topAiringAnime.get(i).get("mal_id").toString());
                         picsList.add(topAiringAnime.get(i).get("image_url").toString());
                         titleList.add(topAiringAnime.get(i).get("title").toString());
                         rankList.add(topAiringAnime.get(i).get("rank").toString());
@@ -213,11 +215,15 @@ public class SearchAnime extends AppCompatActivity {
         descriptionsSwitcher.setFactory(new TextViewFactory(R.style.DescriptionTextView, false));
         descriptionsSwitcher.setCurrentText("Type: " + typeList.get(0));
 
+        /*
         previewImgSwitcher = (ImageSwitcher) findViewById(R.id.ts_preview_image);
         previewImgSwitcher.setInAnimation(this, R.anim.fade_in);
         previewImgSwitcher.setOutAnimation(this, R.anim.fade_out);
         previewImgSwitcher.setFactory(new ImageViewFactory());
-        showMap(picsList.get(0));
+        */
+
+        updateAnimeDetails(animeIdList.get(0));
+
 
     }
 
@@ -309,12 +315,12 @@ public class SearchAnime extends AppCompatActivity {
 
         descriptionsSwitcher.setText("Type: " + typeList.get(pos));
 
-        showMap(picsList.get(pos));
+        updateAnimeDetails(animeIdList.get(pos));
 
         currentPosition = pos;
     }
 
-    private void showMap(String resId) {
+    private void updateAnimeDetails(String resId) {
 
         final int w = previewImgSwitcher.getWidth();
         final int h = previewImgSwitcher.getHeight();

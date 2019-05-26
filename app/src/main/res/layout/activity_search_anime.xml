@@ -9,8 +9,63 @@
     android:clipChildren="false">
 
     <RelativeLayout
+        android:id="@+id/my_anime_search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_below="@id/find_friends_bar_layout">
+
+        <TextView
+            android:id="@+id/search_anime_textId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:textColor="@android:color/background_dark"
+            android:text="Search for Anime"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="30dp"
+            android:fontFamily="@font/open_sans_extrabold"
+            />
+
+        <EditText
+            android:id="@+id/search_anime_box_input"
+            android:layout_width="280dp"
+            android:layout_height="50dp"
+            android:layout_below="@id/search_anime_textId"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/inputs"
+            android:textSize="18sp"
+            android:hint="Search..."
+            android:inputType="text"
+            android:padding="10dp"
+            android:textColor="@color/colorProfile"
+            android:textColorHint="@color/colorProfile"
+            android:backgroundTint="@android:color/darker_gray"
+            />
+
+        <ImageButton
+            android:id="@+id/search_anime_button"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/search_anime_textId"
+            android:layout_toEndOf="@id/search_anime_box_input"
+            android:background="@drawable/inputs"
+            android:src="@drawable/search"
+            android:gravity="center"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="38dp"
+        android:layout_below="@id/my_anime_search_layout"
         android:layout_marginTop="30dp">
 
         <FrameLayout
@@ -99,26 +154,6 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true">
 
-        <ImageSwitcher
-            android:id="@+id/ts_preview_image"
-            android:layout_width="match_parent"
-            android:scaleType="centerCrop"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_height="200dp" />
-
-        <View
-            android:id="@+id/gradient_top"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@android:color/white"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:background="@drawable/gradient_map"
-            android:layout_below="@+id/gradient_top"/>
-
         <TextSwitcher
             android:id="@+id/ts_description"
             android:layout_width="match_parent"
@@ -148,6 +183,14 @@
                 android:layout_marginStart="@dimen/left_offset"/>
 
         </FrameLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp">
 
     </RelativeLayout>
 
