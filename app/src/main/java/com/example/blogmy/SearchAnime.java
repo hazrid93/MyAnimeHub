@@ -222,7 +222,7 @@ public class SearchAnime extends AppCompatActivity {
         previewImgSwitcher.setFactory(new ImageViewFactory());
         */
 
-        updateAnimeDetails(animeIdList.get(0));
+      //  updateAnimeDetails(animeIdList.get(0));
 
 
     }
@@ -315,7 +315,7 @@ public class SearchAnime extends AppCompatActivity {
 
         descriptionsSwitcher.setText("Type: " + typeList.get(pos));
 
-        updateAnimeDetails(animeIdList.get(pos));
+       // updateAnimeDetails(animeIdList.get(pos));
 
         currentPosition = pos;
     }

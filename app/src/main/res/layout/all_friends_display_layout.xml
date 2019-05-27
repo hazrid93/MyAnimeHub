@@ -20,15 +20,31 @@
         android:orientation="vertical"
         android:layout_margin="5dp">
 
-        <TextView
-            android:id="@+id/all_friends_profile_full_name"
+        <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User full name"
-            android:textAlignment="textStart"
-            android:textColor="@android:color/background_light"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:orientation="horizontal"
+            android:layout_margin="5dp">
+
+                <TextView
+                    android:id="@+id/all_friends_profile_full_name"
+                    android:layout_width="190dp"
+                    android:layout_height="wrap_content"
+                    android:text="User full name"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/background_light"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+                <ImageView
+                    android:id="@+id/all_friends_online_icon"
+                    android:src="@drawable/online"
+                    android:layout_width="20dp"
+                    android:visibility="invisible"
+                    android:layout_height="20dp" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/all_friends_status"
@@ -40,5 +56,6 @@
             android:textSize="16sp"
             android:textStyle="bold"/>
     </LinearLayout>
+
 </RelativeLayout>
 

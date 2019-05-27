@@ -101,7 +101,6 @@ public class FriendsActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull final FriendsViewHolder friendsViewHolder, int i, @NonNull Friends friends) {
                 friendsViewHolder.setData(friends);
-
                 final String usersIDs = getRef(i).getKey();
 
                 usersRef.child(usersIDs).addValueEventListener(new ValueEventListener() {
@@ -160,7 +159,7 @@ public class FriendsActivity extends AppCompatActivity {
         View mView;
         TextView fullname, date;
         CircleImageView profileimage;
-        ImageView onlineStatusView;
+        final ImageView onlineStatusView;
 
         public FriendsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -169,18 +168,18 @@ public class FriendsActivity extends AppCompatActivity {
             fullname = (TextView) itemView.findViewById(R.id.all_friends_profile_full_name);
             date = (TextView) itemView.findViewById(R.id.all_friends_status);
             profileimage = (CircleImageView) itemView.findViewById(R.id.all_friends_profile_image);
-            onlineStatusView = (ImageView) itemView.findViewById(R.id.all_users_online_icon);
+            onlineStatusView = (ImageView) itemView.findViewById(R.id.all_friends_online_icon);
         }
 
         public void setData(Friends friendsViewHolderData){
             this.date.setText("Friend since: " + friendsViewHolderData.getDate());
         }
 
-        /*
+
         public void setOnlineStatusView(int status){
             this.onlineStatusView.setVisibility(status);
         }
-        */
+
 
         public void setFullName(String fullName){
             this.fullname.setText(fullName);
