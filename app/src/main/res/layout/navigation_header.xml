@@ -1,38 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="250dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/header">
+    android:background="@drawable/login_background">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/nav_profile_image"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="211dp"
-        android:src="@drawable/profile"
-        app:civ_border_color="@color/colorPrimaryDark"
-        app:civ_border_width="2dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_centerVertical="true">
 
-    <TextView
-        android:id="@+id/nav_user_full_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nav_profile_image"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="93dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="255dp"
-        android:text="username"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/nav_profile_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"
+            android:src="@drawable/profile"
+            app:civ_border_color="@android:color/darker_gray"
+            app:civ_border_width="3dp" />
+
+        <TextView
+            android:id="@+id/nav_user_full_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nav_profile_image"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Username"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:fontFamily="@font/open_sans_extrabold"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
 
 </RelativeLayout>
