@@ -2,29 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/background_login_1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_watercolour" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/cyan_800_overlay" />
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/post_border">
+        android:layout_margin="15dp"
+        android:background="@drawable/layout_bg">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:padding="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="7dp"
+            android:padding="7dp"
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/post_profile_image"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_marginLeft="4dp"
                 android:src="@drawable/profile" />
 
             <LinearLayout
@@ -40,6 +56,7 @@
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="8dp"
                     android:textAlignment="textStart"
+                    android:fontFamily="@font/roboto_regular"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@android:color/black"/>
@@ -55,7 +72,7 @@
                         android:id="@+id/text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Has updated a post"
+                        android:text="Posted on: "
                         android:textSize="13sp"
                         android:textStyle="bold"
                         android:textColor="@android:color/darker_gray"/>
@@ -66,7 +83,7 @@
                         android:layout_height="wrap_content"
                         android:text="Date"
                         android:textSize="13sp"
-                        android:textColor="@android:color/black"/>
+                        android:textColor="@android:color/holo_blue_dark"/>
 
                     <TextView
                         android:id="@+id/post_time"
@@ -74,7 +91,7 @@
                         android:layout_height="wrap_content"
                         android:text="Time"
                         android:textSize="13sp"
-                        android:textColor="@android:color/black"/>
+                        android:textColor="@android:color/holo_blue_dark"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -86,17 +103,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Post description..."
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
-            android:padding="3dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:padding="5dp"
             android:textSize="14sp"
+            android:textAlignment="textStart"
+            android:fontFamily="@font/roboto_regular"
             android:textColor="@android:color/black"/>
 
         <ImageView
             android:id="@+id/click_post_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_margin="3dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             />
@@ -104,36 +126,45 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp">
 
             <ImageButton
                 android:id="@+id/like_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/white"
                 android:src="@drawable/dislike"/>
 
             <TextView
                 android:id="@+id/display_no_of_likes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0 likes"
+                android:text="0 Likes"
                 android:padding="15dp"
-                android:textColor="@android:color/black"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 />
 
-            <ImageButton
-                android:id="@+id/comment_button"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="150dp"
-                android:baselineAlignBottom="false"
-                android:src="@drawable/comment"/>
+                android:gravity="end">
+                <ImageButton
+                    android:id="@+id/comment_button"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:backgroundTint="@android:color/white"
+                    android:scaleType="fitCenter"
+                    android:baselineAlignBottom="false"
+                    android:src="@drawable/chat_red"/>
+        </RelativeLayout>
 
         </LinearLayout>
 
     </LinearLayout>
+
+    </RelativeLayout>
 </LinearLayout>

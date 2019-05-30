@@ -7,7 +7,6 @@
     android:layout_centerInParent="false"
     android:layout_centerHorizontal="false"
     android:layout_centerVertical="false"
-    android:orientation="vertical"
     tools:context=".LoginActivity">
 
     <ImageView
@@ -38,11 +37,11 @@
 
     <ImageView
         android:id="@+id/login_icon"
-        android:layout_width="150dp"
+        android:layout_width="200dp"
         android:layout_height="150dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="20dp"
         app:srcCompat="@drawable/animehub_logo" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -164,8 +163,8 @@
         android:text="Don't have an account, need a new account?"
         android:fontFamily="@font/open_sans_extrabold"
         android:textAlignment="center"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/textView"
@@ -176,8 +175,8 @@
         android:text="Or login with"
         android:fontFamily="@font/open_sans_extrabold"
         android:textAlignment="center"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:id="@+id/linear_layout"
@@ -202,6 +201,7 @@
             android:text="Google Account"
             android:gravity="center_vertical"
             android:textAlignment="center"
+            android:textColor="@color/grey_10"
             android:textSize="16sp"
             android:textStyle="bold"/>
 
@@ -209,13 +209,13 @@
 
     <TextView
         android:id="@+id/forget_password_link"
-        android:layout_below="@id/linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Forgot Password ?"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp"
+        android:layout_alignParentBottom="true"
         android:textAlignment="center"
-        android:textStyle="bold"
+        android:textColor="@android:color/white"
         android:fontFamily="@font/open_sans_extrabold" />
 
     </RelativeLayout>
