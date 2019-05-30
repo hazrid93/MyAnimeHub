@@ -1,13 +1,16 @@
 package com.example.blogmy;
 
+import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,7 +27,10 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,7 +39,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
-    private EditText userEmail, userPassword;
+    private TextInputEditText userEmail, userPassword;
     private TextView newAccountLink, forgotPasswordLink;
     private FirebaseAuth mAuth;
     private ProgressDialog loadingBar;
@@ -48,11 +54,35 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         mAuth = FirebaseAuth.getInstance();
         loadingBar = new ProgressDialog(this);
+
+        //animating
+        final ImageView backgroundOne = (ImageView) findViewById(R.id.background_login_1);
+        final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_login_2);
+
+        final ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.setDuration(30000L);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final float progress = (float) animation.getAnimatedValue();
+                final float width = backgroundOne.getWidth();
+                final float translationX = width * progress;
+                backgroundOne.setTranslationX(translationX);
+                backgroundTwo.setTranslationX(translationX - width);
+            }
+        });
+        animator.start();
+
+
         googleSignInButton = (ImageView) findViewById(R.id.google_signin_button);
 
         newAccountLink = (TextView) findViewById(R.id.register_account_link);
-        userEmail = (EditText) findViewById(R.id.login_email);
-        userPassword = (EditText) findViewById(R.id.login_password);
+        userEmail = (TextInputEditText) findViewById(R.id.login_email);
+        userPassword = (TextInputEditText) findViewById(R.id.login_password);
+
+
         loginButton = (Button) findViewById(R.id.login_button);
         forgotPasswordLink = (TextView) findViewById(R.id.forget_password_link);
 
