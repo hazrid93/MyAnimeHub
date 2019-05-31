@@ -18,6 +18,20 @@
 
         </include>
 
+        <ImageView
+            android:id="@+id/background_login_1"
+            android:layout_below="@id/main_page_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/background_watercolour" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_below="@id/main_page_toolbar"
+            android:layout_height="match_parent"
+            android:background="@color/cyan_800_overlay" />
+
         <FrameLayout
             android:id="@+id/main_container"
             android:layout_width="match_parent"

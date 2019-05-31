@@ -2,24 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    <ImageView
-        android:id="@+id/background_login_1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/background_watercolour" />
-
-    <View
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/cyan_800_overlay" />
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:orientation="vertical"
@@ -166,5 +149,4 @@
 
     </LinearLayout>
 
-    </RelativeLayout>
 </LinearLayout>

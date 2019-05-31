@@ -6,7 +6,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Posts {
     // follow key value at 'Posts' in database
-    public String uid, time, date, description, fullname;
+    public String uid, time, date, description, fullname, summary;
     public String profileimage;
     public String postimage;
 
@@ -14,7 +14,7 @@ public class Posts {
 
     }
 
-    public Posts(String uid, String time, String date, String postimage, String description, String profileimage, String fullname) {
+    public Posts(String uid, String time, String date, String postimage, String description, String profileimage, String fullname, String summary) {
         this.uid = uid;
         this.time = time;
         this.date = date;
@@ -22,6 +22,15 @@ public class Posts {
         this.description = description;
         this.profileimage = profileimage;
         this.fullname = fullname;
+        this.summary = summary;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public String getUid() {

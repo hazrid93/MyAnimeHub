@@ -23,8 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -32,23 +32,50 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import net.dankito.richtexteditor.android.RichTextEditor;
+import net.dankito.richtexteditor.android.toolbar.GroupedCommandsEditorToolbar;
+import net.dankito.richtexteditor.callback.GetCurrentHtmlCallback;
+import net.dankito.richtexteditor.model.DownloadImageConfig;
+import net.dankito.richtexteditor.model.DownloadImageUiSetting;
+import net.dankito.utils.android.permissions.IPermissionsService;
+import net.dankito.utils.android.permissions.PermissionsService;
+
+import org.jetbrains.annotations.NotNull;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class PostActivity extends AppCompatActivity {
+
+public class PostActivity<imageCounter> extends AppCompatActivity {
     private Toolbar toolbar;
     private ProgressDialog loadingBar;
     private ImageButton selectPostImage;
     private Button updatePostButton;
-    private EditText postDescription;
+    private EditText postSummary;
     final static int Gallery_Pick = 1;
-    String description;
+    String summary;
     private Uri imageUri;
     private StorageReference postImageReference;
     private DatabaseReference usersRef, postRef;
     private FirebaseAuth mAuth;
     private String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl;
+
+    // RICH TEXT EDITOR PART
+    private RichTextEditor editor;
+    private GroupedCommandsEditorToolbar bottomGroupedCommandsToolbar;
+    private IPermissionsService permissionsService = new PermissionsService(this);
+
+    private static int imageCounter = 1;
 
     private long countPosts = 0;
 
@@ -59,13 +86,46 @@ public class PostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
+        // RICH TEXT EDITOR START
+        editor = (RichTextEditor) findViewById(R.id.editor);
+        // set editor not clickable, editable
+        //editorTextView.setInputEnabled(false);
+
+        // this is needed if you like to insert images so that the user gets asked for permission to access external storage if needed
+        // see also onRequestPermissionsResult() below
+        editor.setPermissionsService(permissionsService);
+
+        bottomGroupedCommandsToolbar = (GroupedCommandsEditorToolbar) findViewById(R.id.editorToolbar);
+        bottomGroupedCommandsToolbar.setEditor(editor);
+
+        // you can adjust predefined toolbars by removing single commands
+        // bottomGroupedCommandsToolbar.removeCommandFromGroupedCommandsView(CommandName.TOGGLE_GROUPED_TEXT_STYLES_COMMANDS_VIEW, CommandName.BOLD);
+        // bottomGroupedCommandsToolbar.removeSearchView();
+
+        editor.setEditorFontSize(20);
+        editor.setPadding((4 * (int) getResources().getDisplayMetrics().density));
+
+        // some properties you also can set on editor
+        // editor.setEditorBackgroundColor(Color.YELLOW)
+        // editor.setEditorFontColor(Color.MAGENTA)
+        // editor.setEditorFontFamily("cursive")
+
+        // show keyboard right at start up
+        // editor.focusEditorAndShowKeyboardDelayed()
+
+        // only needed if you allow to automatically download remote images
+        editor.setDownloadImageConfig(new DownloadImageConfig(DownloadImageUiSetting.AllowSelectDownloadFolderInCode,
+                new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "downloaded_images")));
+
+        // RICH TEXT EDITOR END
+
         postImageReference = FirebaseStorage.getInstance().getReference();
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         postRef = FirebaseDatabase.getInstance().getReference().child("Posts");
 
         selectPostImage = (ImageButton) findViewById(R.id.select_post_image);
         updatePostButton = (Button) findViewById(R.id.update_post_button);
-        postDescription = (EditText) findViewById(R.id.click_post_description);
+        postSummary = (EditText) findViewById(R.id.post_summary);
         loadingBar = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
@@ -82,31 +142,107 @@ public class PostActivity extends AppCompatActivity {
                 openGallery();
             }
         });
+
         
         updatePostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validatePostInfo();
+
+                summary = postSummary.getText().toString();
+                save();
             }
         });
     }
 
-    private void validatePostInfo() {
-        description = postDescription.getText().toString();
-        if(imageUri == null){
-            Toast.makeText(this, "Please select image to post", Toast.LENGTH_SHORT).show();
-        } else if(TextUtils.isEmpty(description)){
+    // RICH TEXT EDITOR START
+    @Override
+    public void onBackPressed() {
+        if(bottomGroupedCommandsToolbar.handlesBackButtonPress() == false) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        permissionsService.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    private void save() {
+        editor.getCurrentHtmlAsync(new GetCurrentHtmlCallback() {
+
+            @Override
+            public void htmlRetrieved(@NotNull String html) {
+                validatePostInfo(html);
+                saveHtml(html);
+            }
+        });
+    }
+
+    private void saveHtml(String html) {
+        // upload images to firebase
+        uploadImagesAndSaveHtmlToServer(html, new UploadImageCallback() {
+            @Override
+            public void onCallback(String value) {
+                savePostInformation(value);
+            }
+        });
+
+    }
+
+    private void uploadImagesAndSaveHtmlToServer(final String html, final UploadImageCallback uploadImageCallback) {
+        final Document doc = Jsoup.parse(html, "", Parser.xmlParser());
+        Elements images = doc.select("img");
+        final int imageSize = images.size();
+        // use this to let callback only happen when all image processed
+        imageCounter = 1;
+        for (final Element imageElement : images) {
+            String imageUrl = imageElement.attr("src");
+            // uploads this image to your server and returns remote image url (= url of image on your server)
+            storeImageToFirebaseStorage(imageUrl, new StoreImageCallback() {
+                @Override
+                public void onCallback(String value) {
+                    if(imageCounter==1){
+                        downloadUrl = value;
+                    }
+                    imageElement.attr("src", value);
+                    if(imageCounter==imageSize){
+                        uploadImageCallback.onCallback(doc.toString());
+                    }
+                    imageCounter++;
+                }
+            });
+        }
+       // savetoserver(htmlWithRemoteImageUrls); // calls your savetoserver(String) method
+    }
+    // RICH TEXT EDITOR END
+
+    // need to modify this
+    private void validatePostInfo(String html) {
+        // if 8 then description was never filled
+        if(html.length()==8){
             Toast.makeText(this, "Please add description for your post", Toast.LENGTH_SHORT).show();
+        } else if(TextUtils.isEmpty(summary)){
+            Toast.makeText(this, "Please add summary for your post", Toast.LENGTH_SHORT).show();
         } else {
             loadingBar.setTitle("Add new post");
             loadingBar.setMessage("Please wait...");
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
-            storeImageToFirebaseStorage();
         }
     }
 
-    private void storeImageToFirebaseStorage() {
+    // use this to pass the value that we get from firebase async storage save method
+    public interface StoreImageCallback {
+        void onCallback(String value);
+    }
+
+    public interface UploadImageCallback {
+        void onCallback(String value);
+    }
+
+    private void storeImageToFirebaseStorage(String imageUrl, final StoreImageCallback myCallback) {
         Calendar calForDate =  Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
         saveCurrentDate = currentDate.format(calForDate.getTime());
@@ -117,32 +253,39 @@ public class PostActivity extends AppCompatActivity {
 
         postRandomName = saveCurrentDate + "-" + saveCurrentTime;
         // getLastPathSegment <-- the image name
-        final StorageReference filePath = postImageReference.child("Post Images").child(imageUri.getLastPathSegment() + postRandomName + ".jpg");
+        // final StorageReference filePath = postImageReference.child("Post Images").child(imageUri.getLastPathSegment() + postRandomName + ".jpg");
+        final StorageReference filePath = postImageReference.child("Post Images").child(imageUrl.substring(imageUrl.lastIndexOf('/'),imageUrl.lastIndexOf('.')) + "_" +postRandomName + ".jpg");
 
-        // save post to firebase storage.
-        filePath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if(task.isSuccessful()){
-                    filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            downloadUrl = uri.toString();
-                            Log.i("image: ", downloadUrl);
-                            Toast.makeText(PostActivity.this, "Image is uploaded successfully", Toast.LENGTH_SHORT).show();
-                            savePostInformation();
-                        }
-                    });
+        InputStream stream;
+        try {
+            stream = new FileInputStream(imageUrl);
+            // save post to firebase storage.
+            filePath.putStream(stream).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task) {
+                    if(task.isSuccessful()){
+                        filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                myCallback.onCallback(uri.toString());
+                                Toast.makeText(PostActivity.this, "Image is uploaded successfully", Toast.LENGTH_SHORT).show();
 
-                } else {
-                    String messsage = task.getException().getMessage();
-                    Toast.makeText(PostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    } else {
+                        String messsage = task.getException().getMessage();
+                        Toast.makeText(PostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
-    private void savePostInformation() {
+    private void savePostInformation(final String html) {
 
         postRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -172,7 +315,8 @@ public class PostActivity extends AppCompatActivity {
                     postMap.put("uid",current_user_id);
                     postMap.put("date", saveCurrentDate);
                     postMap.put("time", saveCurrentTime);
-                    postMap.put("description", description);
+                    postMap.put("summary", summary);
+                    postMap.put("description", html);
                     postMap.put("postimage", downloadUrl);
                     postMap.put("fullname", userFullName);
                     postMap.put("profileimage", userProfileImage);

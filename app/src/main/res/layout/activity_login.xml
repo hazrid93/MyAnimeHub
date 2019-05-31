@@ -42,6 +42,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:scaleType="fitCenter"
         app:srcCompat="@drawable/animehub_logo" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -161,7 +162,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginBottom="8dp"
         android:text="Don't have an account, need a new account?"
-        android:fontFamily="@font/open_sans_extrabold"
+
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="16sp" />
@@ -173,7 +174,6 @@
         android:layout_below="@id/register_account_link"
         android:layout_marginStart="5dp"
         android:text="Or login with"
-        android:fontFamily="@font/open_sans_extrabold"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="16sp" />
@@ -215,8 +215,7 @@
         android:layout_marginBottom="30dp"
         android:layout_alignParentBottom="true"
         android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:fontFamily="@font/open_sans_extrabold" />
+        android:textColor="@android:color/white" />
 
     </RelativeLayout>
 

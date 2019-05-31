@@ -4,53 +4,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/register"
     tools:context=".ClickPostActivity">
 
-
-    <ImageView
-        android:id="@+id/click_post_image"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        app:srcCompat="@drawable/select_image" />
+        android:layout_height="match_parent"
+        android:background="@android:color/white" />
 
-    <TextView
-        android:id="@+id/click_post_description"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/click_post_image"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="19dp"
-        android:layout_marginRight="10dp"
-        android:padding="8dp"
-        android:text="Post description"
-        android:textColor="#000000"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:layout_height="match_parent"
+        android:paddingTop="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
 
-    <Button
-        android:id="@+id/edit_post_button"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/click_post_description"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="35dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/buttons"
-        android:text="EDIT POST" />
+        android:layout_height="match_parent"
+        android:layout_above="@id/click_post_rel_layout"
+        >
 
-    <Button
-        android:id="@+id/delete_post_button"
+        <net.dankito.richtexteditor.android.RichTextEditor
+            android:id="@+id/click_editor_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:layout_weight="10"/>
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/click_post_rel_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edit_post_button"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/buttons"
-        android:text="DELETE POST" />
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp">
+        <Button
+            android:id="@+id/edit_post_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttons"
+            android:textColor="@android:color/white"
+            android:layout_marginRight="10dp"
+            android:text="EDIT POST" />
+
+        <Button
+            android:id="@+id/delete_post_button"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/edit_post_button"
+            android:layout_marginLeft="10dp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/buttons"
+            android:text="DELETE POST" />
+    </LinearLayout>
+
+    </RelativeLayout>
 </RelativeLayout>

@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
     }
     // has to use same method name as Posts model because FirebaseRecyclerAdapter/onBindViewHolder will call PostsViewHolder every scroll
     public class PostsViewHolder extends RecyclerView.ViewHolder{
-        TextView username,date,time,description;
+        TextView username,date,time,summary;
         CircleImageView profileimage;
         ImageView postimage;
         DatabaseReference LikesRef;
@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
             username = itemView.findViewById(R.id.post_user_name);
             date = itemView.findViewById(R.id.post_date);
             time = itemView.findViewById(R.id.post_time);
-            description = itemView.findViewById(R.id.click_post_description);
+            summary = itemView.findViewById(R.id.click_post_description);
             postimage = (ImageView) itemView.findViewById(R.id.click_post_image);
             profileimage = (CircleImageView) itemView.findViewById(R.id.post_profile_image);
 
@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
             username.setText(postViewHolderData.getFullname());
             time.setText(" " + postViewHolderData.getTime());
             date.setText(" "+ postViewHolderData.getDate());
-            description.setText(postViewHolderData.getDescription());
+            summary.setText(postViewHolderData.getSummary());
 
             // https://github.com/square/picasso/issues/1291 seems like require runtime permission.
             Picasso.with(getApplicationContext()).load(postViewHolderData.getProfileimage()).into(profileimage);

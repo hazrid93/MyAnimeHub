@@ -24,14 +24,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import net.dankito.richtexteditor.android.RichTextEditor;
+
 public class ClickPostActivity extends AppCompatActivity {
 
-    private ImageView postImage;
     private TextView postDescription;
     private Button deletePostButton, editPostButton;
     private String postKey, currentUserID, databaseUserID, description, image;
     private DatabaseReference clickPostRef;
     private FirebaseAuth mAuth;
+    private RichTextEditor editorView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,10 @@ public class ClickPostActivity extends AppCompatActivity {
         postKey = getIntent().getExtras().get("PostKey").toString();
         clickPostRef = FirebaseDatabase.getInstance().getReference().child("Posts").child(postKey);
 
-        postImage = (ImageView) findViewById(R.id.click_post_image);
+        // Rich Text Editor
+        editorView = (RichTextEditor) findViewById(R.id.click_editor_view);
+        editorView.setInputEnabled(false);
+
         postDescription = (TextView) findViewById(R.id.click_post_description);
         editPostButton = (Button) findViewById(R.id.edit_post_button);
         deletePostButton = (Button) findViewById(R.id.delete_post_button);
@@ -62,8 +67,7 @@ public class ClickPostActivity extends AppCompatActivity {
                     image = dataSnapshot.child("postimage").getValue().toString();
                     // check id of user for the post (creator)
                     databaseUserID = dataSnapshot.child("uid").getValue().toString();
-                    postDescription.setText(description);
-                    Picasso.with(ClickPostActivity.this).load(image).into(postImage);
+                    editorView.setHtml(description);
 
                     if (currentUserID.equals(databaseUserID)) {
                         editPostButton.setVisibility(View.VISIBLE);
