@@ -25,6 +25,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import net.dankito.richtexteditor.android.RichTextEditor;
+import net.dankito.richtexteditor.android.toolbar.GroupedCommandsEditorToolbar;
+import net.dankito.richtexteditor.callback.GetCurrentHtmlCallback;
+import net.dankito.utils.android.permissions.IPermissionsService;
+import net.dankito.utils.android.permissions.PermissionsService;
+
+import org.jetbrains.annotations.NotNull;
 
 public class ClickPostActivity extends AppCompatActivity {
 
@@ -33,7 +39,11 @@ public class ClickPostActivity extends AppCompatActivity {
     private String postKey, currentUserID, databaseUserID, description, image;
     private DatabaseReference clickPostRef;
     private FirebaseAuth mAuth;
+
+    // RICH TEXT EDITOR
     private RichTextEditor editorView;
+    private GroupedCommandsEditorToolbar bottomGroupedCommandsToolbar;
+    private IPermissionsService permissionsService = new PermissionsService(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,14 +114,15 @@ public class ClickPostActivity extends AppCompatActivity {
         builder.setTitle("Edit Post");
 
         // place where user edit his post
-        final EditText inputField = new EditText(ClickPostActivity.this);
-        inputField.setText(description);
+        final RichTextEditor inputField = new RichTextEditor(ClickPostActivity.this);
+        inputField.setHtml(description);
         builder.setView(inputField);
         // dialoginterface for alertdialog
         builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                clickPostRef.child("description").setValue(inputField.getText().toString());
+                System.out.println("HTML EDIT:" + inputField.toString());
+                clickPostRef.child("description").setValue(inputField.toString());
                 Toast.makeText(ClickPostActivity.this, "Post has been updated successfully", Toast.LENGTH_SHORT).show();
             }
         });
