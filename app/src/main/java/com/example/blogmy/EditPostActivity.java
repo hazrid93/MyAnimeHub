@@ -6,11 +6,13 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -63,8 +65,8 @@ public class EditPostActivity extends AppCompatActivity {
     private StorageReference postImageReference;
 
     // RICH TEXT EDITOR
-    private RichTextEditor editor;
-    private GroupedCommandsEditorToolbar bottomGroupedCommandsToolbar;
+    private RichTextEditor editorEdit;
+    private GroupedCommandsEditorToolbar bottomGroupedCommandsToolbarEdit;
     private IPermissionsService permissionsService = new PermissionsService(this);
 
     private static int imageCounter = 1;
@@ -84,34 +86,34 @@ public class EditPostActivity extends AppCompatActivity {
         postSummary = (EditText) findViewById(R.id.edit_summary);
         loadingBar = new ProgressDialog(this);
 
-        editor = (RichTextEditor) findViewById(R.id.editorPost);
+        editorEdit = (RichTextEditor) findViewById(R.id.editorPost);
         // set editor not clickable, editable
         //editorTextView.setInputEnabled(false);
 
         // this is needed if you like to insert images so that the user gets asked for permission to access external storage if needed
         // see also onRequestPermissionsResult() below
-        editor.setPermissionsService(permissionsService);
+        editorEdit.setPermissionsService(permissionsService);
 
-        bottomGroupedCommandsToolbar = (GroupedCommandsEditorToolbar) findViewById(R.id.editorPostToolbar);
-        bottomGroupedCommandsToolbar.setEditor(editor);
+        bottomGroupedCommandsToolbarEdit = (GroupedCommandsEditorToolbar) findViewById(R.id.editorPostToolbar);
+        bottomGroupedCommandsToolbarEdit.setEditor(editorEdit);
 
         // you can adjust predefined toolbars by removing single commands
         // bottomGroupedCommandsToolbar.removeCommandFromGroupedCommandsView(CommandName.TOGGLE_GROUPED_TEXT_STYLES_COMMANDS_VIEW, CommandName.BOLD);
         // bottomGroupedCommandsToolbar.removeSearchView();
 
-        editor.setEditorFontSize(20);
-        editor.setPadding((4 * (int) getResources().getDisplayMetrics().density));
+        editorEdit.setEditorFontSize(20);
+        editorEdit.setPadding((4 * (int) getResources().getDisplayMetrics().density));
 
         // some properties you also can set on editor
-        // editor.setEditorBackgroundColor(Color.YELLOW)
+        // editorEdit.setEditorBackgroundColor(Color.YELLOW);
         // editor.setEditorFontColor(Color.MAGENTA)
         // editor.setEditorFontFamily("cursive")
 
         // show keyboard right at start up
-        // editor.focusEditorAndShowKeyboardDelayed()
+        // editorEdit.focusEditorAndShowKeyboardDelayed();
 
         // only needed if you allow to automatically download remote images
-        editor.setDownloadImageConfig(new DownloadImageConfig(DownloadImageUiSetting.AllowSelectDownloadFolderInCode,
+        editorEdit.setDownloadImageConfig(new DownloadImageConfig(DownloadImageUiSetting.AllowSelectDownloadFolderInCode,
                 new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "downloaded_images")));
 
         // RICH TEXT EDITOR END
@@ -132,12 +134,16 @@ public class EditPostActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if(dataSnapshot.exists()) {
+
                     description = dataSnapshot.child("description").getValue().toString();
+                    editorEdit.setHtml(description);
+                    postSummary.requestFocus();
+
                     // check id of user for the post (creator)
                     databaseUserID = dataSnapshot.child("uid").getValue().toString();
                     downloadUrl = dataSnapshot.child("postimage").getValue().toString();
                     postSummary.setText(dataSnapshot.child("summary").getValue().toString());
-                    editor.setHtml(description);
+
                 }
             }
 
@@ -160,7 +166,7 @@ public class EditPostActivity extends AppCompatActivity {
     // RICH TEXT EDITOR START
     @Override
     public void onBackPressed() {
-        if(bottomGroupedCommandsToolbar.handlesBackButtonPress() == false) {
+        if(bottomGroupedCommandsToolbarEdit.handlesBackButtonPress() == false) {
             super.onBackPressed();
         }
     }
@@ -180,7 +186,7 @@ public class EditPostActivity extends AppCompatActivity {
     }
 
     private void save() {
-        editor.getCurrentHtmlAsync(new GetCurrentHtmlCallback() {
+        editorEdit.getCurrentHtmlAsync(new GetCurrentHtmlCallback() {
 
             @Override
             public void htmlRetrieved(@NotNull String html) {
@@ -191,7 +197,7 @@ public class EditPostActivity extends AppCompatActivity {
 
     private void saveHtml(String html) {
         // upload images to firebase
-        uploadImagesAndSaveHtmlToServer(html, new PostActivity.UploadImageCallback() {
+        uploadImagesAndSaveHtmlToServer(html, new UploadImageCallback() {
             @Override
             public void onCallback(String value) {
                 savePostInformation(value);
@@ -200,7 +206,7 @@ public class EditPostActivity extends AppCompatActivity {
 
     }
 
-    private void uploadImagesAndSaveHtmlToServer(final String html, final PostActivity.UploadImageCallback uploadImageCallback) {
+    private void uploadImagesAndSaveHtmlToServer(final String html, final UploadImageCallback uploadImageCallback) {
         final Document doc = Jsoup.parse(html, "", Parser.xmlParser());
         Elements images = doc.select("img");
         final int imageSize = images.size();
@@ -218,7 +224,7 @@ public class EditPostActivity extends AppCompatActivity {
                 continue;
             }
             // uploads this image to your server and returns remote image url (= url of image on your server)
-            storeImageToFirebaseStorage(imageUrl, new PostActivity.StoreImageCallback() {
+            storeImageToFirebaseStorage(imageUrl, new StoreImageCallback() {
                 @Override
                 public void onCallback(String value) {
                     if(imageCounter==1){
@@ -268,7 +274,7 @@ public class EditPostActivity extends AppCompatActivity {
         void onCallback(String value);
     }
 
-    private void storeImageToFirebaseStorage(String imageUrl, final PostActivity.StoreImageCallback myCallback) {
+    private void storeImageToFirebaseStorage(String imageUrl, final StoreImageCallback myCallback) {
         Calendar calForDate =  Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
         saveCurrentDate = currentDate.format(calForDate.getTime());

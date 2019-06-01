@@ -40,11 +40,12 @@
         <RelativeLayout
             android:id="@+id/edit_linear_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
 
             <EditText
                 android:id="@+id/edit_summary"
+                android:focusable="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
@@ -62,7 +63,7 @@
                 android:orientation="vertical"
                 android:layout_marginTop="50dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <net.dankito.richtexteditor.android.toolbar.GroupedCommandsEditorToolbar
                     android:id="@+id/editorPostToolbar"
