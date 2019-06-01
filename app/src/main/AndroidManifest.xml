@@ -14,12 +14,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditPostActivity"></activity>
+        <activity
+            android:name=".EditPostActivity"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".DetailsActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SearchAnime"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".MyPostsActivity"
@@ -34,12 +38,14 @@
         <activity
             android:name=".FriendsActivity"
             android:label="@string/title_activity_friends"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PersonProfileActivity"
             android:label="@string/title_activity_person_profile"
             android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ResetPasswordActivity"
@@ -50,6 +56,7 @@
         <activity
             android:name=".CommentsActivity"
             android:label="@string/title_activity_comments"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -62,6 +69,7 @@
             android:name=".ProfileActivity"
             android:label="ProfileActivity"
             android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SettingsActivity"
@@ -71,16 +79,19 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ClickPostActivity"
-            android:label="@string/title_activity_click_post"
+            android:label="ClickPostActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PostActivity"
             android:label="@string/title_activity_post"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SetupActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"

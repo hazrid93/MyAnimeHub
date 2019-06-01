@@ -166,6 +166,13 @@ public class EditPostActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed(); // one inherited from android.support.v4.app.FragmentActivity
+
+        return false;
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         permissionsService.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
@@ -189,6 +196,7 @@ public class EditPostActivity extends AppCompatActivity {
             @Override
             public void onCallback(String value) {
                 savePostInformation(value);
+                loadingBar.setProgress(80);
             }
         });
 
@@ -203,7 +211,7 @@ public class EditPostActivity extends AppCompatActivity {
         for (final Element imageElement : images) {
             String imageUrl = imageElement.attr("src");
             if(imageUrl.startsWith("https://firebasestorage.googleapis.com")){
-                System.out.println("HTML EXIST: THIS IMAGE EXIST IN STORAGE");
+
                 if(imageCounter==imageSize){
                     uploadImageCallback.onCallback(doc.toString());
                 }
@@ -239,8 +247,11 @@ public class EditPostActivity extends AppCompatActivity {
         } else {
             loadingBar.setTitle("Add new post");
             loadingBar.setMessage("Please wait...");
+            loadingBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            loadingBar.setCanceledOnTouchOutside(false);
+            loadingBar.setCancelable(false);
             loadingBar.show();
-            loadingBar.setCanceledOnTouchOutside(true);
+            loadingBar.setProgress(5);
         }
     }
 
@@ -259,14 +270,14 @@ public class EditPostActivity extends AppCompatActivity {
         saveCurrentDate = currentDate.format(calForDate.getTime());
 
         Calendar calForTime =  Calendar.getInstance();
-        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
         saveCurrentTime = currentTime.format(calForTime.getTime());
 
         postRandomName = saveCurrentDate + "-" + saveCurrentTime;
         // getLastPathSegment <-- the image name
         // final StorageReference filePath = postImageReference.child("Post Images").child(imageUri.getLastPathSegment() + postRandomName + ".jpg");
         final StorageReference filePath = postImageReference.child("Post Images").child(imageUrl.substring(imageUrl.lastIndexOf('/'),imageUrl.lastIndexOf('.')) + "_" +postRandomName + ".jpg");
-
+        loadingBar.setProgress(15);
         InputStream stream;
         try {
             stream = new FileInputStream(imageUrl);
@@ -297,6 +308,13 @@ public class EditPostActivity extends AppCompatActivity {
     }
 
     private void savePostInformation(final String html) {
+        Calendar calForDate =  Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
+        saveCurrentDate = currentDate.format(calForDate.getTime());
+
+        Calendar calForTime =  Calendar.getInstance();
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+        saveCurrentTime = currentTime.format(calForTime.getTime());
 
         postRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -339,7 +357,8 @@ public class EditPostActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task task) {
                                     if(task.isSuccessful()){
                                         sendUserToMainActivity();
-                                        Toast.makeText(EditPostActivity.this, "Post is created succesfully", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(EditPostActivity.this, "Post is updated succesfully", Toast.LENGTH_SHORT).show();
+                                        loadingBar.setProgress(100);
                                         loadingBar.dismiss();
                                     } else {
                                         String messsage = task.getException().getMessage();
@@ -361,7 +380,9 @@ public class EditPostActivity extends AppCompatActivity {
 
     private void sendUserToMainActivity(){
         Intent mainIntent = new Intent(EditPostActivity.this, MainActivity.class);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(mainIntent);
+        finish();
     }
 
 

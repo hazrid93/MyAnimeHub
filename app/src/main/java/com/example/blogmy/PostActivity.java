@@ -88,6 +88,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
 
         // RICH TEXT EDITOR START
         editor = (RichTextEditor) findViewById(R.id.editor);
+        editor.setHtml("<p>Hello There!</p>");
         // set editor not clickable, editable
         //editorTextView.setInputEnabled(false);
 
@@ -188,6 +189,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
             @Override
             public void onCallback(String value) {
                 savePostInformation(value);
+                loadingBar.setProgress(80);
             }
         });
 
@@ -230,8 +232,12 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         } else {
             loadingBar.setTitle("Add new post");
             loadingBar.setMessage("Please wait...");
+            loadingBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            loadingBar.setCanceledOnTouchOutside(false);
+            loadingBar.setCancelable(false);
             loadingBar.show();
-            loadingBar.setCanceledOnTouchOutside(true);
+            loadingBar.setProgress(5);
+
         }
     }
 
@@ -250,13 +256,14 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         saveCurrentDate = currentDate.format(calForDate.getTime());
 
         Calendar calForTime =  Calendar.getInstance();
-        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
         saveCurrentTime = currentTime.format(calForTime.getTime());
 
         postRandomName = saveCurrentDate + "-" + saveCurrentTime;
         // getLastPathSegment <-- the image name
         // final StorageReference filePath = postImageReference.child("Post Images").child(imageUri.getLastPathSegment() + postRandomName + ".jpg");
         final StorageReference filePath = postImageReference.child("Post Images").child(imageUrl.substring(imageUrl.lastIndexOf('/'),imageUrl.lastIndexOf('.')) + "_" +postRandomName + ".jpg");
+        loadingBar.setProgress(15);
 
         InputStream stream;
         try {
@@ -288,6 +295,14 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
     }
 
     private void savePostInformation(final String html) {
+
+        Calendar calForDate =  Calendar.getInstance();
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
+        saveCurrentDate = currentDate.format(calForDate.getTime());
+
+        Calendar calForTime =  Calendar.getInstance();
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
+        saveCurrentTime = currentTime.format(calForTime.getTime());
 
         postRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -331,6 +346,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
                                     if(task.isSuccessful()){
                                         sendUserToMainActivity();
                                         Toast.makeText(PostActivity.this, "Post is created succesfully", Toast.LENGTH_SHORT).show();
+                                        loadingBar.setProgress(100);
                                         loadingBar.dismiss();
                                     } else {
                                         String messsage = task.getException().getMessage();

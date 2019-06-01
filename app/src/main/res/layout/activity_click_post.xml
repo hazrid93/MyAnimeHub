@@ -11,9 +11,15 @@
         android:layout_height="match_parent"
         android:background="@android:color/white" />
 
+    <include
+        android:id="@+id/click_post_page_toolbar"
+        layout="@layout/app_bar_layout">
+    </include>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/click_post_page_toolbar"
         android:paddingTop="20dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp">

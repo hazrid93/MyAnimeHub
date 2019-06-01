@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +40,7 @@ public class ClickPostActivity extends AppCompatActivity {
     private String postKey, currentUserID, databaseUserID, description, image;
     private DatabaseReference clickPostRef;
     private FirebaseAuth mAuth;
+    private Toolbar mToolbar;
 
     // RICH TEXT EDITOR
     private RichTextEditor editorView;
@@ -52,6 +54,11 @@ public class ClickPostActivity extends AppCompatActivity {
 
         postKey = getIntent().getExtras().get("PostKey").toString();
         clickPostRef = FirebaseDatabase.getInstance().getReference().child("Posts").child(postKey);
+
+        mToolbar = (Toolbar) findViewById(R.id.click_post_page_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Post Details");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Rich Text Editor
         editorView = (RichTextEditor) findViewById(R.id.click_editor_view);
