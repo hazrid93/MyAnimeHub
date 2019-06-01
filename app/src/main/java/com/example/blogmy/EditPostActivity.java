@@ -185,7 +185,6 @@ public class EditPostActivity extends AppCompatActivity {
             @Override
             public void htmlRetrieved(@NotNull String html) {
                 validatePostInfo(html);
-                saveHtml(html);
             }
         });
     }
@@ -196,7 +195,6 @@ public class EditPostActivity extends AppCompatActivity {
             @Override
             public void onCallback(String value) {
                 savePostInformation(value);
-                loadingBar.setProgress(80);
             }
         });
 
@@ -208,6 +206,7 @@ public class EditPostActivity extends AppCompatActivity {
         final int imageSize = images.size();
         // use this to let callback only happen when all image processed
         imageCounter = 1;
+
         for (final Element imageElement : images) {
             String imageUrl = imageElement.attr("src");
             if(imageUrl.startsWith("https://firebasestorage.googleapis.com")){
@@ -239,19 +238,24 @@ public class EditPostActivity extends AppCompatActivity {
 
     // need to modify this
     private void validatePostInfo(String html) {
+        final Document doc = Jsoup.parse(html, "", Parser.xmlParser());
+        Elements images = doc.select("img");
+        final int imageSize = images.size();
+
         // if 8 then description was never filled
         if(html.length()==8){
             Toast.makeText(this, "Please add description for your post", Toast.LENGTH_SHORT).show();
         } else if(TextUtils.isEmpty(summary)){
             Toast.makeText(this, "Please add summary for your post", Toast.LENGTH_SHORT).show();
+        } else if(imageSize == 0) {
+            Toast.makeText(this, "Please add at least one image for your post", Toast.LENGTH_SHORT).show();
         } else {
             loadingBar.setTitle("Add new post");
             loadingBar.setMessage("Please wait...");
-            loadingBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            loadingBar.setCanceledOnTouchOutside(false);
-            loadingBar.setCancelable(false);
             loadingBar.show();
-            loadingBar.setProgress(5);
+            loadingBar.setCanceledOnTouchOutside(true);
+
+            saveHtml(html);
         }
     }
 
@@ -277,7 +281,6 @@ public class EditPostActivity extends AppCompatActivity {
         // getLastPathSegment <-- the image name
         // final StorageReference filePath = postImageReference.child("Post Images").child(imageUri.getLastPathSegment() + postRandomName + ".jpg");
         final StorageReference filePath = postImageReference.child("Post Images").child(imageUrl.substring(imageUrl.lastIndexOf('/'),imageUrl.lastIndexOf('.')) + "_" +postRandomName + ".jpg");
-        loadingBar.setProgress(15);
         InputStream stream;
         try {
             stream = new FileInputStream(imageUrl);
@@ -358,7 +361,6 @@ public class EditPostActivity extends AppCompatActivity {
                                     if(task.isSuccessful()){
                                         sendUserToMainActivity();
                                         Toast.makeText(EditPostActivity.this, "Post is updated succesfully", Toast.LENGTH_SHORT).show();
-                                        loadingBar.setProgress(100);
                                         loadingBar.dismiss();
                                     } else {
                                         String messsage = task.getException().getMessage();
