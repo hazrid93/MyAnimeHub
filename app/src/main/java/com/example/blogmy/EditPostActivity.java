@@ -1,9 +1,20 @@
 package com.example.blogmy;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -17,20 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.os.Environment;
-import android.text.TextUtils;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.Toast;
 
 import net.dankito.richtexteditor.android.RichTextEditor;
 import net.dankito.richtexteditor.android.toolbar.GroupedCommandsEditorToolbar;
@@ -55,39 +52,39 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
-
-public class PostActivity<imageCounter> extends AppCompatActivity {
-    private Toolbar toolbar;
-    private ProgressDialog loadingBar;
-    private ImageButton selectPostImage;
+public class EditPostActivity extends AppCompatActivity {
+    private String postKey, current_user_id, description, databaseUserID, summary, downloadUrl, saveCurrentDate, saveCurrentTime, postRandomName;
+    private DatabaseReference clickPostRef, postRef, usersRef;
+    private FirebaseAuth mAuth;
+    private Toolbar mToolbar;
     private Button updatePostButton;
     private EditText postSummary;
-    final static int Gallery_Pick = 1;
-    String summary;
-    private Uri imageUri;
+    private ProgressDialog loadingBar;
     private StorageReference postImageReference;
-    private DatabaseReference usersRef, postRef;
-    private FirebaseAuth mAuth;
-    private String saveCurrentDate, saveCurrentTime, postRandomName, downloadUrl;
 
-    // RICH TEXT EDITOR PART
+    // RICH TEXT EDITOR
     private RichTextEditor editor;
     private GroupedCommandsEditorToolbar bottomGroupedCommandsToolbar;
     private IPermissionsService permissionsService = new PermissionsService(this);
 
     private static int imageCounter = 1;
-
     private long countPosts = 0;
-
-    String current_user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post);
+        setContentView(R.layout.activity_edit_post);
 
-        // RICH TEXT EDITOR START
-        editor = (RichTextEditor) findViewById(R.id.editor);
+        mToolbar = (Toolbar) findViewById(R.id.edit_page_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Post Details");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        updatePostButton = (Button) findViewById(R.id.edit_activity_post_button);
+        postSummary = (EditText) findViewById(R.id.edit_summary);
+        loadingBar = new ProgressDialog(this);
+
+        editor = (RichTextEditor) findViewById(R.id.editorPost);
         // set editor not clickable, editable
         //editorTextView.setInputEnabled(false);
 
@@ -95,7 +92,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         // see also onRequestPermissionsResult() below
         editor.setPermissionsService(permissionsService);
 
-        bottomGroupedCommandsToolbar = (GroupedCommandsEditorToolbar) findViewById(R.id.editorToolbar);
+        bottomGroupedCommandsToolbar = (GroupedCommandsEditorToolbar) findViewById(R.id.editorPostToolbar);
         bottomGroupedCommandsToolbar.setEditor(editor);
 
         // you can adjust predefined toolbars by removing single commands
@@ -119,41 +116,45 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
 
         // RICH TEXT EDITOR END
 
-        postImageReference = FirebaseStorage.getInstance().getReference();
+        postKey = getIntent().getExtras().get("PostKey").toString();
+        clickPostRef = FirebaseDatabase.getInstance().getReference().child("Posts").child(postKey);
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         postRef = FirebaseDatabase.getInstance().getReference().child("Posts");
 
-        //selectPostImage = (ImageButton) findViewById(R.id.select_post_image);
-        updatePostButton = (Button) findViewById(R.id.update_post_button);
-        postSummary = (EditText) findViewById(R.id.post_summary);
-        loadingBar = new ProgressDialog(this);
-
+        // get current user id
+        postImageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         current_user_id = mAuth.getCurrentUser().getUid();
 
-        toolbar = (Toolbar) findViewById(R.id.update_post_page_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Update Post");
 
-        /*
-        selectPostImage.setOnClickListener(new View.OnClickListener() {
+        clickPostRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                openGallery();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.exists()) {
+                    description = dataSnapshot.child("description").getValue().toString();
+                    // check id of user for the post (creator)
+                    databaseUserID = dataSnapshot.child("uid").getValue().toString();
+                    downloadUrl = dataSnapshot.child("postimage").getValue().toString();
+                    postSummary.setText(dataSnapshot.child("summary").getValue().toString());
+                    editor.setHtml(description);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
-        */
 
-        
         updatePostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 summary = postSummary.getText().toString();
                 save();
             }
         });
+
     }
 
     // RICH TEXT EDITOR START
@@ -184,7 +185,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
 
     private void saveHtml(String html) {
         // upload images to firebase
-        uploadImagesAndSaveHtmlToServer(html, new UploadImageCallback() {
+        uploadImagesAndSaveHtmlToServer(html, new PostActivity.UploadImageCallback() {
             @Override
             public void onCallback(String value) {
                 savePostInformation(value);
@@ -193,7 +194,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
 
     }
 
-    private void uploadImagesAndSaveHtmlToServer(final String html, final UploadImageCallback uploadImageCallback) {
+    private void uploadImagesAndSaveHtmlToServer(final String html, final PostActivity.UploadImageCallback uploadImageCallback) {
         final Document doc = Jsoup.parse(html, "", Parser.xmlParser());
         Elements images = doc.select("img");
         final int imageSize = images.size();
@@ -201,8 +202,16 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         imageCounter = 1;
         for (final Element imageElement : images) {
             String imageUrl = imageElement.attr("src");
+            if(imageUrl.startsWith("https://firebasestorage.googleapis.com")){
+                System.out.println("HTML EXIST: THIS IMAGE EXIST IN STORAGE");
+                if(imageCounter==imageSize){
+                    uploadImageCallback.onCallback(doc.toString());
+                }
+                imageCounter++;
+                continue;
+            }
             // uploads this image to your server and returns remote image url (= url of image on your server)
-            storeImageToFirebaseStorage(imageUrl, new StoreImageCallback() {
+            storeImageToFirebaseStorage(imageUrl, new PostActivity.StoreImageCallback() {
                 @Override
                 public void onCallback(String value) {
                     if(imageCounter==1){
@@ -216,7 +225,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
                 }
             });
         }
-       // savetoserver(htmlWithRemoteImageUrls); // calls your savetoserver(String) method
+        // savetoserver(htmlWithRemoteImageUrls); // calls your savetoserver(String) method
     }
     // RICH TEXT EDITOR END
 
@@ -244,7 +253,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         void onCallback(String value);
     }
 
-    private void storeImageToFirebaseStorage(String imageUrl, final StoreImageCallback myCallback) {
+    private void storeImageToFirebaseStorage(String imageUrl, final PostActivity.StoreImageCallback myCallback) {
         Calendar calForDate =  Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
         saveCurrentDate = currentDate.format(calForDate.getTime());
@@ -270,14 +279,14 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
                             @Override
                             public void onSuccess(Uri uri) {
                                 myCallback.onCallback(uri.toString());
-                                Toast.makeText(PostActivity.this, "Image is uploaded successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(EditPostActivity.this, "Image is uploaded successfully", Toast.LENGTH_SHORT).show();
 
                             }
                         });
 
                     } else {
                         String messsage = task.getException().getMessage();
-                        Toast.makeText(PostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditPostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -324,17 +333,17 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
                     postMap.put("profileimage", userProfileImage);
                     postMap.put("country", countPosts);
 
-                    postRef.child(current_user_id + postRandomName).updateChildren(postMap)
+                    clickPostRef.updateChildren(postMap)
                             .addOnCompleteListener(new OnCompleteListener() {
                                 @Override
                                 public void onComplete(@NonNull Task task) {
                                     if(task.isSuccessful()){
                                         sendUserToMainActivity();
-                                        Toast.makeText(PostActivity.this, "Post is created succesfully", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(EditPostActivity.this, "Post is created succesfully", Toast.LENGTH_SHORT).show();
                                         loadingBar.dismiss();
                                     } else {
                                         String messsage = task.getException().getMessage();
-                                        Toast.makeText(PostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(EditPostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
                                         loadingBar.dismiss();
                                     }
                                 }
@@ -350,35 +359,10 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         });
     }
 
-    private void openGallery(){
-        Intent galleryIntent = new Intent();
-        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
-        startActivityForResult(galleryIntent, Gallery_Pick);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if(id == android.R.id.home){
-            sendUserToMainActivity();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void sendUserToMainActivity(){
-        Intent mainIntent = new Intent(PostActivity.this, MainActivity.class);
+        Intent mainIntent = new Intent(EditPostActivity.this, MainActivity.class);
         startActivity(mainIntent);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null){
-            imageUri = data.getData();
-            selectPostImage.setImageURI(imageUri);
-        }
-    }
 }

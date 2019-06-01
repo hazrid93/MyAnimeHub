@@ -109,7 +109,13 @@ public class ClickPostActivity extends AppCompatActivity {
     }
 
     private void editCurrentPost(String description) {
+
+        // use new activity for this
+        Intent editPostIntent = new Intent(ClickPostActivity.this,EditPostActivity.class);
+        editPostIntent.putExtra("PostKey", postKey);
+        startActivity(editPostIntent);
         // put EditText for editing post inside the alert dialog
+        /*
         AlertDialog.Builder builder = new AlertDialog.Builder(ClickPostActivity.this);
         builder.setTitle("Edit Post");
 
@@ -140,6 +146,7 @@ public class ClickPostActivity extends AppCompatActivity {
         // R.XX.XX <-- for resources locally
         // android.R.XX.XX <-- for android default resources
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.holo_green_dark);
+        */
     }
 
     private void deleteCurrentPost() {
