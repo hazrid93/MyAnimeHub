@@ -10,13 +10,26 @@
         android:id="@+id/chat_bar_layout"
         layout="@layout/app_bar_layout" ></include>
 
+    <ImageView
+        android:id="@+id/background_login_1"
+        android:layout_below="@id/chat_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_watercolour" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_below="@id/chat_bar_layout"
+        android:layout_height="match_parent"
+        android:background="@color/cyan_800_overlay" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messages_list_users"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/chat_bar_layout"
         android:layout_centerHorizontal="true"
-        android:background="@android:color/darker_gray"
     />
 
     <LinearLayout

@@ -7,24 +7,17 @@
     android:background="@color/colorProfile"
     tools:context=".FriendsActivity">
 
+    <include
+        android:id="@+id/friends_list_toolbar"
+        layout="@layout/app_bar_layout">
+    </include>
 
-    <TextView
-        android:id="@+id/all_friends"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textColor="@android:color/background_light"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:text="Friends" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friends_lists"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/all_friends"
+        android:layout_below="@id/friends_list_toolbar"
         android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"

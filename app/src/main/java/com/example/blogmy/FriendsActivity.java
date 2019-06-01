@@ -39,6 +39,7 @@ public class FriendsActivity extends AppCompatActivity {
     private RecyclerView myFriendList;
     private DatabaseReference friendsRef, usersRef;
     private FirebaseAuth mAuth;
+    private Toolbar mToolbar;
     private FirebaseRecyclerOptions<Friends> options;
     private FirebaseRecyclerAdapter<Friends, FriendsViewHolder> firebaseRecyclerAdapter;
     private String online_user_id;
@@ -46,6 +47,11 @@ public class FriendsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
+
+        mToolbar = (Toolbar) findViewById(R.id.friends_list_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Friend List");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         myFriendList = (RecyclerView) findViewById(R.id.friends_lists);
         myFriendList.setHasFixedSize(true);
@@ -107,20 +113,25 @@ public class FriendsActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()){
-                            final String username = dataSnapshot.child("fullname").getValue().toString();
+                            final String username = dataSnapshot.child("username").getValue().toString();
                             final String profileImage = dataSnapshot.child("profileimage").getValue().toString();
+                            final String fullname = dataSnapshot.child("fullname").getValue().toString();
                             final String type;
 
                             if(dataSnapshot.hasChild("userState")){
                                 type = dataSnapshot.child("userState").child("type").getValue().toString();
                                 if(type.equals("online")){
                                     friendsViewHolder.onlineStatusView.setVisibility(View.VISIBLE);
+                                    friendsViewHolder.setOnlineText("Online");
+
                                 } else {
                                     friendsViewHolder.onlineStatusView.setVisibility(View.INVISIBLE);
+                                    friendsViewHolder.setOnlineText("Offline");
                                 }
                             }
 
-                            friendsViewHolder.setFullName(username);
+                            friendsViewHolder.setFullName(fullname);
+                            friendsViewHolder.setUsername("@" + username);
                             friendsViewHolder.setProfileImage(getApplicationContext(), profileImage);
 
                             friendsViewHolder.mView.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +139,7 @@ public class FriendsActivity extends AppCompatActivity {
                                 public void onClick(View v) {
                                     Intent chatIntent = new Intent(FriendsActivity.this, ChatActivity.class);
                                     chatIntent.putExtra("visit_user_id", usersIDs);
-                                    chatIntent.putExtra("userName", username);
+                                    chatIntent.putExtra("userName", fullname);
                                     startActivity(chatIntent);
                                 }
                             });
@@ -157,7 +168,7 @@ public class FriendsActivity extends AppCompatActivity {
 
     public class FriendsViewHolder extends RecyclerView.ViewHolder {
         View mView;
-        TextView fullname, date;
+        TextView fullname, date, username, onlineText;
         CircleImageView profileimage;
         final ImageView onlineStatusView;
 
@@ -166,9 +177,11 @@ public class FriendsActivity extends AppCompatActivity {
             mView = itemView;
 
             fullname = (TextView) itemView.findViewById(R.id.all_friends_profile_full_name);
+            username = (TextView) itemView.findViewById(R.id.all_friends_profile_username);
             date = (TextView) itemView.findViewById(R.id.all_friends_status);
             profileimage = (CircleImageView) itemView.findViewById(R.id.all_friends_profile_image);
             onlineStatusView = (ImageView) itemView.findViewById(R.id.all_friends_online_icon);
+            onlineText = (TextView) itemView.findViewById(R.id.all_friends_status_text);
         }
 
         public void setData(Friends friendsViewHolderData){
@@ -180,7 +193,13 @@ public class FriendsActivity extends AppCompatActivity {
             this.onlineStatusView.setVisibility(status);
         }
 
+        public void setOnlineText(String onlineText) {
+            this.onlineText.setText(onlineText);
+        }
 
+        public void setUsername(String username) {
+            this.username.setText(username);
+        }
         public void setFullName(String fullName){
             this.fullname.setText(fullName);
         }
