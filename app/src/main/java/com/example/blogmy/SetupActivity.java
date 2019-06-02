@@ -179,7 +179,6 @@ public class SetupActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
                                                     if(task.isSuccessful()){
-                                                        Log.i("create profileimage:" ,downloadUrl );
                                                         //  Intent selfIntent = new Intent(SetupActivity.this, SetupActivity.class);
                                                         //  startActivity(selfIntent);
 

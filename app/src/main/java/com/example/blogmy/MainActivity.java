@@ -334,7 +334,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkUserExistence(){
         final String user_id = mAuth.getCurrentUser().getUid();
-        System.out.println("BLOGMY: " +  user_id);
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

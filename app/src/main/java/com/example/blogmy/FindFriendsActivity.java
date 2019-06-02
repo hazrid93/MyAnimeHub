@@ -76,7 +76,6 @@ public class FindFriendsActivity extends AppCompatActivity {
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<FindFriends, FindFriendsViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull FindFriendsViewHolder findFriendsViewHolder, final int i, @NonNull FindFriends findFriends) {
-                System.out.println("data: " + findFriends);
                 findFriendsViewHolder.setData(getApplicationContext(), findFriends);
 
                 findFriendsViewHolder.mView.setOnClickListener(new View.OnClickListener() {
@@ -124,9 +123,7 @@ public class FindFriendsActivity extends AppCompatActivity {
 
         public void setData(Context ctx, FindFriends friendsViewHolderData){
             fullname.setText(friendsViewHolderData.getFullname());
-            System.out.println(friendsViewHolderData.getFullname());
             status.setText(friendsViewHolderData.getStatus());
-            System.out.println(friendsViewHolderData.getStatus());
 
             // https://github.com/square/picasso/issues/1291 seems like require runtime permission.
             Picasso.with(ctx).load(friendsViewHolderData.getProfileimage()).placeholder(R.drawable.profile).into(profileimage);

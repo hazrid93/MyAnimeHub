@@ -288,7 +288,7 @@ public class SearchAnime extends AppCompatActivity {
     private void updateTopAiring(){
         RequestParams params = new RequestParams();
         String url =  JIKAN_URL + "/" + JIKAN_SORTBY_TOP + "/" + JIKAN_TYPE_ANIME + "/" + searchPageButton.getText().toString().toLowerCase() + "/" + searchSubTypeButton.getText().toString().toLowerCase();
-        System.out.println("AZAD URL: " + url);
+
         letsDoSomeNetworkingTopAnime(params,
                 url,
                 true);
@@ -341,7 +341,6 @@ public class SearchAnime extends AppCompatActivity {
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
-                Log.d("SearchAnime", "Success: " + response.toString());
                 Toast.makeText(SearchAnime.this, "Request Successful", Toast.LENGTH_SHORT).show();
 
                 // add top airing anime data into the List topAiringAnime
@@ -391,8 +390,6 @@ public class SearchAnime extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-
-                Log.d("SearchAnime", "Size:" + topAiringAnime.size());
 
                 if(update == false){
                     sliderAdapter = new SliderAdapter(SearchAnime.this, picsList, topAiringAnime.size(), new OnCardClickListener());
@@ -449,7 +446,6 @@ public class SearchAnime extends AppCompatActivity {
         clockSwitcher.setCurrentText(startTimeList.get(0) + " ~ " + endTimeList.get(0));
         descriptionsSwitcher.setCurrentText("Type: " + typeList.get(0));
 
-        System.out.println("AZAD: CARD CHANGED!, " + title1TextView.getText().toString() + "," + title2TextView.getText().toString() + ",id: " + animeIdList.get(0));
         initGetAnimeDetails(animeIdList.get(0), new UpdateDataCallback() {
             @Override
             public void onCallback(String value) {
@@ -487,7 +483,6 @@ public class SearchAnime extends AppCompatActivity {
         // updateAnimeDetails(animeIdList.get(0));
 
         // get current active initial = 0 , anime id here when card switch
-        System.out.println("AZAD: CARD CHANGED!, " + title1TextView.getText().toString() + "," + title2TextView.getText().toString() + ",id: " + animeIdList.get(0));
         initGetAnimeDetails(animeIdList.get(0), new UpdateDataCallback() {
                 @Override
                 public void onCallback(String value) {
@@ -595,7 +590,7 @@ public class SearchAnime extends AppCompatActivity {
         currentPosition = pos;
 
         // get current active anime id here when card switch
-        System.out.println("AZAD: CARD CHANGED!, " + title1TextView.getText().toString() + "," + title2TextView.getText().toString() + ",id: " + animeIdList.get(pos));
+
         initGetAnimeDetails(animeIdList.get(pos), new UpdateDataCallback() {
             @Override
             public void onCallback(String value) {

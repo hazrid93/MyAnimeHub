@@ -134,7 +134,6 @@ public class ClickPostActivity extends AppCompatActivity {
         builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                System.out.println("HTML EDIT:" + inputField.toString());
                 clickPostRef.child("description").setValue(inputField.toString());
                 Toast.makeText(ClickPostActivity.this, "Post has been updated successfully", Toast.LENGTH_SHORT).show();
             }
