@@ -119,9 +119,11 @@ public class SearchAnime extends AppCompatActivity {
     private Button searchTypeButton;
     private Button searchSubTypeButton;
     private Button searchPageButton;
-    private String currentSortBy;
-    private String currentType;
-    private String currentSubType;
+    private String currentTypeTopButton;
+    private String currentTypeButton;
+    private String currentSubTypeButton;
+    private String currentPageButton;
+
     private JSONObject animeDetailsObject;
     private String summaryData;
     private EnhancedWrapContentViewPager viewPager;
@@ -133,10 +135,11 @@ public class SearchAnime extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_anime);
 
-        // initializeIndex and buttons
-        currentSortBy = JIKAN_SORTBY_TOP;
-        currentType = JIKAN_TYPE_ANIME;
-        currentSubType = JIKAN_SUBTYPE_AIRING;
+        // initializeIndex and buttons TOP/ANIME/1/AIRING
+        currentTypeTopButton = JIKAN_SORTBY_TOP;
+        currentTypeButton = JIKAN_TYPE_ANIME;
+        currentSubTypeButton = JIKAN_SUBTYPE_AIRING;
+        currentPageButton = JIKAN_PAGE_1;
 
         toolbar = (Toolbar) findViewById(R.id.search_anime_list_toolbar);
         setSupportActionBar(toolbar);
@@ -148,14 +151,16 @@ public class SearchAnime extends AppCompatActivity {
         searchSubTypeButton = (Button) findViewById(R.id.search_subtype_button_type);
         searchPageButton = (Button) findViewById(R.id.search_page_button_type);
 
-        searchTypeTopButton.setOnClickListener(new View.OnClickListener() {
+        // page number button
+        searchPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu menu = new PopupMenu(SearchAnime.this, v);
 
-                menu.getMenu().add("One");
-                menu.getMenu().add("Two");
-                menu.getMenu().add("Three");
+                menu.getMenu().add("1");
+                menu.getMenu().add("2");
+                menu.getMenu().add("3");
+                menu.getMenu().add("4");
 
                 menu.show();
 
@@ -168,6 +173,33 @@ public class SearchAnime extends AppCompatActivity {
                 });
             }
         });
+
+        // subtype button
+        searchSubTypeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu menu = new PopupMenu(SearchAnime.this, v);
+
+                menu.getMenu().add("airing");
+                menu.getMenu().add("upcoming");
+                menu.getMenu().add("tv");
+                menu.getMenu().add("movie");
+                menu.getMenu().add("ova");
+                menu.getMenu().add("special");
+
+                menu.show();
+
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        System.out.println("AZAD SUBTYPE: " + item.getTitle());
+                        return false;
+                    }
+                });
+            }
+        });
+
+
 
 
         // Pager fragment initialization
