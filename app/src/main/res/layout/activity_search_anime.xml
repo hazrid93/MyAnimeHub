@@ -214,7 +214,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="38dp">
 
-                        <FrameLayout
+                        <RelativeLayout
                             android:id="@+id/anime_titles"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -223,39 +223,39 @@
                             android:layout_marginRight="15dp"
                             android:layout_toLeftOf="@+id/frameLayout">
 
-                            <TextView
-                                android:id="@+id/tv_title_1"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:textSize="26sp"
-                                android:paddingLeft="5dp"
-                                android:paddingRight="5dp"
-                                android:marqueeRepeatLimit ="marquee_forever"
-                                android:ellipsize="marquee"
-                                android:scrollHorizontally="true"
-                                android:singleLine="true"
-                                android:fontFamily="@font/roboto_regular"
-                                android:textColor="@android:color/black"
-                                android:textStyle="bold" />
+                            <!--LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"-->
+                                <TextView
+                                    android:id="@+id/tv_title_1"
+                                    android:layout_width="250dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="start"
+                                    android:gravity="start"
+                                    android:textSize="26sp"
+                                    android:ellipsize="marquee"
+                                    android:marqueeRepeatLimit ="marquee_forever"
+                                    android:fontFamily="@font/roboto_regular"
+                                    android:textColor="@android:color/black"
+                                    android:textStyle="bold"
+                                    android:singleLine="true" />
 
-                            <TextView
-                                android:id="@+id/tv_title_2"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textSize="26sp"
-                                android:textStyle="bold"
-                                android:paddingLeft="5dp"
-                                android:paddingRight="5dp"
-                                android:ellipsize="marquee"
-                                android:fontFamily="@font/roboto_regular"
-                                android:marqueeRepeatLimit ="marquee_forever"
-                                android:scrollHorizontally="true"
-                                android:textColor="@android:color/black"
-                                android:singleLine="true"
-                                android:layout_gravity="center_vertical"/>
+                                <TextView
+                                    android:id="@+id/tv_title_2"
+                                    android:ellipsize="marquee"
+                                    android:marqueeRepeatLimit ="marquee_forever"
+                                    android:gravity="start"
+                                    android:layout_width="250dp"
+                                    android:layout_height="wrap_content"
+                                    android:textSize="26sp"
+                                    android:textStyle="bold"
+                                    android:fontFamily="@font/roboto_regular"
+                                    android:textColor="@android:color/black"
+                                    android:layout_gravity="start"
+                                    android:singleLine="true" />
+                            <!--/LinearLayout-->
 
-                        </FrameLayout>
+                        </RelativeLayout>
 
                         <FrameLayout
                             android:id="@+id/frameLayout"

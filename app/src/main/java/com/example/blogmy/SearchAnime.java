@@ -28,11 +28,13 @@ import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
@@ -129,11 +131,15 @@ public class SearchAnime extends AppCompatActivity {
     private EnhancedWrapContentViewPager viewPager;
     private ViewPagerAdapter adapter;
     private Fragment summaryFragment;
+    // private HorizontalScrollView anime_titles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_anime);
+
+        // anime_titles = (HorizontalScrollView) findViewById(R.id.anime_titles);
+
 
         // initializeIndex and buttons TOP/ANIME/1/AIRING
         currentTypeTopButton = JIKAN_SORTBY_TOP;
@@ -386,11 +392,20 @@ public class SearchAnime extends AppCompatActivity {
                     initTitleText();
                     initSwitchers();
                 } else {
-                    sliderAdapter.updateData(picsList);
-                    updateTitleText();
-                    updateSwitchers();
-                    sliderAdapter.notifyDataSetChanged();
-                    layoutManager.scrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT);
+                    sliderAdapter.updateData(picsList, new UpdateDataCallback(){
+                        @Override
+                        public void onCallback(String value) {
+                            sliderAdapter.notifyDataSetChanged();
+                            updateTitleText();
+                            updateSwitchers();
+
+                            recyclerView.scrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT);
+                           // layoutManager.scrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT);
+                        }
+                    });
+
+                    //layoutManager.scrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT);
+
 
 
                 }
@@ -483,24 +498,46 @@ public class SearchAnime extends AppCompatActivity {
     }
 
     private void updateTitleText(){
+
         title1TextView.setText(titleList.get(0));
-        System.out.println("SearchAnime: title name, " + titleList.get(0) );
+        title2TextView.setText(titleList.get(0));
+        title1TextView.setSelected(true);
+        title2TextView.setSelected(true);
     }
     private void initTitleText() {
+        /*
+        anime_titles.post(new Runnable() {
+            @Override
+            public void run() {
+                anime_titles.fullScroll(View.FOCUS_RIGHT);
+            }
+        });
+        */
+
         titleAnimDuration = getResources().getInteger(R.integer.labels_animation_duration);
         titleOffset1 = getResources().getDimensionPixelSize(R.dimen.left_offset);
         titleOffset2 = getResources().getDimensionPixelSize(R.dimen.card_width);
-        title1TextView = (TextView) findViewById(R.id.tv_title_1);
-        // making the textview scrollable
-        //title1TextView.setMovementMethod(new ScrollingMovementMethod());
-        title1TextView.setSelected(true);
-        title2TextView = (TextView) findViewById(R.id.tv_title_2);
-        title2TextView.setSelected(true);
-        //title2TextView.setMovementMethod(new ScrollingMovementMethod());
 
+        title1TextView = (TextView) findViewById(R.id.tv_title_1);
         title1TextView.setX(titleOffset1);
-        title2TextView.setX(titleOffset2);
+
         title1TextView.setText(titleList.get(0));
+        title1TextView.setSelected(true);
+        // making the textview scrollable
+        // title1TextView.setMovementMethod(new ScrollingMovementMethod());
+        // delay the marquee, by activating it with a delay
+        /*
+        title1TextView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                title1TextView.setSelected(true);
+            }
+        }, 1000);
+        */
+
+        title2TextView = (TextView) findViewById(R.id.tv_title_2);
+        title2TextView.setX(titleOffset2);
+        title2TextView.setSelected(true);
         title2TextView.setAlpha(0f);
 
         title1TextView.setTypeface(Typeface.createFromAsset(getAssets(), "open-sans-extrabold.ttf"));
@@ -539,10 +576,13 @@ public class SearchAnime extends AppCompatActivity {
         final AnimatorSet animSet = new AnimatorSet();
         animSet.playTogether(iAlpha, vAlpha, iX, vX);
         animSet.setDuration(titleAnimDuration);
+       // animSet.setStartDelay(500);
         animSet.start();
     }
 
     private void onActiveCardChange() {
+        // reset the scroll back to initial
+        // anime_titles.scrollTo(0,0);
         final int pos = layoutManager.getActiveCardPosition();
         if (pos == RecyclerView.NO_POSITION || pos == currentPosition) {
             return;
@@ -565,6 +605,8 @@ public class SearchAnime extends AppCompatActivity {
         }
 
         setTitleText(titleList.get(pos), left2right);
+        title1TextView.setSelected(true);
+        title2TextView.setSelected(true);
 
         rankSwitcher.setInAnimation(SearchAnime.this, animH[0]);
         rankSwitcher.setOutAnimation(SearchAnime.this, animH[1]);
@@ -657,6 +699,7 @@ public class SearchAnime extends AppCompatActivity {
     private class OnCardClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
+
             final CardSliderLayoutManager lm =  (CardSliderLayoutManager) recyclerView.getLayoutManager();
 
             if (lm.isSmoothScrolling()) {
@@ -686,6 +729,7 @@ public class SearchAnime extends AppCompatActivity {
                 recyclerView.smoothScrollToPosition(clickedPosition);
                 onActiveCardChange(clickedPosition);
             }
+
         }
     }
 }

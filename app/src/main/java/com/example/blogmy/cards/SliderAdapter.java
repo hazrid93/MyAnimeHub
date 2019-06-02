@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blogmy.R;
+import com.example.blogmy.SearchAnime;
 
 import java.util.List;
 
@@ -27,8 +28,9 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderCard> {
         this.listener = listener;
     }
 
-    public void updateData(List<String> content){
+    public void updateData(List<String> content, SearchAnime.UpdateDataCallback updateDataCallback){
         this.content = content;
+        updateDataCallback.onCallback("true");
     }
 
     @Override
@@ -36,7 +38,6 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderCard> {
         final View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.layout_slider_card, parent, false);
-
         if (listener != null) {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
