@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/background_watercolour" />
+            android:src="@drawable/lenalee_background" />
 
         <View
             android:layout_width="match_parent"
@@ -57,8 +57,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:textColor="@android:color/background_dark"
-                        android:text="Search for Anime:"
+                        android:textColor="@android:color/white"
+                        android:text="Search for a title:"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:layout_marginLeft="35dp"
@@ -74,6 +74,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_marginLeft="35dp"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
                         android:background="@drawable/inputs"
                         android:textSize="18sp"
                         android:hint="Search..."
@@ -111,7 +112,8 @@
                         android:layout_height="60dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="35dp"
+                        android:layout_marginRight="0dp"
                         android:orientation="horizontal"
                         android:padding="0dp">
                         <Button
@@ -204,6 +206,7 @@
                     android:layout_below="@id/search_anime_index_scroll"
                     android:background="@android:color/white"
                     android:paddingTop="20dp"
+                    android:layout_marginTop="10dp"
                     android:paddingBottom="20dp">
 
                     <RelativeLayout
@@ -225,26 +228,30 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:textSize="26sp"
+                                android:textSize="27sp"
                                 android:paddingLeft="5dp"
                                 android:paddingRight="5dp"
                                 android:marqueeRepeatLimit ="marquee_forever"
                                 android:ellipsize="marquee"
                                 android:scrollHorizontally="true"
                                 android:singleLine="true"
+                                android:fontFamily="@font/roboto_regular"
+                                android:textColor="@android:color/black"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/tv_title_2"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="26sp"
+                                android:textSize="27sp"
                                 android:textStyle="bold"
                                 android:paddingLeft="5dp"
                                 android:paddingRight="5dp"
                                 android:ellipsize="marquee"
+                                android:fontFamily="@font/roboto_regular"
                                 android:marqueeRepeatLimit ="marquee_forever"
                                 android:scrollHorizontally="true"
+                                android:textColor="@android:color/black"
                                 android:singleLine="true"
                                 android:layout_gravity="center_vertical"/>
 
@@ -368,6 +375,7 @@
                         android:id="@+id/search_anime_viewpager"
                         android:layout_width="match_parent"
                         android:layout_below="@id/search_anime_tab_layout"
+                        android:minHeight="500dp"
                         android:layout_height="match_parent">
 
                     </com.example.blogmy.EnhancedWrapContentViewPager>

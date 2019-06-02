@@ -27,6 +27,10 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderCard> {
         this.listener = listener;
     }
 
+    public void updateData(List<String> content){
+        this.content = content;
+    }
+
     @Override
     public SliderCard onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater

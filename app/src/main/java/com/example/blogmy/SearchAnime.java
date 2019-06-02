@@ -85,14 +85,14 @@ public class SearchAnime extends AppCompatActivity {
 
     private Map<Integer,JSONObject> topAiringAnime = null;
 
-    private final List<String> animeIdList = new ArrayList<String>();
-    private final List<String> picsList = new ArrayList<String>();
-    private final List<String> typeList = new ArrayList<String>();
-    private final List<String> titleList = new ArrayList<String>();
-    private final List<String> scoreList = new ArrayList<String>();
-    private final List<String> rankList = new ArrayList<String>();
-    private final List<String> startTimeList = new ArrayList<String>();
-    private final List<String> endTimeList = new ArrayList<String>();
+    private List<String> animeIdList;
+    private List<String> picsList;
+    private List<String> typeList;
+    private List<String> titleList;
+    private List<String> scoreList;
+    private List<String> rankList;
+    private List<String> startTimeList;
+    private List<String> endTimeList;
 
     private SliderAdapter sliderAdapter = null;
 
@@ -147,7 +147,13 @@ public class SearchAnime extends AppCompatActivity {
         getSupportActionBar().setTitle("Anime Explorer");
 
         searchTypeTopButton = (Button) findViewById(R.id.search_top_button_type);
+        searchTypeTopButton.setPressed(true);
+        searchTypeTopButton.setClickable(false);
+
         searchTypeButton = (Button) findViewById(R.id.search_type_button_type);
+        searchTypeButton.setPressed(true);
+        searchTypeButton.setClickable(false);
+
         searchSubTypeButton = (Button) findViewById(R.id.search_subtype_button_type);
         searchPageButton = (Button) findViewById(R.id.search_page_button_type);
 
@@ -155,6 +161,12 @@ public class SearchAnime extends AppCompatActivity {
         searchPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                searchTypeTopButton.setPressed(true);
+                searchTypeTopButton.setClickable(false);
+                searchTypeButton.setPressed(true);
+                searchTypeButton.setClickable(false);
+
                 PopupMenu menu = new PopupMenu(SearchAnime.this, v);
 
                 menu.getMenu().add("1");
@@ -167,7 +179,8 @@ public class SearchAnime extends AppCompatActivity {
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        System.out.println("AZAD MENU: " + item.getTitle());
+                        searchPageButton.setText(item.getTitle());
+                        updateTopAiring();
                         return false;
                     }
                 });
@@ -178,6 +191,12 @@ public class SearchAnime extends AppCompatActivity {
         searchSubTypeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                searchTypeTopButton.setPressed(true);
+                searchTypeTopButton.setClickable(false);
+                searchTypeButton.setPressed(true);
+                searchTypeButton.setClickable(false);
+
                 PopupMenu menu = new PopupMenu(SearchAnime.this, v);
 
                 menu.getMenu().add("airing");
@@ -192,15 +211,13 @@ public class SearchAnime extends AppCompatActivity {
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        System.out.println("AZAD SUBTYPE: " + item.getTitle());
+                        searchSubTypeButton.setText(item.getTitle());
+                        updateTopAiring();
                         return false;
                     }
                 });
             }
         });
-
-
-
 
         // Pager fragment initialization
         viewPager = (EnhancedWrapContentViewPager) findViewById(R.id.search_anime_viewpager);
@@ -212,6 +229,7 @@ public class SearchAnime extends AppCompatActivity {
 
         TabLayout mTabLayout = (TabLayout) findViewById(R.id.search_anime_tab_layout);
         mTabLayout.setupWithViewPager(viewPager);
+
         // get initial top airing during activity launch
         initGetTopAiring();
     }
@@ -264,7 +282,16 @@ public class SearchAnime extends AppCompatActivity {
     // using JIKAN api
     private void initGetTopAiring() {
         RequestParams params = new RequestParams();
-        letsDoSomeNetworkingTopAnime(params, JIKAN_TOP_AIRING_DEFAULT);
+        letsDoSomeNetworkingTopAnime(params, JIKAN_TOP_AIRING_DEFAULT, false);
+    }
+
+    private void updateTopAiring(){
+        RequestParams params = new RequestParams();
+        String url =  JIKAN_URL + "/" + JIKAN_SORTBY_TOP + "/" + JIKAN_TYPE_ANIME + "/" + searchPageButton.getText().toString().toLowerCase() + "/" + searchSubTypeButton.getText().toString().toLowerCase();
+        System.out.println("AZAD URL: " + url);
+        letsDoSomeNetworkingTopAnime(params,
+                url,
+                true);
     }
 
     // using JIKAN api
@@ -308,7 +335,7 @@ public class SearchAnime extends AppCompatActivity {
 
 
     // TODO: Add letsDoSomeNetworkingTopAnime(RequestParams params) here:
-    private void letsDoSomeNetworkingTopAnime(RequestParams params, String URL){
+    private void letsDoSomeNetworkingTopAnime(RequestParams params, String URL, final boolean update){
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(URL, params, new JsonHttpResponseHandler(){
@@ -319,6 +346,15 @@ public class SearchAnime extends AppCompatActivity {
 
                 // add top airing anime data into the List topAiringAnime
                 topAiringAnime = new LinkedHashMap<Integer, JSONObject>();
+                animeIdList = new ArrayList<String>();
+                picsList = new ArrayList<String>();
+                typeList = new ArrayList<String>();
+                titleList = new ArrayList<String>();
+                scoreList = new ArrayList<String>();
+                rankList = new ArrayList<String>();
+                startTimeList = new ArrayList<String>();
+                endTimeList = new ArrayList<String>();
+
                 JSONArray jArray = null;
                 try {
                     jArray = (JSONArray)response.getJSONArray("top");
@@ -356,11 +392,21 @@ public class SearchAnime extends AppCompatActivity {
                     }
                 }
 
-                Log.d("SearchAnime", "Size:" +topAiringAnime.size());
-                sliderAdapter = new SliderAdapter(SearchAnime.this, picsList, topAiringAnime.size(), new OnCardClickListener());
-                initRecyclerView();
-                initTitleText();
-                initSwitchers();
+                Log.d("SearchAnime", "Size:" + topAiringAnime.size());
+
+                if(update == false){
+                    sliderAdapter = new SliderAdapter(SearchAnime.this, picsList, topAiringAnime.size(), new OnCardClickListener());
+                    initRecyclerView();
+                    initTitleText();
+                    initSwitchers();
+                } else {
+                    sliderAdapter.updateData(picsList);
+                    initTitleText();
+                    updateSwitchers();
+                    sliderAdapter.notifyDataSetChanged();
+
+                }
+
 
             }
 
@@ -372,8 +418,6 @@ public class SearchAnime extends AppCompatActivity {
             }
         });
     }
-
-
 
     private void initRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -399,10 +443,25 @@ public class SearchAnime extends AppCompatActivity {
         super.onPause();
     }
 
+    private void updateSwitchers(){
+        rankSwitcher.setCurrentText("Rank: " + rankList.get(0) + "/" + topAiringAnime.size()*Integer.parseInt(searchPageButton.getText().toString()));
+        scoreSwitcher.setCurrentText("Score: " + scoreList.get(0) + "/10");
+        clockSwitcher.setCurrentText(startTimeList.get(0) + " ~ " + endTimeList.get(0));
+        descriptionsSwitcher.setCurrentText("Type: " + typeList.get(0));
+
+        System.out.println("AZAD: CARD CHANGED!, " + title1TextView.getText().toString() + "," + title2TextView.getText().toString() + ",id: " + animeIdList.get(0));
+        initGetAnimeDetails(animeIdList.get(0), new UpdateDataCallback() {
+            @Override
+            public void onCallback(String value) {
+                updateFragment();
+            }
+        });
+    }
+
     private void initSwitchers() {
         rankSwitcher = (TextSwitcher) findViewById(R.id.ts_rank);
         rankSwitcher.setFactory(new TextViewFactory(R.style.RankTextView, true));
-        rankSwitcher.setCurrentText("Rank: " + rankList.get(0) + "/" + topAiringAnime.size());
+        rankSwitcher.setCurrentText("Rank: " + rankList.get(0) + "/" + topAiringAnime.size()*Integer.parseInt(searchPageButton.getText().toString()));
 
         scoreSwitcher = (TextSwitcher) findViewById(R.id.ts_score);
         scoreSwitcher.setFactory(new TextViewFactory(R.style.ScoreTextView, false));
@@ -519,7 +578,7 @@ public class SearchAnime extends AppCompatActivity {
 
         rankSwitcher.setInAnimation(SearchAnime.this, animH[0]);
         rankSwitcher.setOutAnimation(SearchAnime.this, animH[1]);
-        rankSwitcher.setText("Rank: " + rankList.get(pos) + "/" + topAiringAnime.size());
+        rankSwitcher.setText("Rank: " + rankList.get(pos) + "/" + topAiringAnime.size()*Integer.parseInt(searchPageButton.getText().toString()));
 
         scoreSwitcher.setInAnimation(SearchAnime.this, animV[0]);
         scoreSwitcher.setOutAnimation(SearchAnime.this, animV[1]);
