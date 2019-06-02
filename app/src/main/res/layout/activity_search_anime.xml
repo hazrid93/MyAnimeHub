@@ -233,6 +233,8 @@
                                     android:layout_gravity="start"
                                     android:gravity="start"
                                     android:textSize="26sp"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="10dp"
                                     android:ellipsize="marquee"
                                     android:marqueeRepeatLimit ="marquee_forever"
                                     android:fontFamily="@font/roboto_regular"
@@ -243,6 +245,8 @@
                                 <TextView
                                     android:id="@+id/tv_title_2"
                                     android:ellipsize="marquee"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginRight="10dp"
                                     android:marqueeRepeatLimit ="marquee_forever"
                                     android:gravity="start"
                                     android:layout_width="250dp"

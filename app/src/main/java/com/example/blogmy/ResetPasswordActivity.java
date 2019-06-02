@@ -1,5 +1,6 @@
 package com.example.blogmy;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -16,8 +17,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +39,26 @@ public class ResetPasswordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Reset Password");
 
+        //animating
+        final ImageView backgroundOne = (ImageView) findViewById(R.id.background_reset_1);
+        final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_reset_2);
+
+        final ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.setDuration(30000L);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                final float progress = (float) animation.getAnimatedValue();
+                final float width = backgroundOne.getWidth();
+                final float translationX = width * progress;
+                backgroundOne.setTranslationX(translationX);
+                backgroundTwo.setTranslationX(translationX - width);
+            }
+        });
+        animator.start();
+
         mAuth = FirebaseAuth.getInstance();
 
         resetPasswordSendEmailButton = (Button) findViewById(R.id.reset_password_email_button);
@@ -44,7 +67,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         resetPasswordSendEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String userEmail = resetPasswordSendEmailButton.getText().toString();
+                String userEmail = resetEmailInput.getText().toString();
 
                 if(TextUtils.isEmpty(userEmail)){
                     Toast.makeText(ResetPasswordActivity.this, "Please enter an email address...", Toast.LENGTH_SHORT).show();

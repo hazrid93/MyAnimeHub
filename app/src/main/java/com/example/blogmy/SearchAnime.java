@@ -365,7 +365,7 @@ public class SearchAnime extends AppCompatActivity {
                     try {
                         animeIdList.add(topAiringAnime.get(i).get("mal_id").toString());
                         picsList.add(topAiringAnime.get(i).get("image_url").toString());
-                        titleList.add(topAiringAnime.get(i).get("title").toString());
+                        titleList.add("   " + topAiringAnime.get(i).get("title").toString() + "   ");
                         rankList.add(topAiringAnime.get(i).get("rank").toString());
                         scoreList.add(topAiringAnime.get(i).get("score").toString());
                         typeList.add(topAiringAnime.get(i).get("type").toString());

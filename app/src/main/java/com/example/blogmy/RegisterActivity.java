@@ -32,8 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         //animating
-        final ImageView backgroundOne = (ImageView) findViewById(R.id.background_login_1);
-        final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_login_2);
+        final ImageView backgroundOne = (ImageView) findViewById(R.id.background_register_1);
+        final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_register_2);
 
         final ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1.0f);
         animator.setRepeatCount(ValueAnimator.INFINITE);

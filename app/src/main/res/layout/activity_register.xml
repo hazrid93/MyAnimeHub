@@ -8,14 +8,14 @@
     tools:context=".RegisterActivity">
 
     <ImageView
-        android:id="@+id/background_login_1"
+        android:id="@+id/background_register_1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@drawable/background_watercolour" />
 
     <ImageView
-        android:id="@+id/background_login_2"
+        android:id="@+id/background_register_2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
@@ -170,7 +170,7 @@
             android:layout_below="@id/register_confirm_password_layout"
             android:background="@drawable/buttons"
             android:text="Create Account"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="15sp"
             android:textStyle="bold" />
 
