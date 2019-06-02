@@ -3,6 +3,7 @@ package com.example.blogmy;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.ViewCompat;
@@ -24,11 +25,14 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
@@ -62,10 +66,22 @@ public class SearchAnime extends AppCompatActivity {
 
     // Constants:
     // schema REST for top anime, https://jikan.docs.apiary.io/#reference/0/schedule/top-request-example+schema?console=1
-    private String JIKAN_URL = "https://api.jikan.moe/v3";
-    private String JIKAN_TYPE = "anime";
-    private String JIKAN_PAGE = "1";
-    private String JIKAN_AIRING = "airing";
+    private static final String JIKAN_URL = "https://api.jikan.moe/v3";
+    private static final String JIKAN_SORTBY_TOP = "top";
+    private static final String JIKAN_TYPE_ANIME = "anime";
+    private static final String JIKAN_PAGE_1 = "1";
+    private static final String JIKAN_PAGE_2 = "2";
+    private static final String JIKAN_PAGE_3 = "3";
+    private static final String JIKAN_PAGE_4 = "4";
+    private static final String JIKAN_SUBTYPE_AIRING = "airing";
+    private static final String JIKAN_SUBTYPE_UPCOMING = "upcoming";
+    private static final String JIKAN_SUBTYPE_MOVIE = "movie";
+    private static final String JIKAN_SUBTYPE_TV = "tv";
+    private static final String JIKAN_SUBTYPE_OVA = "ova";
+    private static final String JIKAN_SUBTYPE_SPECIAL = "special";
+
+    private static final String JIKAN_TOP_AIRING_DEFAULT = JIKAN_URL + "/" + JIKAN_SORTBY_TOP + "/" + JIKAN_TYPE_ANIME + "/" + JIKAN_PAGE_1 + "/" + JIKAN_SUBTYPE_AIRING;
+    private static final String JIKAN_ANIME_DETAILS_DEFAULT = JIKAN_URL + "/" + JIKAN_TYPE_ANIME + "/";
 
     private Map<Integer,JSONObject> topAiringAnime = null;
 
@@ -97,26 +113,85 @@ public class SearchAnime extends AppCompatActivity {
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
-    private ViewPager viewPager;
+
+    // INDEX PART
+    private Button searchTypeTopButton;
+    private Button searchTypeButton;
+    private Button searchSubTypeButton;
+    private Button searchPageButton;
+    private String currentSortBy;
+    private String currentType;
+    private String currentSubType;
+    private JSONObject animeDetailsObject;
+    private String summaryData;
+    private EnhancedWrapContentViewPager viewPager;
+    private ViewPagerAdapter adapter;
+    private Fragment summaryFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_anime);
 
-        // Locate the viewpager in activity_main.xml
-        EnhancedWrapContentViewPager viewPager = (EnhancedWrapContentViewPager) findViewById(R.id.search_anime_viewpager);
+        // initializeIndex and buttons
+        currentSortBy = JIKAN_SORTBY_TOP;
+        currentType = JIKAN_TYPE_ANIME;
+        currentSubType = JIKAN_SUBTYPE_AIRING;
 
+        toolbar = (Toolbar) findViewById(R.id.search_anime_list_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Anime Explorer");
+
+        searchTypeTopButton = (Button) findViewById(R.id.search_top_button_type);
+        searchTypeButton = (Button) findViewById(R.id.search_type_button_type);
+        searchSubTypeButton = (Button) findViewById(R.id.search_subtype_button_type);
+        searchPageButton = (Button) findViewById(R.id.search_page_button_type);
+
+        searchTypeTopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu menu = new PopupMenu(SearchAnime.this, v);
+
+                menu.getMenu().add("One");
+                menu.getMenu().add("Two");
+                menu.getMenu().add("Three");
+
+                menu.show();
+
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        System.out.println("AZAD MENU: " + item.getTitle());
+                        return false;
+                    }
+                });
+            }
+        });
+
+
+        // Pager fragment initialization
+        viewPager = (EnhancedWrapContentViewPager) findViewById(R.id.search_anime_viewpager);
         // Set the ViewPagerAdapter into ViewPager
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new TabFragment(), "Players");
-
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        summaryFragment = new TabFragment();
+        adapter.addFrag(summaryFragment, "Summary");
         viewPager.setAdapter(adapter);
 
         TabLayout mTabLayout = (TabLayout) findViewById(R.id.search_anime_tab_layout);
         mTabLayout.setupWithViewPager(viewPager);
         // get initial top airing during activity launch
         initGetTopAiring();
+    }
+
+    private void updateFragment(){
+        // Fragment management
+        // Locate the viewpager in activity_main.xml
+        Bundle bundle = new Bundle();
+        bundle.putString("summaryData", summaryData);
+        summaryFragment.setArguments(bundle);
+        adapter.notifyDataSetChanged();
+
     }
 
 
@@ -126,6 +201,11 @@ public class SearchAnime extends AppCompatActivity {
 
         public ViewPagerAdapter(FragmentManager manager) {
             super(manager);
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
         }
 
         @Override
@@ -152,15 +232,51 @@ public class SearchAnime extends AppCompatActivity {
     // using JIKAN api
     private void initGetTopAiring() {
         RequestParams params = new RequestParams();
-        String JIKAN_TOP_AIRING_DEFAULT = JIKAN_URL + "/top/anime/" + JIKAN_PAGE + "/" + JIKAN_AIRING;
-       // params.put("type", JIKAN_TYPE);
-       // params.put("page", JIKAN_PAGE);
-       // params.put("subtype", JIKAN_SUBTYPE);
-        letsDoSomeNetworking(params, JIKAN_TOP_AIRING_DEFAULT);
+        letsDoSomeNetworkingTopAnime(params, JIKAN_TOP_AIRING_DEFAULT);
     }
 
-    // TODO: Add letsDoSomeNetworking(RequestParams params) here:
-    private void letsDoSomeNetworking(RequestParams params, String URL){
+    // using JIKAN api
+    private void initGetAnimeDetails(String animeId, final UpdateDataCallback updateDataCallback) {
+        RequestParams params = new RequestParams();
+        letsDoSomeNetworkingAnimeDetails(params, JIKAN_ANIME_DETAILS_DEFAULT + animeId, updateDataCallback);
+
+    }
+
+    // TODO: Add letsDoSomeNetworkingTopAnime(RequestParams params) here:
+    private void letsDoSomeNetworkingAnimeDetails(RequestParams params, String URL, final UpdateDataCallback updateDataCallback){
+        AsyncHttpClient client = new AsyncHttpClient();
+
+        client.get(URL, params, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                Log.d("SearchAnime", "Success");
+                // process the response object
+                animeDetailsObject = response;
+                try {
+                    summaryData = animeDetailsObject.getString("synopsis");
+                    updateDataCallback.onCallback("success");
+                } catch (JSONException e) {
+                    summaryData = "";
+                    e.printStackTrace();
+                }
+                Log.d("SearchAnime", "Details:" +summaryData);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
+                Log.e("SearchAnime", "Fail" + e.toString());
+                Log.e("SearchAnime", "Status code: " + statusCode);
+            }
+        });
+    }
+
+    public interface UpdateDataCallback {
+        void onCallback(String value);
+    }
+
+
+    // TODO: Add letsDoSomeNetworkingTopAnime(RequestParams params) here:
+    private void letsDoSomeNetworkingTopAnime(RequestParams params, String URL){
         AsyncHttpClient client = new AsyncHttpClient();
 
         client.get(URL, params, new JsonHttpResponseHandler(){
@@ -182,8 +298,6 @@ public class SearchAnime extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
 
                 for(int i=0; i < topAiringAnime.size(); i++){
                     try {
@@ -226,6 +340,8 @@ public class SearchAnime extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void initRecyclerView() {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -277,9 +393,16 @@ public class SearchAnime extends AppCompatActivity {
         previewImgSwitcher.setFactory(new ImageViewFactory());
         */
 
-      //  updateAnimeDetails(animeIdList.get(0));
+        // updateAnimeDetails(animeIdList.get(0));
 
-
+        // get current active initial = 0 , anime id here when card switch
+        System.out.println("AZAD: CARD CHANGED!, " + title1TextView.getText().toString() + "," + title2TextView.getText().toString() + ",id: " + animeIdList.get(0));
+        initGetAnimeDetails(animeIdList.get(0), new UpdateDataCallback() {
+                @Override
+                public void onCallback(String value) {
+                    updateFragment();
+                }
+            });
     }
 
     private void initTitleText() {
@@ -287,7 +410,12 @@ public class SearchAnime extends AppCompatActivity {
         titleOffset1 = getResources().getDimensionPixelSize(R.dimen.left_offset);
         titleOffset2 = getResources().getDimensionPixelSize(R.dimen.card_width);
         title1TextView = (TextView) findViewById(R.id.tv_title_1);
+        // making the textview scrollable
+        //title1TextView.setMovementMethod(new ScrollingMovementMethod());
+        title1TextView.setSelected(true);
         title2TextView = (TextView) findViewById(R.id.tv_title_2);
+        title2TextView.setSelected(true);
+        //title2TextView.setMovementMethod(new ScrollingMovementMethod());
 
         title1TextView.setX(titleOffset1);
         title2TextView.setX(titleOffset2);
@@ -296,6 +424,7 @@ public class SearchAnime extends AppCompatActivity {
 
         title1TextView.setTypeface(Typeface.createFromAsset(getAssets(), "open-sans-extrabold.ttf"));
         title2TextView.setTypeface(Typeface.createFromAsset(getAssets(), "open-sans-extrabold.ttf"));
+
     }
 
 
@@ -373,6 +502,16 @@ public class SearchAnime extends AppCompatActivity {
        // updateAnimeDetails(animeIdList.get(pos));
 
         currentPosition = pos;
+
+        // get current active anime id here when card switch
+        System.out.println("AZAD: CARD CHANGED!, " + title1TextView.getText().toString() + "," + title2TextView.getText().toString() + ",id: " + animeIdList.get(pos));
+        initGetAnimeDetails(animeIdList.get(pos), new UpdateDataCallback() {
+            @Override
+            public void onCallback(String value) {
+                updateFragment();
+            }
+        });
+        updateFragment();
     }
 
     private void updateAnimeDetails(String resId) {

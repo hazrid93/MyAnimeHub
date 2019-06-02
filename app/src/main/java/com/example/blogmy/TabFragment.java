@@ -11,10 +11,16 @@ import androidx.fragment.app.Fragment;
 
 public class TabFragment extends Fragment {
     private TextView textView;
+    private String summaryData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            summaryData = bundle.getString("summaryData");
+        }
     }
 
     @Override
@@ -28,6 +34,10 @@ public class TabFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         textView = (TextView) view.findViewById(R.id.fragment_textView);
 
-        textView.setText("Test");
+        textView.setText(summaryData);
     }
+
+
+
+
 }

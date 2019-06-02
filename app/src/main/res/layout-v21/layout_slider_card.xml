@@ -10,8 +10,8 @@
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerInside"
-        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="false"
         android:layout_gravity="center"/>
 
     <View
