@@ -51,7 +51,8 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderCard> {
 
     @Override
     public void onBindViewHolder(SliderCard holder, int position) {
-        holder.setContent(ctx, content.get(position));
+         holder.setContent(ctx, content.get(position));
+        // reset view back to pos 1
     }
 
     @Override

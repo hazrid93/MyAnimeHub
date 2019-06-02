@@ -96,7 +96,7 @@ public class SearchAnime extends AppCompatActivity {
 
     private SliderAdapter sliderAdapter = null;
 
-    private CardSliderLayoutManager layoutManger;
+    private CardSliderLayoutManager layoutManager;
     private RecyclerView recyclerView;
     private ImageSwitcher previewImgSwitcher;
     private TextSwitcher rankSwitcher;
@@ -161,19 +161,11 @@ public class SearchAnime extends AppCompatActivity {
         searchPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                searchTypeTopButton.setPressed(true);
-                searchTypeTopButton.setClickable(false);
-                searchTypeButton.setPressed(true);
-                searchTypeButton.setClickable(false);
-
                 PopupMenu menu = new PopupMenu(SearchAnime.this, v);
-
                 menu.getMenu().add("1");
                 menu.getMenu().add("2");
                 menu.getMenu().add("3");
                 menu.getMenu().add("4");
-
                 menu.show();
 
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -191,21 +183,13 @@ public class SearchAnime extends AppCompatActivity {
         searchSubTypeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                searchTypeTopButton.setPressed(true);
-                searchTypeTopButton.setClickable(false);
-                searchTypeButton.setPressed(true);
-                searchTypeButton.setClickable(false);
-
                 PopupMenu menu = new PopupMenu(SearchAnime.this, v);
-
                 menu.getMenu().add("airing");
                 menu.getMenu().add("upcoming");
                 menu.getMenu().add("tv");
                 menu.getMenu().add("movie");
                 menu.getMenu().add("ova");
                 menu.getMenu().add("special");
-
                 menu.show();
 
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -286,6 +270,11 @@ public class SearchAnime extends AppCompatActivity {
     }
 
     private void updateTopAiring(){
+        searchTypeTopButton.setPressed(true);
+        searchTypeTopButton.setClickable(false);
+        searchTypeButton.setPressed(true);
+        searchTypeButton.setClickable(false);
+
         RequestParams params = new RequestParams();
         String url =  JIKAN_URL + "/" + JIKAN_SORTBY_TOP + "/" + JIKAN_TYPE_ANIME + "/" + searchPageButton.getText().toString().toLowerCase() + "/" + searchSubTypeButton.getText().toString().toLowerCase();
 
@@ -398,9 +387,11 @@ public class SearchAnime extends AppCompatActivity {
                     initSwitchers();
                 } else {
                     sliderAdapter.updateData(picsList);
-                    initTitleText();
+                    updateTitleText();
                     updateSwitchers();
                     sliderAdapter.notifyDataSetChanged();
+                    layoutManager.scrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT);
+
 
                 }
 
@@ -430,7 +421,7 @@ public class SearchAnime extends AppCompatActivity {
             }
         });
 
-        layoutManger = (CardSliderLayoutManager) recyclerView.getLayoutManager();
+        layoutManager = (CardSliderLayoutManager) recyclerView.getLayoutManager();
 
         new CardSnapHelper().attachToRecyclerView(recyclerView);
     }
@@ -491,6 +482,10 @@ public class SearchAnime extends AppCompatActivity {
             });
     }
 
+    private void updateTitleText(){
+        title1TextView.setText(titleList.get(0));
+        System.out.println("SearchAnime: title name, " + titleList.get(0) );
+    }
     private void initTitleText() {
         titleAnimDuration = getResources().getInteger(R.integer.labels_animation_duration);
         titleOffset1 = getResources().getDimensionPixelSize(R.dimen.left_offset);
@@ -548,7 +543,7 @@ public class SearchAnime extends AppCompatActivity {
     }
 
     private void onActiveCardChange() {
-        final int pos = layoutManger.getActiveCardPosition();
+        final int pos = layoutManager.getActiveCardPosition();
         if (pos == RecyclerView.NO_POSITION || pos == currentPosition) {
             return;
         }
@@ -597,7 +592,6 @@ public class SearchAnime extends AppCompatActivity {
                 updateFragment();
             }
         });
-        updateFragment();
     }
 
     private void updateAnimeDetails(String resId) {
