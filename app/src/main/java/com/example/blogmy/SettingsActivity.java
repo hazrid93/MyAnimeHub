@@ -11,6 +11,7 @@ import android.os.Bundle;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,7 +46,7 @@ import id.zelory.compressor.Compressor;
 
 public class SettingsActivity extends AppCompatActivity {
     private Toolbar mToolbar;
-    private EditText userName, userProfileName, userStatus, userCountry, userGender, userRelationship, userDOB;
+    private TextInputEditText userName, userProfileName, userStatus, userCountry, userGender, userRelationship, userDOB;
     private Button updateAccountSettingsButton;
     private CircleImageView userProfImage;
     private DatabaseReference settingsUserRef;
@@ -73,13 +74,13 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         userProfileImageRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
-        userName = (EditText) findViewById(R.id.settings_username);
-        userProfileName = (EditText) findViewById(R.id.settings_profile_fullname);
-        userStatus = (EditText) findViewById(R.id.settings_status);
-        userCountry = (EditText) findViewById(R.id.settings_country);
-        userGender = (EditText) findViewById(R.id.settings_gender);
-        userRelationship = (EditText) findViewById(R.id.settings_relationship_status);
-        userDOB = (EditText) findViewById(R.id.settings_dob);
+        userName = (TextInputEditText) findViewById(R.id.settings_username);
+        userProfileName = (TextInputEditText) findViewById(R.id.settings_profile_fullname);
+        userStatus = (TextInputEditText) findViewById(R.id.settings_status);
+        userCountry = (TextInputEditText) findViewById(R.id.settings_country);
+        userGender = (TextInputEditText) findViewById(R.id.settings_gender);
+        userRelationship = (TextInputEditText) findViewById(R.id.settings_relationship_status);
+        userDOB = (TextInputEditText) findViewById(R.id.settings_dob);
 
         updateAccountSettingsButton = (Button) findViewById(R.id.update_account_settings_buttons);
         userProfImage = (CircleImageView) findViewById(R.id.settings_profile_image);
