@@ -247,6 +247,9 @@ public class MainActivity extends AppCompatActivity {
         int countLikes;
         String currentUserId;
 
+        // post profile image
+        String postUid, posterImageUrl;
+
         // likes,comments section
         ImageButton likePostButton, commentPostButton;
         TextView displayNoOfLikes;
@@ -274,9 +277,23 @@ public class MainActivity extends AppCompatActivity {
             time.setText(" " + postViewHolderData.getTime());
             date.setText(" "+ postViewHolderData.getDate());
             summary.setText(postViewHolderData.getSummary());
+            postUid = postViewHolderData.getUid();
 
             // https://github.com/square/picasso/issues/1291 seems like require runtime permission.
-            Picasso.with(getApplicationContext()).load(postViewHolderData.getProfileimage()).into(profileimage);
+            userRef.child(postUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        posterImageUrl = dataSnapshot.child("profileimage").getValue().toString();
+                        Picasso.with(getApplicationContext()).load(posterImageUrl).into(profileimage);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
             Picasso.with(getApplicationContext()).load(postViewHolderData.getPostimage()).into(postimage);
         }
 
