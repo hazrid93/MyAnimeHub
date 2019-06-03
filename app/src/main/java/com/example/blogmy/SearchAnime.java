@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -71,9 +72,12 @@ public class SearchAnime extends AppCompatActivity {
     private static final String JIKAN_SUBTYPE_TV = "tv";
     private static final String JIKAN_SUBTYPE_OVA = "ova";
     private static final String JIKAN_SUBTYPE_SPECIAL = "special";
+    private static final String JIKAN_ANIME_STATS = "stats";
+
 
     private static final String JIKAN_TOP_AIRING_DEFAULT = JIKAN_URL + "/" + JIKAN_SORTBY_TOP + "/" + JIKAN_TYPE_ANIME + "/" + JIKAN_PAGE_1 + "/" + JIKAN_SUBTYPE_AIRING;
     private static final String JIKAN_ANIME_DETAILS_DEFAULT = JIKAN_URL + "/" + JIKAN_TYPE_ANIME + "/";
+    private static final String JIKAN_ANIME_STATS_DEFAULT= JIKAN_URL + "/" + JIKAN_TYPE_ANIME + "/";
 
     private Map<Integer,JSONObject> topAiringAnime = null;
 
@@ -116,15 +120,27 @@ public class SearchAnime extends AppCompatActivity {
     private String currentSubTypeButton;
     private String currentPageButton;
 
-    private JSONObject animeDetailsObject;
-    private String summaryData;
-    private EnhancedWrapContentViewPager viewPager;
-    private ViewPagerAdapter adapter;
-
-
     // Fragments
     private Fragment summaryFragment;
     private Fragment statsFragment;
+    private JSONObject animeDetailsObject;
+    private JSONObject animeStatsDetailsObject;
+    // Summary fragment
+    private String summaryData;
+    // Stats fragment
+    private String watching;
+    private String completed;
+    private String on_hold;
+    private String dropped;
+    private String plan_to_watch;
+    private String total;
+    private JSONObject scores;
+
+
+
+    private EnhancedWrapContentViewPager viewPager;
+    private ViewPagerAdapter adapter;
+
     // private HorizontalScrollView anime_titles;
 
     @Override
@@ -216,16 +232,50 @@ public class SearchAnime extends AppCompatActivity {
         TabLayout mTabLayout = (TabLayout) findViewById(R.id.search_anime_tab_layout);
         mTabLayout.setupWithViewPager(viewPager);
 
+
+        /* Listener to viewpager
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                viewPager.getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        */
+
         // get initial top airing during activity launch
         initGetTopAiring();
     }
 
+
+
     private void updateFragment(){
         // Fragment management
         // Locate the viewpager in activity_main.xml
-        Bundle bundle = new Bundle();
-        bundle.putString("summaryData", summaryData);
-        summaryFragment.setArguments(bundle);
+        // Summary Fragment update
+        Bundle bundleSum = new Bundle();
+        bundleSum.putString("summaryData", summaryData);
+        summaryFragment.setArguments(bundleSum);
+
+        // Stats Fragment update
+        Bundle bundleStat = new Bundle();
+        bundleStat.putString("watching", watching);
+        bundleStat.putString("completed", completed);
+        bundleStat.putString("on_hold", on_hold);
+        bundleStat.putString("dropped", dropped);
+        bundleStat.putString("plan_to_watch", plan_to_watch);
+        bundleStat.putString("total", total);
+        statsFragment.setArguments(bundleStat);
+
         adapter.notifyDataSetChanged();
 
     }
@@ -239,6 +289,8 @@ public class SearchAnime extends AppCompatActivity {
             super(manager);
         }
 
+        // set to none to update fragments
+        // https://stackoverflow.com/questions/37070137/cant-make-fragmentpageradapter-to-update-fragments-contents
         @Override
         public int getItemPosition(Object object) {
             return POSITION_NONE;
@@ -288,14 +340,15 @@ public class SearchAnime extends AppCompatActivity {
     // using JIKAN api
     private void initGetAnimeDetails(String animeId, final UpdateDataCallback updateDataCallback) {
         RequestParams params = new RequestParams();
-        letsDoSomeNetworkingAnimeDetails(params, JIKAN_ANIME_DETAILS_DEFAULT + animeId, updateDataCallback);
+        letsDoSomeNetworkingAnimeDetails(params, JIKAN_ANIME_DETAILS_DEFAULT + animeId, animeId, updateDataCallback);
 
     }
 
     // TODO: Add letsDoSomeNetworkingTopAnime(RequestParams params) here:
-    private void letsDoSomeNetworkingAnimeDetails(RequestParams params, String URL, final UpdateDataCallback updateDataCallback){
-        AsyncHttpClient client = new AsyncHttpClient();
+    private void letsDoSomeNetworkingAnimeDetails(final RequestParams params, String URL, final String animeId, final UpdateDataCallback updateDataCallback){
+        final AsyncHttpClient client = new AsyncHttpClient();
 
+        // 1. Summary fragment
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
@@ -303,13 +356,83 @@ public class SearchAnime extends AppCompatActivity {
                 // process the response object
                 animeDetailsObject = response;
                 try {
-                    summaryData = animeDetailsObject.getString("synopsis");
-                    updateDataCallback.onCallback("success");
+                    if (animeDetailsObject.has("synopsis")) {
+                        summaryData = animeDetailsObject.getString("synopsis");
+                    } else {
+                        summaryData = "";
+                    }
+                    //  enable updateDataCallback again later
+                    //  updateDataCallback.onCallback("success");
                 } catch (JSONException e) {
                     summaryData = "";
                     e.printStackTrace();
                 }
-                Log.d("SearchAnime", "Details:" +summaryData);
+
+                String statsURL = JIKAN_ANIME_STATS_DEFAULT + animeId + "/" + JIKAN_ANIME_STATS;
+                // 2. Stats Fragment
+                client.get(statsURL, params, new JsonHttpResponseHandler(){
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                        Log.d("SearchAnime", "Success");
+                        // process the response object
+                        animeStatsDetailsObject = response;
+                        try {
+
+                            if (animeStatsDetailsObject.has("watching")) {
+                                watching = animeStatsDetailsObject.getString("watching");
+                            } else {
+                                watching = "";
+                            }
+
+                            if (animeStatsDetailsObject.has("completed")) {
+                                completed = animeStatsDetailsObject.getString("completed");
+                            } else {
+                                completed = "";
+                            }
+
+                            if (animeStatsDetailsObject.has("on_hold")) {
+                                on_hold = animeStatsDetailsObject.getString("on_hold");
+                            } else {
+                                on_hold = "";
+                            }
+
+                            if (animeStatsDetailsObject.has("dropped")) {
+                                dropped = animeStatsDetailsObject.getString("dropped");
+                            } else {
+                                dropped = "";
+                            }
+
+                            if (animeStatsDetailsObject.has("plan_to_watch")) {
+                                plan_to_watch = animeStatsDetailsObject.getString("plan_to_watch");
+                            } else {
+                                plan_to_watch = "";
+                            }
+
+                            if (animeStatsDetailsObject.has("total")) {
+                                total = animeStatsDetailsObject.getString("total");
+                            } else {
+                                total = "";
+                            }
+
+                            //  enable updateDataCallback again later
+                            updateDataCallback.onCallback("success");
+                        } catch (JSONException e) {
+                            watching = "";
+                            completed = "";
+                            on_hold = "";
+                            dropped = "";
+                            plan_to_watch = "";
+                            total = "";
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
+                        Log.e("SearchAnime", "Fail" + e.toString());
+                        Log.e("SearchAnime", "Status code: " + statusCode);
+                    }
+                });
             }
 
             @Override
@@ -318,6 +441,8 @@ public class SearchAnime extends AppCompatActivity {
                 Log.e("SearchAnime", "Status code: " + statusCode);
             }
         });
+
+
     }
 
     public interface UpdateDataCallback {
@@ -401,9 +526,6 @@ public class SearchAnime extends AppCompatActivity {
                     });
 
                     //layoutManager.scrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT);
-
-
-
                 }
 
 
