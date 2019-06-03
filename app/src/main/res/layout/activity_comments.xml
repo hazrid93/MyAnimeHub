@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="5dp"
-    android:background="@color/mainBackground"
     tools:context=".CommentsActivity">
+
+    <ImageView
+        android:id="@+id/background_register_1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_watercolour" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cyan_800_overlay" />
 
 
     <TextView
@@ -16,9 +24,12 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:text="Comments:"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"
+        android:fontFamily="@font/roboto_regular"
          />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -26,27 +37,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/textView"
-        android:layout_margin="5dp"></androidx.recyclerview.widget.RecyclerView>
+        android:layout_below="@id/textView"></androidx.recyclerview.widget.RecyclerView>
 
-    <EditText
-        android:id="@+id/comment_input"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginRight="55dp"
-        android:background="@drawable/inputs"
-        android:padding="15dp"
-        android:hint="Write a comment here..."
-        android:inputType="textMultiLine"/>
+        android:gravity="center_vertical">
 
-    <ImageButton
-        android:id="@+id/post_comment_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/comment_input"
-        android:padding="15dp"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/post_comment"/>
+        <EditText
+            android:id="@+id/comment_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/inputs"
+            android:padding="15dp"
+            android:layout_margin="7dp"
+            android:hint="Write a comment here..."
+            android:layout_toLeftOf="@id/post_comment_btn"
+            android:inputType="textMultiLine"/>
+
+        <ImageButton
+            android:id="@+id/post_comment_btn"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="7dp"
+            android:padding="15dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/post_comment"/>
+    </RelativeLayout>
 </RelativeLayout>

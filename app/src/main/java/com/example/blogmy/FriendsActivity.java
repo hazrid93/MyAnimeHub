@@ -79,6 +79,7 @@ public class FriendsActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         updateUserStatus("offline");
+        firebaseRecyclerAdapter.stopListening();
     }
 
     public void updateUserStatus(String state){
@@ -207,5 +208,7 @@ public class FriendsActivity extends AppCompatActivity {
             Picasso.with(ctx).load(profileimage).placeholder(R.drawable.profile).into(this.profileimage);
         }
     }
+
+
 
 }

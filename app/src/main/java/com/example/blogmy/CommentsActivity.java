@@ -78,7 +78,7 @@ public class CommentsActivity extends AppCompatActivity {
         postCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userRef.child(current_user_id).addValueEventListener(new ValueEventListener() {
+                userRef.child(current_user_id).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()){
@@ -133,7 +133,7 @@ public class CommentsActivity extends AppCompatActivity {
             final String saveCurrentDate = currentDate.format(calForDate.getTime());
 
             Calendar calForTime =  Calendar.getInstance();
-            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm");
+            SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
             final String saveCurrentTime = currentTime.format(calForTime.getTime());
 
             final String randomKey = current_user_id + saveCurrentDate + saveCurrentTime;
@@ -145,7 +145,7 @@ public class CommentsActivity extends AppCompatActivity {
             commentsMap.put("time", saveCurrentTime);
             commentsMap.put("username", username);
 
-            postRef.child(randomKey).updateChildren(commentsMap).addOnCompleteListener(new OnCompleteListener() {
+            postRef.push().updateChildren(commentsMap).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if(task.isSuccessful()){
@@ -181,5 +181,11 @@ public class CommentsActivity extends AppCompatActivity {
 
         commentsList.setAdapter(firebaseRecyclerAdapter);
         firebaseRecyclerAdapter.startListening();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        firebaseRecyclerAdapter.stopListening();
     }
 }

@@ -13,14 +13,31 @@
     </include>
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/friends_lists"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/friends_list_toolbar"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="15dp"
-        />
+        android:layout_below="@id/friends_list_toolbar">
+
+        <ImageView
+            android:id="@+id/background_login_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/background_watercolour" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/cyan_800_overlay" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/friends_lists"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            />
+    </RelativeLayout>
 </RelativeLayout>
