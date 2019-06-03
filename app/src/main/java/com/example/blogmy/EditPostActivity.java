@@ -87,6 +87,7 @@ public class EditPostActivity extends AppCompatActivity {
         loadingBar = new ProgressDialog(this);
 
         editorEdit = (RichTextEditor) findViewById(R.id.editorPost);
+        editorEdit.enterEditingMode();
         // set editor not clickable, editable
         //editorTextView.setInputEnabled(false);
 

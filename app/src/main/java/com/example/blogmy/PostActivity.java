@@ -89,6 +89,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         // RICH TEXT EDITOR START
         editor = (RichTextEditor) findViewById(R.id.editor);
         editor.setHtml("<p>Hello There!</p>");
+        editor.enterEditingMode();
         // set editor not clickable, editable
         //editorTextView.setInputEnabled(false);
 
@@ -136,6 +137,8 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Update Post");
+
+        postSummary.requestFocus();
 
         /*
         selectPostImage.setOnClickListener(new View.OnClickListener() {

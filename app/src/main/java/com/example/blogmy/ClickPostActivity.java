@@ -63,6 +63,7 @@ public class ClickPostActivity extends AppCompatActivity {
         // Rich Text Editor
         editorView = (RichTextEditor) findViewById(R.id.click_editor_view);
         editorView.setInputEnabled(false);
+        editorView.enterViewingMode();
 
         postDescription = (TextView) findViewById(R.id.click_post_description);
         editPostButton = (Button) findViewById(R.id.edit_post_button);

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import androidx.annotation.NonNull;
@@ -35,10 +36,13 @@ import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 
 public class SetupActivity extends AppCompatActivity {
 
@@ -160,9 +164,28 @@ public class SetupActivity extends AppCompatActivity {
 
                 final Uri resultUri = result.getUri();
 
+                Bitmap bitmap;
+                try {
+                    bitmap = new Compressor(this)
+                            .setMaxHeight(300) //Set height and width
+                            .setMaxWidth(300)
+                            .setQuality(70)
+                            .compressToBitmap(new File(resultUri.getPath()));
+                } catch (Exception e){
+                    e.printStackTrace();
+                    System.out.println("BlogMy: " + e.getMessage());
+                    Toast.makeText(SetupActivity.this, "Image cannot be cropped, try again.", Toast.LENGTH_SHORT).show();
+                    loadingBar.dismiss();
+                    return;
+                }
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+                final byte[] fileBytes = baos.toByteArray();
+
                 // format to save a file as
                 final StorageReference filePath = userProfileImageRef.child(currentUserId + ".jpg");
-                filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                filePath.putBytes(fileBytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
 

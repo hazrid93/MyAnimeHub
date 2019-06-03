@@ -1,15 +1,16 @@
 package com.example.blogmy;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,18 +27,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import id.zelory.compressor.Compressor;
 
 public class SettingsActivity extends AppCompatActivity {
     private Toolbar mToolbar;
@@ -50,6 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
     final static int Gallery_Pick = 1;
     private StorageReference userProfileImageRef;
     private String downloadUrl;
+    final int REQUEST_CODE = 123;
 
     private String currentUserId;
     @Override
@@ -123,12 +128,46 @@ public class SettingsActivity extends AppCompatActivity {
         userProfImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, Gallery_Pick);
+
+
+                // Check for gallery permission
+                if (ActivityCompat.checkSelfPermission(SettingsActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    ActivityCompat.requestPermissions(SettingsActivity.this,
+                            new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
+                } else {
+                    openGallery();
+                }
             }
         });
+    }
+
+    public void openGallery(){
+        Intent galleryIntent = new Intent();
+        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/*");
+        startActivityForResult(galleryIntent, Gallery_Pick);
+    }
+
+    // when request permission complete
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == REQUEST_CODE) {
+            if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Log.d("Blogmy", "onRequestPermissionsResult() called / PASSED");
+                openGallery();
+            } else {
+                Log.d("Blogmy", "onRequestPermissionsResult() called / DENIED");
+            }
+        }
     }
 
     private void validateAccountInfo() {
@@ -212,6 +251,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==Gallery_Pick && resultCode==RESULT_OK && data!=null){
             Uri imageUri = data.getData();
+            // this will enter onActivityResult again.
             CropImage.activity(imageUri)
                     //   .setGuidelines(CropImageView.Guidelines.ON)
                     .setAspectRatio(1,1)
@@ -226,10 +266,29 @@ public class SettingsActivity extends AppCompatActivity {
                 loadingBar.show();
 
                 final Uri resultUri = result.getUri();
+                Bitmap bitmap;
+                try {
+                    bitmap = new Compressor(this)
+                            .setMaxHeight(300) //Set height and width
+                            .setMaxWidth(300)
+                            .setQuality(70)
+                            .compressToBitmap(new File(resultUri.getPath()));
+                } catch (Exception e){
+                    e.printStackTrace();
+                    System.out.println("BlogMy: " + e.getMessage());
+                    Toast.makeText(SettingsActivity.this, "Image cannot be cropped, try again.", Toast.LENGTH_SHORT).show();
+                    loadingBar.dismiss();
+                    return;
+                }
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+                final byte[] fileBytes = baos.toByteArray();
+
 
                 // format to save a file as
                 final StorageReference filePath = userProfileImageRef.child(currentUserId + ".jpg");
-                filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                filePath.putBytes(fileBytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
 
