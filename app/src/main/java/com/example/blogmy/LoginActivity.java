@@ -64,8 +64,16 @@ public class LoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         // Check user authentication
         currentUser = mAuth.getCurrentUser();
-        
+
+        loadingBar = new ProgressDialog(this);
+
         if(currentUser != null) {
+            loadingBar.setTitle("Signing In");
+            loadingBar.setMessage("Please wait...");
+            loadingBar.show();
+            loadingBar.setCanceledOnTouchOutside(false);
+            loadingBar.setCancelable(false);
+
             currentUserId = mAuth.getCurrentUser().getUid();
             userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -74,10 +82,12 @@ public class LoginActivity extends AppCompatActivity {
                     if (dataSnapshot.exists() && dataSnapshot.hasChild("username") && dataSnapshot.hasChild("fullname")
                             && dataSnapshot.hasChild("country")) {
                             sendUserToMainActivity();
+                             loadingBar.dismiss();
 
                     } else {
                         Toast.makeText(LoginActivity.this, "Please complete your account setup!", Toast.LENGTH_LONG).show();
                         sendUserToSetupActivity();
+                        loadingBar.dismiss();
                     }
                 }
 
@@ -88,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
             });
         }
 
-        loadingBar = new ProgressDialog(this);
+
 
         //animating
         final ImageView backgroundOne = (ImageView) findViewById(R.id.background_login_1);
@@ -181,7 +191,8 @@ public class LoginActivity extends AppCompatActivity {
             loadingBar.setTitle("Google Sign In");
             loadingBar.setMessage("Please wait...");
             loadingBar.show();
-            loadingBar.setCanceledOnTouchOutside(true);
+            loadingBar.setCanceledOnTouchOutside(false);
+            loadingBar.setCancelable(false);
 
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if(result.isSuccess()) {
@@ -233,7 +244,8 @@ public class LoginActivity extends AppCompatActivity {
             loadingBar.setTitle("Logging in");
             loadingBar.setMessage("Please wait...");
             loadingBar.show();
-            loadingBar.setCanceledOnTouchOutside(true);
+            loadingBar.setCanceledOnTouchOutside(false);
+            loadingBar.setCancelable(false);
             mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
