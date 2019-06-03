@@ -1,23 +1,18 @@
 package com.example.blogmy;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,16 +20,12 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextSwitcher;
@@ -43,7 +34,6 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.example.blogmy.cards.SliderAdapter;
-import com.example.blogmy.utils.DecodeBitmapTask;
 import com.example.blogmy.cards.CardSliderLayoutManager;
 import com.example.blogmy.cards.CardSnapHelper;
 import com.google.android.material.tabs.TabLayout;
@@ -130,7 +120,11 @@ public class SearchAnime extends AppCompatActivity {
     private String summaryData;
     private EnhancedWrapContentViewPager viewPager;
     private ViewPagerAdapter adapter;
+
+
+    // Fragments
     private Fragment summaryFragment;
+    private Fragment statsFragment;
     // private HorizontalScrollView anime_titles;
 
     @Override
@@ -213,8 +207,10 @@ public class SearchAnime extends AppCompatActivity {
         viewPager = (EnhancedWrapContentViewPager) findViewById(R.id.search_anime_viewpager);
         // Set the ViewPagerAdapter into ViewPager
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        summaryFragment = new TabFragment();
+        summaryFragment = new SummaryFragment();
+        statsFragment = new StatsFragment();
         adapter.addFrag(summaryFragment, "Summary");
+        adapter.addFrag(statsFragment, "Stats");
         viewPager.setAdapter(adapter);
 
         TabLayout mTabLayout = (TabLayout) findViewById(R.id.search_anime_tab_layout);

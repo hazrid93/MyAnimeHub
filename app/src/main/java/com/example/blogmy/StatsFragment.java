@@ -9,30 +9,32 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class TabFragment extends Fragment {
+public class StatsFragment extends Fragment {
     private TextView textView;
-    private String summaryData;
+   // private String summaryData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /*
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             summaryData = bundle.getString("summaryData");
         }
+        */
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_tab, container, false);
+        return inflater.inflate(R.layout.stats_fragment_tab, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        textView = (TextView) view.findViewById(R.id.fragment_textView);
+        textView = (TextView) view.findViewById(R.id.stats_textView);
 
         textView.setText(summaryData);
     }
