@@ -269,4 +269,9 @@ public class SetupActivity extends AppCompatActivity {
         startActivity(mainIntent);
         finish();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

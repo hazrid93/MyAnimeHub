@@ -36,6 +36,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
@@ -47,12 +53,41 @@ public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1;
     private GoogleApiClient mGoogleSignInClient;
     private static final String TAG = "LoginActivity";
+    private DatabaseReference userRef;
+    String currentUserId;
+    FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mAuth = FirebaseAuth.getInstance();
+        // Check user authentication
+        currentUser = mAuth.getCurrentUser();
+        
+        if(currentUser != null) {
+            currentUserId = mAuth.getCurrentUser().getUid();
+            userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists() && dataSnapshot.hasChild("username") && dataSnapshot.hasChild("fullname")
+                            && dataSnapshot.hasChild("country")) {
+                            sendUserToMainActivity();
+
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Please complete your account setup!", Toast.LENGTH_LONG).show();
+                        sendUserToSetupActivity();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
         loadingBar = new ProgressDialog(this);
 
         //animating
@@ -229,6 +264,13 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
+    private void sendUserToSetupActivity(){
+        Intent setupIntent = new Intent(LoginActivity.this, SetupActivity.class);
+        //setupIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(setupIntent);
+       // finish();
+    }
+
     private void sendToRegister(){
         Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(registerIntent);
@@ -238,11 +280,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Check user authentication
-        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if(currentUser != null){
-            sendUserToMainActivity();
-        }
     }
 }
