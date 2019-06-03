@@ -46,6 +46,7 @@ public class CommentsActivity extends AppCompatActivity {
     private String postKey, current_user_id;
     private FirebaseAuth mAuth;
     private DatabaseReference userRef, postRef;
+    private Toolbar toolbar;
 
     private FirebaseRecyclerOptions<Comments> options;
     FirebaseRecyclerAdapter<Comments, CommentsViewHolder> firebaseRecyclerAdapter;
@@ -55,6 +56,11 @@ public class CommentsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comments);
+
+        toolbar = (Toolbar) findViewById(R.id.comments_page_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Comments");
 
         postKey = getIntent().getExtras().get("PostKey").toString();
 
