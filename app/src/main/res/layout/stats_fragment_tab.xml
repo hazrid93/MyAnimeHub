@@ -4,13 +4,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <LinearLayout
         android:id="@+id/stats_textView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:textSize="18sp"
-        android:fontFamily="@font/roboto_regular"
-        android:textColor="@android:color/black" />
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/stats_watching"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:padding="20dp"
+            android:textSize="18sp"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/stats_completed"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:textSize="18sp"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/stats_scores"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:textSize="18sp"
+            android:text="Scores (from MAL): "
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/stats_textView"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+            <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/stat_pie_chart"
+            android:layout_width="match_parent"
+            android:layout_height="700dp"></com.github.mikephil.charting.charts.PieChart>
+    </RelativeLayout>
 
 </LinearLayout>

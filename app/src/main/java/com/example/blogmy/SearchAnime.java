@@ -49,6 +49,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +135,27 @@ public class SearchAnime extends AppCompatActivity {
     private String dropped;
     private String plan_to_watch;
     private String total;
-    private JSONObject scores;
+
+    private double score_1_pct;
+    private double score_2_pct;
+    private double score_3_pct;
+    private double score_4_pct;
+    private double score_5_pct;
+    private double score_6_pct;
+    private double score_7_pct;
+    private double score_8_pct;
+    private double score_9_pct;
+    private double score_10_pct;
+    private String score_1_vt;
+    private String score_2_vt;
+    private String score_3_vt;
+    private String score_4_vt;
+    private String score_5_vt;
+    private String score_6_vt;
+    private String score_7_vt;
+    private String score_8_vt;
+    private String score_9_vt;
+    private String score_10_vt;
 
 
 
@@ -273,7 +294,30 @@ public class SearchAnime extends AppCompatActivity {
         bundleStat.putString("on_hold", on_hold);
         bundleStat.putString("dropped", dropped);
         bundleStat.putString("plan_to_watch", plan_to_watch);
-        bundleStat.putString("total", total);
+
+        // score part
+        bundleStat.putDouble("score_1_pct", score_1_pct);
+        bundleStat.putDouble("score_2_pct", score_2_pct);
+        bundleStat.putDouble("score_3_pct", score_3_pct);
+        bundleStat.putDouble("score_4_pct", score_4_pct);
+        bundleStat.putDouble("score_5_pct", score_5_pct);
+        bundleStat.putDouble("score_6_pct", score_6_pct);
+        bundleStat.putDouble("score_7_pct", score_7_pct);
+        bundleStat.putDouble("score_8_pct", score_8_pct);
+        bundleStat.putDouble("score_9_pct", score_9_pct);
+        bundleStat.putDouble("score_10_pct", score_10_pct);
+
+        bundleStat.putString("score_1_vt", score_1_vt);
+        bundleStat.putString("score_2_vt", score_2_vt);
+        bundleStat.putString("score_3_vt", score_3_vt);
+        bundleStat.putString("score_4_vt", score_4_vt);
+        bundleStat.putString("score_5_vt", score_5_vt);
+        bundleStat.putString("score_6_vt", score_6_vt);
+        bundleStat.putString("score_7_vt", score_7_vt);
+        bundleStat.putString("score_8_vt", score_8_vt);
+        bundleStat.putString("score_9_vt", score_9_vt);
+        bundleStat.putString("score_10_vt", score_10_vt);
+
         statsFragment.setArguments(bundleStat);
 
         adapter.notifyDataSetChanged();
@@ -414,6 +458,109 @@ public class SearchAnime extends AppCompatActivity {
                                 total = "";
                             }
 
+                            if (animeStatsDetailsObject.has("scores")) {
+                                if(animeStatsDetailsObject.getJSONObject("scores").has("1")){
+                                    score_1_pct = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("1").getDouble("percentage");
+                                    score_1_vt = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("1").getString("votes");
+                                } else {
+                                    score_1_pct = 0.0;
+                                    score_1_vt = "0";
+                                }
+
+                                if(animeStatsDetailsObject.getJSONObject("scores").has("2")){
+                                    score_2_pct = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("2").getDouble("percentage");
+                                    score_2_vt = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("2").getString("votes");
+                                } else {
+                                    score_2_pct = 0.0;
+                                    score_2_vt = "0";
+                                }
+
+                                if(animeStatsDetailsObject.getJSONObject("scores").has("3")){
+                                    score_3_pct = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("3").getDouble("percentage");
+                                    score_3_vt = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("3").getString("votes");
+                                } else {
+                                    score_3_pct = 0.0;
+                                    score_3_vt = "0";
+                                }
+
+                                if(animeStatsDetailsObject.getJSONObject("scores").has("4")){
+                                    score_4_pct = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("4").getDouble("percentage");
+                                    score_4_vt = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("4").getString("votes");
+                                } else {
+                                    score_4_pct = 0.0;
+                                    score_4_vt = "0";
+                                }
+
+                                if(animeStatsDetailsObject.getJSONObject("scores").has("5")){
+                                    score_5_pct = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("5").getDouble("percentage");
+                                    score_5_vt = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("5").getString("votes");
+                                } else {
+                                    score_5_pct = 0.0;
+                                    score_5_vt = "0";
+                                }
+
+                                if(animeStatsDetailsObject.getJSONObject("scores").has("6")){
+                                    score_6_pct = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("6").getDouble("percentage");
+                                    score_6_vt = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("6").getString("votes");
+                                } else {
+                                    score_6_pct = 0.0;
+                                    score_6_vt = "0";
+                                }
+
+                                if(animeStatsDetailsObject.getJSONObject("scores").has("7")){
+                                    score_7_pct = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("7").getDouble("percentage");
+                                    score_7_vt = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("7").getString("votes");
+                                } else {
+                                    score_3_pct = 0.0;
+                                    score_3_vt = "0";
+                                }
+
+                                if(animeStatsDetailsObject.getJSONObject("scores").has("8")){
+                                    score_8_pct = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("8").getDouble("percentage");
+                                    score_8_vt = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("8").getString("votes");
+                                } else {
+                                    score_8_pct = 0.0;
+                                    score_8_vt = "0";
+                                }
+
+                                if(animeStatsDetailsObject.getJSONObject("scores").has("9")){
+                                    score_9_pct = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("9").getDouble("percentage");
+                                    score_9_vt = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("9").getString("votes");
+                                } else {
+                                    score_9_pct = 0.0;
+                                    score_9_vt = "0";
+                                }
+
+                                if(animeStatsDetailsObject.getJSONObject("scores").has("10")){
+                                    score_10_pct = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("10").getDouble("percentage");
+                                    score_10_vt = animeStatsDetailsObject.getJSONObject("scores").getJSONObject("10").getString("votes");
+                                } else {
+                                    score_10_pct = 0.0;
+                                    score_10_vt = "0";
+                                }
+                            } else {
+                                score_1_pct = 0.0;
+                                score_1_vt = "0";
+                                score_2_pct = 0.0;
+                                score_2_vt = "0";
+                                score_3_pct = 0.0;
+                                score_3_vt = "0";
+                                score_4_pct = 0.0;
+                                score_4_vt = "0";
+                                score_5_pct = 0.0;
+                                score_5_vt = "0";
+                                score_6_pct = 0.0;
+                                score_6_vt = "0";
+                                score_7_pct = 0.0;
+                                score_7_vt = "0";
+                                score_8_pct = 0.0;
+                                score_8_vt = "0";
+                                score_9_pct = 0.0;
+                                score_9_vt = "0";
+                                score_10_pct = 0.0;
+                                score_10_vt = "0";
+                            }
+
                             //  enable updateDataCallback again later
                             updateDataCallback.onCallback("success");
                         } catch (JSONException e) {
@@ -423,6 +570,27 @@ public class SearchAnime extends AppCompatActivity {
                             dropped = "";
                             plan_to_watch = "";
                             total = "";
+
+                            score_1_pct = 0.0;
+                            score_1_vt = "0";
+                            score_2_pct = 0.0;
+                            score_2_vt = "0";
+                            score_3_pct = 0.0;
+                            score_3_vt = "0";
+                            score_4_pct = 0.0;
+                            score_4_vt = "0";
+                            score_5_pct = 0.0;
+                            score_5_vt = "0";
+                            score_6_pct = 0.0;
+                            score_6_vt = "0";
+                            score_7_pct = 0.0;
+                            score_7_vt = "0";
+                            score_8_pct = 0.0;
+                            score_8_vt = "0";
+                            score_9_pct = 0.0;
+                            score_9_vt = "0";
+                            score_10_pct = 0.0;
+                            score_10_vt = "0";
                             e.printStackTrace();
                         }
                     }

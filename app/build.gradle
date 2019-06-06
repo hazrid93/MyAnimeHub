@@ -44,6 +44,7 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.11.2'
     //implementation 'com.iceteck.silicompressorr:silicompressor:2.2.1'
     implementation 'id.zelory:compressor:2.1.0'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
 }
 
 apply plugin: 'com.google.gms.google-services'
