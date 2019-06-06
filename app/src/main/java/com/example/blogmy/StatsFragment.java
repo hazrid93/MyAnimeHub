@@ -28,6 +28,7 @@ import java.util.List;
 public class StatsFragment extends Fragment {
     private TextView watching_textView;
     private TextView completed_textView;
+    private TextView stats_scores;
     private String watching;
     private String completed;
     private String on_hold;
@@ -108,9 +109,23 @@ public class StatsFragment extends Fragment {
         watching_textView = (TextView) view.findViewById(R.id.stats_watching);
         completed_textView = (TextView) view.findViewById(R.id.stats_completed);
         stat_pie_chart = (PieChart) view.findViewById(R.id.stat_pie_chart);
+        stats_scores = (TextView) view.findViewById(R.id.stats_scores);
 
         watching_textView.setText("Watching: " + watching);
         completed_textView.setText("Completed Watching: " + completed);
+        stats_scores.setText("Scores (from MAL): \n\n"
+                + " - 1 Star: " +  score_1_vt + "\n"
+                + " - 2 Star: " +  score_2_vt + "\n"
+                + " - 3 Star: " +  score_3_vt + "\n"
+                + " - 4 Star: " +  score_4_vt + "\n"
+                + " - 5 Star: " +  score_5_vt + "\n"
+                + " - 6 Star: " +  score_6_vt + "\n"
+                + " - 7 Star: " +  score_7_vt + "\n"
+                + " - 8 Star: " +  score_8_vt + "\n"
+                + " - 9 Star: " +  score_9_vt + "\n"
+                + " - 10 Star: " +  score_10_vt + "\n");
+
+
 
 
         // set data for pie chart
