@@ -46,13 +46,13 @@
         android:layout_width="match_parent"
         android:gravity="start"
         android:layout_gravity="start"
-        android:layout_height="wrap_content">
+        android:layout_height="500dp">
 
 
             <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/stat_pie_chart"
             android:layout_width="match_parent"
-            android:layout_height="700dp"></com.github.mikephil.charting.charts.PieChart>
+            android:layout_height="match_parent"></com.github.mikephil.charting.charts.PieChart>
     </RelativeLayout>
 
 </LinearLayout>
