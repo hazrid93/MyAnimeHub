@@ -1,12 +1,16 @@
 package com.example.blogmy;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -97,7 +101,47 @@ public class CharactersFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         System.out.println("CharacterFragment id: " + anime_id);
+
+
         characters_list_layout = (ListView) view.findViewById(R.id.character_list_layout);
+
+
+        // when using listview inside scrollview , use this hack to override the scrollview and scroll the listview instead
+        characters_list_layout.setOnTouchListener(new ListView.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disallow ScrollView to intercept touch events.
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        // Allow ScrollView to intercept touch events.
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+
+                // Handle ListView touch events.
+                v.onTouchEvent(event);
+                return true;
+            }
+        });
+
+        characters_list_layout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String charName = adapter.getItem(position).getName();
+                String charId = adapter.getItem(position).getMal_id();
+                String charURL = adapter.getItem(position).getImage_url();
+                Intent fullscreenIntent = new Intent(getActivity(), FullscreenCharActivity.class);
+                fullscreenIntent.putExtra("charName", charName);
+                fullscreenIntent.putExtra("charId", charId);
+                fullscreenIntent.putExtra("charURL", charURL);
+                startActivity(fullscreenIntent);
+            }
+        });
         initGetCharacter();
 
 
@@ -112,6 +156,7 @@ public class CharactersFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
     }
+
 
 
     // using JIKAN api
@@ -134,7 +179,7 @@ public class CharactersFragment extends Fragment {
                 try {
                     character_array = (JSONArray)response.getJSONArray("characters");
                     characters_data_list= Characters.fromJson(character_array);
-                    adapter = new CharactersAdapter(getContext(), characters_data_list);
+                    adapter = new CharactersAdapter(getContext(), R.layout.characters_lists, characters_data_list);
                     characters_list_layout.setAdapter(adapter);
                     adapter.addAll(characters_data_list);
 
@@ -154,12 +199,13 @@ public class CharactersFragment extends Fragment {
     }
 
     class CharactersAdapter extends ArrayAdapter<Characters> {
-        public CharactersAdapter(Context context, ArrayList<Characters> characters) {
-            super(context, 0);
+        public CharactersAdapter(Context context, int resource, ArrayList<Characters> characters) {
+            super(context, resource, characters);
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
             // Get the data item for this position
             Characters character = getItem(position);
             // Check if an existing view is being reused, otherwise inflate the view

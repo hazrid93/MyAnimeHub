@@ -16,6 +16,7 @@ public class EnhancedWrapContentViewPager extends ViewPager {
         super(context, attrs);
     }
 
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int mode = MeasureSpec.getMode(heightMeasureSpec);

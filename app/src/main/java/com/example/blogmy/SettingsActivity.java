@@ -75,9 +75,11 @@ public class SettingsActivity extends AppCompatActivity {
         loadingBar = new ProgressDialog(this);
         mToolbar = (Toolbar) findViewById(R.id.settings_toolbar);
         // link the activity view with toolbar view
+        /*
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Account Settings");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        */
 
         userProfileImageRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
         userName = (TextInputEditText) findViewById(R.id.settings_username);
