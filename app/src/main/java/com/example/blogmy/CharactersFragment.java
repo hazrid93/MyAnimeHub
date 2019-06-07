@@ -26,7 +26,7 @@ import java.util.List;
 
 public class CharactersFragment extends Fragment {
     private TextView watching_textView;
-    private String watching;
+    private String anime_id;
 
 
     @Override
@@ -34,7 +34,7 @@ public class CharactersFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-            //watching = bundle.getString("watching");
+            anime_id = bundle.getString("anime_id");
         }
 
     }
@@ -49,6 +49,7 @@ public class CharactersFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        System.out.println("CharacterFragment id: " + anime_id);
         //watching_textView = (TextView) view.findViewById(R.id.stats_watching);
 
     }

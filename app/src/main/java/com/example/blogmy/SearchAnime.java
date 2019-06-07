@@ -327,7 +327,7 @@ public class SearchAnime extends AppCompatActivity {
 
         // Character Fragment update
         Bundle bundleChar = new Bundle();
-        bundleStat.putString("animeId", anime_id);
+        bundleChar.putString("anime_id", anime_id);
         charactersFragment.setArguments(bundleChar);
 
         adapter.notifyDataSetChanged();
@@ -747,11 +747,11 @@ public class SearchAnime extends AppCompatActivity {
         scoreSwitcher.setCurrentText("Score: " + scoreList.get(0) + "/10");
         clockSwitcher.setCurrentText(startTimeList.get(0) + " ~ " + endTimeList.get(0));
         descriptionsSwitcher.setCurrentText("Type: " + typeList.get(0));
-        anime_id = animeIdList.get(0);
         initGetAnimeDetails(animeIdList.get(0), new UpdateDataCallback() {
             @Override
             public void onCallback(String value) {
                 updateFragment();
+                anime_id = animeIdList.get(0);
             }
         });
     }
@@ -782,14 +782,13 @@ public class SearchAnime extends AppCompatActivity {
         previewImgSwitcher.setFactory(new ImageViewFactory());
         */
 
-        // updateAnimeDetails(animeIdList.get(0));
-        anime_id = animeIdList.get(0);
 
         // get current active initial = 0 , anime id here when card switch
         initGetAnimeDetails(animeIdList.get(0), new UpdateDataCallback() {
                 @Override
                 public void onCallback(String value) {
                     updateFragment();
+                    anime_id = animeIdList.get(0);
                 }
             });
     }
@@ -888,7 +887,7 @@ public class SearchAnime extends AppCompatActivity {
         onActiveCardChange(pos);
     }
 
-    private void onActiveCardChange(int pos) {
+    private void onActiveCardChange(final int pos) {
         int animH[] = new int[] {R.anim.slide_in_right, R.anim.slide_out_left};
         int animV[] = new int[] {R.anim.slide_in_top, R.anim.slide_out_bottom};
 
@@ -921,7 +920,6 @@ public class SearchAnime extends AppCompatActivity {
 
 
         currentPosition = pos;
-        anime_id = animeIdList.get(pos);
 
         // get current active anime id here when card switch
 
@@ -929,6 +927,7 @@ public class SearchAnime extends AppCompatActivity {
             @Override
             public void onCallback(String value) {
                 updateFragment();
+                anime_id = animeIdList.get(pos);
             }
         });
     }
