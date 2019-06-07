@@ -124,6 +124,7 @@ public class SearchAnime extends AppCompatActivity {
     // Fragments
     private Fragment summaryFragment;
     private Fragment statsFragment;
+    private Fragment charactersFragment;
     private JSONObject animeDetailsObject;
     private JSONObject animeStatsDetailsObject;
     // Summary fragment
@@ -156,6 +157,9 @@ public class SearchAnime extends AppCompatActivity {
     private String score_8_vt;
     private String score_9_vt;
     private String score_10_vt;
+
+    // Characters fragment
+    private String anime_id;
 
 
 
@@ -246,8 +250,10 @@ public class SearchAnime extends AppCompatActivity {
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         summaryFragment = new SummaryFragment();
         statsFragment = new StatsFragment();
+        charactersFragment = new CharactersFragment();
         adapter.addFrag(summaryFragment, "Summary");
         adapter.addFrag(statsFragment, "Stats");
+        adapter.addFrag(charactersFragment, "Characters");
         viewPager.setAdapter(adapter);
 
         TabLayout mTabLayout = (TabLayout) findViewById(R.id.search_anime_tab_layout);
@@ -317,8 +323,12 @@ public class SearchAnime extends AppCompatActivity {
         bundleStat.putString("score_8_vt", score_8_vt);
         bundleStat.putString("score_9_vt", score_9_vt);
         bundleStat.putString("score_10_vt", score_10_vt);
-
         statsFragment.setArguments(bundleStat);
+
+        // Character Fragment update
+        Bundle bundleChar = new Bundle();
+        bundleStat.putString("animeId", anime_id);
+        charactersFragment.setArguments(bundleChar);
 
         adapter.notifyDataSetChanged();
 
@@ -737,7 +747,7 @@ public class SearchAnime extends AppCompatActivity {
         scoreSwitcher.setCurrentText("Score: " + scoreList.get(0) + "/10");
         clockSwitcher.setCurrentText(startTimeList.get(0) + " ~ " + endTimeList.get(0));
         descriptionsSwitcher.setCurrentText("Type: " + typeList.get(0));
-
+        anime_id = animeIdList.get(0);
         initGetAnimeDetails(animeIdList.get(0), new UpdateDataCallback() {
             @Override
             public void onCallback(String value) {
@@ -773,6 +783,7 @@ public class SearchAnime extends AppCompatActivity {
         */
 
         // updateAnimeDetails(animeIdList.get(0));
+        anime_id = animeIdList.get(0);
 
         // get current active initial = 0 , anime id here when card switch
         initGetAnimeDetails(animeIdList.get(0), new UpdateDataCallback() {
@@ -908,9 +919,9 @@ public class SearchAnime extends AppCompatActivity {
 
         descriptionsSwitcher.setText("Type: " + typeList.get(pos));
 
-       // updateAnimeDetails(animeIdList.get(pos));
 
         currentPosition = pos;
+        anime_id = animeIdList.get(pos);
 
         // get current active anime id here when card switch
 
