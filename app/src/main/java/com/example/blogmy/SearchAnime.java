@@ -993,6 +993,7 @@ public class SearchAnime extends AppCompatActivity {
         }
     }
 
+
     private class OnCardClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -1009,10 +1010,10 @@ public class SearchAnime extends AppCompatActivity {
             }
 
             final int clickedPosition = recyclerView.getChildAdapterPosition(view);
-            if (clickedPosition == activeCardPosition) {
-                final Intent intent = new Intent(SearchAnime.this, DetailsActivity.class);
+           // if (clickedPosition == activeCardPosition) {
+              //  final Intent intent = new Intent(SearchAnime.this, DetailsActivity.class);
              //   intent.putExtra(DetailsActivity.BUNDLE_IMAGE_ID, pics[activeCardPosition % pics.length]);
-
+                /*
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                     startActivity(intent);
                 } else {
@@ -1023,9 +1024,11 @@ public class SearchAnime extends AppCompatActivity {
                     startActivity(intent, options.toBundle());
                 }
             } else if (clickedPosition > activeCardPosition) {
+            */
+                if (clickedPosition > activeCardPosition) {
                 recyclerView.smoothScrollToPosition(clickedPosition);
                 onActiveCardChange(clickedPosition);
-            }
+                }
 
         }
     }

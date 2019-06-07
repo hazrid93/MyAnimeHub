@@ -25,7 +25,7 @@ public class DetailsActivity extends AppCompatActivity implements DecodeBitmapTa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-
+        /*
         final int smallResId = getIntent().getIntExtra(BUNDLE_IMAGE_ID, -1);
         if (smallResId == -1) {
             finish();
@@ -69,8 +69,9 @@ public class DetailsActivity extends AppCompatActivity implements DecodeBitmapTa
                 }
             });
         }
+        */
     }
-
+    /*
     @Override
     protected void onPause() {
         super.onPause();
@@ -79,6 +80,7 @@ public class DetailsActivity extends AppCompatActivity implements DecodeBitmapTa
             decodeBitmapTask.cancel(true);
         }
     }
+
 
     private void addCardCorners() {
         final CardView cardView = (CardView) findViewById(R.id.card);
@@ -93,6 +95,7 @@ public class DetailsActivity extends AppCompatActivity implements DecodeBitmapTa
     private void loadFullSizeBitmap(int smallResId) {
         int bigResId;
         switch (smallResId) {
+
             case R.drawable.p1: bigResId = R.drawable.p1_big; break;
             case R.drawable.p2: bigResId = R.drawable.p2_big; break;
             case R.drawable.p3: bigResId = R.drawable.p3_big; break;
@@ -110,10 +113,11 @@ public class DetailsActivity extends AppCompatActivity implements DecodeBitmapTa
         decodeBitmapTask = new DecodeBitmapTask(getResources(), bigResId, w, h, this);
         decodeBitmapTask.execute();
     }
-
+*/
     @Override
     public void onPostExecuted(Bitmap bitmap) {
         imageView.setImageBitmap(bitmap);
     }
+
 
 }
