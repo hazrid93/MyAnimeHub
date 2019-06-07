@@ -687,10 +687,12 @@ public class SearchAnime extends AppCompatActivity {
 
                 if(update == false){
                     sliderAdapter = new SliderAdapter(SearchAnime.this, picsList, topAiringAnime.size(), new OnCardClickListener());
+                    anime_id = animeIdList.get(0);
                     initRecyclerView();
                     initTitleText();
                     initSwitchers();
                 } else {
+                    anime_id = animeIdList.get(0);
                     sliderAdapter.updateData(picsList, new UpdateDataCallback(){
                         @Override
                         public void onCallback(String value) {
@@ -751,7 +753,7 @@ public class SearchAnime extends AppCompatActivity {
             @Override
             public void onCallback(String value) {
                 updateFragment();
-                anime_id = animeIdList.get(0);
+
             }
         });
     }
@@ -788,7 +790,6 @@ public class SearchAnime extends AppCompatActivity {
                 @Override
                 public void onCallback(String value) {
                     updateFragment();
-                    anime_id = animeIdList.get(0);
                 }
             });
     }
@@ -920,6 +921,7 @@ public class SearchAnime extends AppCompatActivity {
 
 
         currentPosition = pos;
+        anime_id = animeIdList.get(pos);
 
         // get current active anime id here when card switch
 
@@ -927,7 +929,6 @@ public class SearchAnime extends AppCompatActivity {
             @Override
             public void onCallback(String value) {
                 updateFragment();
-                anime_id = animeIdList.get(pos);
             }
         });
     }
