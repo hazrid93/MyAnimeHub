@@ -207,6 +207,7 @@ public class SearchAnime extends AppCompatActivity {
         // START: SCROLLING PART AND FLOATING ACTION BUTTON
         scrollView = (NestedScrollView) findViewById(R.id.search_anime_scroll);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.search_anime_floating_button);
+        floatingActionButton.setVisibility(View.INVISIBLE);
         // ALTERNATIVE, WARNING viewTreeObserver can cause memory leaks.
         // https://developer.android.com/reference/android/view/ViewTreeObserver.html
         // viewtreeobserver is needed so that we got the data reference when the view is laid out on screen
@@ -215,10 +216,10 @@ public class SearchAnime extends AppCompatActivity {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
                 System.out.println("SCROLL DATA: " + "X: " + scrollX + ",Y: " + scrollY);
-                if(scrollY > 100){
-                    floatingActionButton.setVisibility(View.INVISIBLE);
-                } else {
+                if(scrollY > 200){
                     floatingActionButton.setVisibility(View.VISIBLE);
+                } else {
+                    floatingActionButton.setVisibility(View.INVISIBLE);
                 }
             }
         });
