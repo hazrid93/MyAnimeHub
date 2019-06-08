@@ -38,6 +38,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+    implementation 'com.github.mohan-dev1248:PosterSlider:1.0.2'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.ramotion.cardslider:card-slider:0.3.1'
     implementation 'com.loopj.android:android-async-http:1.4.9'
@@ -46,6 +47,7 @@ dependencies {
     //implementation 'com.iceteck.silicompressorr:silicompressor:2.2.1'
     implementation 'id.zelory:compressor:2.1.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

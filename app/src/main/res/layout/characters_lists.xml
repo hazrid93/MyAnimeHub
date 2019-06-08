@@ -8,7 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:padding="10dp"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:background="@drawable/layout_bg">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -17,48 +19,65 @@
             android:layout_height="85dp"
             android:layout_marginLeft="10dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginTop="-10dp"
             android:src="@drawable/profile"/>
 
         <LinearLayout
-            android:layout_toRightOf="@id/all_friends_profile_image"
+            android:id="@+id/character_list_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_margin="5dp">
 
-            <LinearLayout
 
+            <TextView
+                android:id="@+id/char_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="5dp">
+                android:text="Character Name"
+                android:singleLine="true"
+                android:paddingLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
-                <TextView
-                    android:id="@+id/char_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Character Name"
-                    android:textAlignment="textStart"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-
-
-            </LinearLayout>
 
             <TextView
                 android:id="@+id/char_role"
-                android:layout_width="190dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Role"
-                android:layout_margin="5dp"
+                android:paddingLeft="10dp"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/holo_blue_dark"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
 
+            <RelativeLayout
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:gravity="center">
+
+                <ImageView
+
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:scaleType="fitCenter"
+                    android:padding="8dp"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/image_filter"/>
+
+
+            </RelativeLayout>
 
         </LinearLayout>
+
+
+
+
 
     </LinearLayout>
 

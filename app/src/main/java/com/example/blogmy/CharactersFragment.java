@@ -105,7 +105,6 @@ public class CharactersFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         System.out.println("CharacterFragment id: " + anime_id);
 
-
         characters_list_layout = (ListView) view.findViewById(R.id.character_list_layout);
 
 
@@ -142,6 +141,7 @@ public class CharactersFragment extends Fragment {
                 fullscreenIntent.putExtra("charName", charName);
                 fullscreenIntent.putExtra("charId", charId);
                 fullscreenIntent.putExtra("charURL", charURL);
+                System.out.println("CharactersFragment id: " + anime_id + ", name: " +charName);
                 startActivity(fullscreenIntent);
             }
         });
@@ -186,9 +186,10 @@ public class CharactersFragment extends Fragment {
                 try {
                     character_array = (JSONArray)response.getJSONArray("characters");
                     characters_data_list= Characters.fromJson(character_array);
+                    System.out.println("CharactersFragment data list: " + characters_data_list.size());
                     adapter = new CharactersAdapter(classContext, R.layout.characters_lists, characters_data_list);
                     characters_list_layout.setAdapter(adapter);
-                    adapter.addAll(characters_data_list);
+                   // adapter.addAll(characters_data_list);
 
 
                 } catch (JSONException e) {
