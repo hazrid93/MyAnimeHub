@@ -37,8 +37,13 @@ public class SummaryFragment extends Fragment {
         textView = (TextView) view.findViewById(R.id.fragment_textView);
         textView_title = (TextView) view.findViewById(R.id.fragment_textView_title);
 
+
         textView_title.setText(summaryTitle);
+        // set drawable programmatically
+       // textView_title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.label_title, 0, 0, 0);
         textView.setText(summaryData);
+
+
     }
 
 

@@ -193,6 +193,7 @@ public class SearchAnime extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Anime Explorer");
 
+
         searchTypeTopButton = (Button) findViewById(R.id.search_top_button_type);
         searchTypeTopButton.setPressed(true);
         searchTypeTopButton.setClickable(false);
