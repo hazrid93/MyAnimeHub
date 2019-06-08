@@ -71,6 +71,7 @@ public class Characters {
                 characters.add(new Characters(jsonObjects.getJSONObject(i)));
             } catch (JSONException e) {
                 e.printStackTrace();
+                characters.add(new Characters("null", "null", "null", "null"));
             }
         }
         return characters;

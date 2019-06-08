@@ -79,6 +79,7 @@ public class CharactersFragment extends Fragment {
     private static final String JIKAN_ANIME_STATS_DEFAULT= JIKAN_URL + "/" + JIKAN_TYPE_ANIME + "/";
 
     private AsyncHttpClient client;
+    private Context classContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,6 +99,7 @@ public class CharactersFragment extends Fragment {
     }
 
     // Views are fully created
+    // using context in fragment https://stackoverflow.com/questions/8215308/using-context-in-a-fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -148,6 +150,9 @@ public class CharactersFragment extends Fragment {
 
     }
 
+
+
+
     @Override
     public void onStart() {
         super.onStart();
@@ -156,6 +161,7 @@ public class CharactersFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        classContext = context;
     }
 
 
@@ -180,7 +186,7 @@ public class CharactersFragment extends Fragment {
                 try {
                     character_array = (JSONArray)response.getJSONArray("characters");
                     characters_data_list= Characters.fromJson(character_array);
-                    adapter = new CharactersAdapter(getContext(), R.layout.characters_lists, characters_data_list);
+                    adapter = new CharactersAdapter(classContext, R.layout.characters_lists, characters_data_list);
                     characters_list_layout.setAdapter(adapter);
                     adapter.addAll(characters_data_list);
 
@@ -206,32 +212,5 @@ public class CharactersFragment extends Fragment {
         client.cancelAllRequests(true);
     }
 
-    class CharactersAdapter extends ArrayAdapter<Characters> {
-        public CharactersAdapter(Context context, int resource, ArrayList<Characters> characters) {
-            super(context, resource, characters);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            // Get the data item for this position
-            Characters character = getItem(position);
-            // Check if an existing view is being reused, otherwise inflate the view
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.characters_lists, parent, false);
-            }
-            // Lookup view for data population
-            TextView char_name = (TextView) convertView.findViewById(R.id.char_name);
-            TextView char_role = (TextView) convertView.findViewById(R.id.char_role);
-            CircleImageView char_image_url = (CircleImageView) convertView.findViewById(R.id.char_img_url);
-
-            // Populate the data into the template view using the data object
-            char_name.setText(character.name);
-            char_role.setText(character.role);
-            Picasso.with(getContext()).load(character.image_url).placeholder(R.drawable.profile).into(char_image_url);
-            // Return the completed view to render on screen
-            return convertView;
-        }
-    }
 
 }

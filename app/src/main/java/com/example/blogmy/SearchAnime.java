@@ -215,7 +215,6 @@ public class SearchAnime extends AppCompatActivity {
         scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                System.out.println("SCROLL DATA: " + "X: " + scrollX + ",Y: " + scrollY);
                 if(scrollY > 200){
                     floatingActionButton.setVisibility(View.VISIBLE);
                 } else {

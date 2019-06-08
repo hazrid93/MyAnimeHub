@@ -13,7 +13,7 @@
             android:id="@+id/stats_watching"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:padding="10dp"
             android:textSize="18sp"
             android:fontFamily="@font/roboto_regular"
@@ -42,13 +42,11 @@
 
     <RelativeLayout
         android:layout_below="@id/stats_textView"
-        android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:layout_width="match_parent"
         android:gravity="start"
         android:layout_gravity="start"
         android:layout_height="550dp"
-        android:paddingTop="10dp"
         android:paddingBottom="10dp">
 
 
