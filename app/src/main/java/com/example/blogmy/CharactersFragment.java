@@ -78,6 +78,7 @@ public class CharactersFragment extends Fragment {
     private static final String JIKAN_ANIME_DETAILS_DEFAULT = JIKAN_URL + "/" + JIKAN_TYPE_ANIME + "/";
     private static final String JIKAN_ANIME_STATS_DEFAULT= JIKAN_URL + "/" + JIKAN_TYPE_ANIME + "/";
 
+    private AsyncHttpClient client;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -166,7 +167,7 @@ public class CharactersFragment extends Fragment {
     }
 
     private void fetchCharactersResources(RequestParams params, String URL){
-        AsyncHttpClient client = new AsyncHttpClient();
+        client = new AsyncHttpClient();
 
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
@@ -196,6 +197,13 @@ public class CharactersFragment extends Fragment {
                 Log.e("CharactersFragment", "Status code: " + statusCode);
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        System.out.println("CharacterFragment client interrupt");
+        client.cancelAllRequests(true);
     }
 
     class CharactersAdapter extends ArrayAdapter<Characters> {

@@ -13,13 +13,10 @@
         layout="@layout/app_bar_layout">
     </include>
 
-
-
-
-    <RelativeLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/search_anime_list_toolbar">
+        android:layout_below="@id/search_anime_list_toolbar"
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/background_login_1"
@@ -33,320 +30,292 @@
             android:layout_height="match_parent"
             android:background="@color/cyan_800_overlay" />
 
-        <ScrollView
-            android:id="@+id/search_anime_scroll"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true">
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/search_anime_floating_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            app:backgroundTint="@color/red_700"
+            android:src="@drawable/arrow_up_bold_outline"/>
 
-            <LinearLayout
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/search_anime_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true">
 
-                <RelativeLayout
-                    android:id="@+id/my_anime_search_layout"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/search_anime_textId"
+                    <RelativeLayout
+                        android:id="@+id/my_anime_search_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:textColor="@android:color/white"
-                        android:text="Search for a title:"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:layout_marginLeft="35dp"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="@font/roboto_regular"
-                        />
+                        android:layout_marginTop="15dp">
 
-                    <EditText
-                        android:id="@+id/search_anime_box_input"
-                        android:layout_width="280dp"
-                        android:layout_height="50dp"
-                        android:layout_below="@id/search_anime_textId"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginLeft="35dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/inputs"
-                        android:textSize="18sp"
-                        android:hint="Search..."
-                        android:inputType="text"
-                        android:padding="10dp"
-                        android:textColor="@android:color/black"
-                        android:textColorHint="@color/colorProfile"
-                        />
+                        <TextView
+                            android:id="@+id/search_anime_textId"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:textColor="@android:color/white"
+                            android:text="Search for a title:"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_marginLeft="35dp"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="@font/roboto_regular"
+                            />
 
-                    <ImageButton
-                        android:id="@+id/search_anime_button"
-                        android:layout_width="60dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_below="@id/search_anime_textId"
-                        android:layout_toEndOf="@id/search_anime_box_input"
-                        android:backgroundTint="@android:color/transparent"
-                        android:background="@drawable/inputs"
-                        android:src="@drawable/search"
-                        android:gravity="center"
-                        />
-
-                </RelativeLayout>
-
-
-                <HorizontalScrollView
-                    android:id="@+id/search_anime_index_scroll"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <LinearLayout
-                        android:id="@+id/search_anime_index"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="35dp"
-                        android:layout_marginRight="35dp"
-                        android:orientation="horizontal"
-                        android:padding="0dp">
-                        <Button
-                            android:id="@+id/search_top_button_type"
-                            android:layout_width="wrap_content"
+                        <EditText
+                            android:id="@+id/search_anime_box_input"
+                            android:layout_width="280dp"
                             android:layout_height="50dp"
-                            android:background="@drawable/buttons_white"
-                            android:text="Top"/>
+                            android:layout_below="@id/search_anime_textId"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginLeft="35dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@drawable/inputs"
+                            android:textSize="18sp"
+                            android:hint="Search..."
+                            android:inputType="text"
+                            android:padding="10dp"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@color/colorProfile"
+                            />
 
-                        <RelativeLayout
-                            android:layout_width="40dp"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@id/search_top_button_type"
-                            android:gravity="center">
+                        <ImageButton
+                            android:id="@+id/search_anime_button"
+                            android:layout_width="60dp"
+                            android:layout_height="50dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_below="@id/search_anime_textId"
+                            android:layout_toEndOf="@id/search_anime_box_input"
+                            android:backgroundTint="@android:color/transparent"
+                            android:background="@drawable/inputs"
+                            android:src="@drawable/search"
+                            android:gravity="center"
+                            />
+
+                    </RelativeLayout>
+
+
+                    <HorizontalScrollView
+                        android:id="@+id/search_anime_index_scroll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:id="@+id/search_anime_index"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="35dp"
+                            android:layout_marginRight="35dp"
+                            android:orientation="horizontal"
+                            android:padding="0dp">
+                            <Button
+                                android:id="@+id/search_top_button_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:background="@drawable/buttons_white"
+                                android:text="Top"/>
+
+                            <RelativeLayout
+                                android:layout_width="40dp"
+                                android:layout_height="match_parent"
+                                android:layout_toRightOf="@id/search_top_button_type"
+                                android:gravity="center">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textStyle="bold"
+                                        android:textSize="35dp"
+                                        android:text=">"/>
+                            </RelativeLayout>
+
+                            <Button
+                                android:id="@+id/search_type_button_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:background="@drawable/buttons_white"
+                                android:text="Anime"/>
+
+                            <RelativeLayout
+                                android:layout_width="40dp"
+                                android:layout_height="match_parent"
+                                android:layout_toRightOf="@id/search_type_button_type"
+                                android:gravity="center">
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:textStyle="bold"
                                     android:textSize="35dp"
                                     android:text=">"/>
-                        </RelativeLayout>
+                            </RelativeLayout>
 
-                        <Button
-                            android:id="@+id/search_type_button_type"
-                            android:layout_width="wrap_content"
-                            android:layout_height="50dp"
-                            android:background="@drawable/buttons_white"
-                            android:text="Anime"/>
-
-                        <RelativeLayout
-                            android:layout_width="40dp"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@id/search_type_button_type"
-                            android:gravity="center">
-                            <TextView
+                            <Button
+                                android:id="@+id/search_page_button_type"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textStyle="bold"
-                                android:textSize="35dp"
-                                android:text=">"/>
-                        </RelativeLayout>
+                                android:layout_height="50dp"
+                                android:background="@drawable/buttons_white"
+                                android:text="1"/>
 
-                        <Button
-                            android:id="@+id/search_page_button_type"
-                            android:layout_width="wrap_content"
-                            android:layout_height="50dp"
-                            android:background="@drawable/buttons_white"
-                            android:text="1"/>
+                            <RelativeLayout
+                                android:layout_width="40dp"
+                                android:layout_height="match_parent"
+                                android:layout_toRightOf="@id/search_page_button_type"
+                                android:gravity="center">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:textSize="35dp"
+                                    android:text=">"/>
+                            </RelativeLayout>
 
-                        <RelativeLayout
-                            android:layout_width="40dp"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@id/search_page_button_type"
-                            android:gravity="center">
-                            <TextView
+                            <Button
+                                android:id="@+id/search_subtype_button_type"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textStyle="bold"
-                                android:textSize="35dp"
-                                android:text=">"/>
-                        </RelativeLayout>
+                                android:layout_height="50dp"
+                                android:background="@drawable/buttons_white"
+                                android:text="Airing"/>
 
-                        <Button
-                            android:id="@+id/search_subtype_button_type"
-                            android:layout_width="wrap_content"
-                            android:layout_height="50dp"
-                            android:background="@drawable/buttons_white"
-                            android:text="Airing"/>
+                            <RelativeLayout
+                                android:layout_width="40dp"
+                                android:layout_height="match_parent"
+                                android:layout_toRightOf="@id/search_subtype_button_type"
+                                android:gravity="center">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:textSize="35dp"
+                                    android:text=">"/>
+                            </RelativeLayout>
 
-                        <RelativeLayout
-                            android:layout_width="40dp"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@id/search_subtype_button_type"
-                            android:gravity="center">
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textStyle="bold"
-                                android:textSize="35dp"
-                                android:text=">"/>
-                        </RelativeLayout>
+                        </LinearLayout>
 
-                    </LinearLayout>
-
-                </HorizontalScrollView>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/search_anime_index_scroll"
-                    android:background="@android:color/white"
-                    android:paddingTop="20dp"
-                    android:layout_marginTop="10dp"
-                    android:paddingBottom="20dp">
+                    </HorizontalScrollView>
 
                     <RelativeLayout
-                        android:id="@+id/search_anime_layout_temp"
                         android:layout_width="match_parent"
-                        android:layout_height="38dp">
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/search_anime_index_scroll"
+                        android:background="@android:color/white"
+                        android:paddingTop="20dp"
+                        android:layout_marginTop="10dp"
+                        android:paddingBottom="20dp">
 
                         <RelativeLayout
-                            android:id="@+id/anime_titles"
+                            android:id="@+id/search_anime_layout_temp"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_centerVertical="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_marginRight="15dp"
-                            android:layout_toLeftOf="@+id/frameLayout">
+                            android:layout_height="38dp">
 
-                            <!--LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"-->
-                                <TextView
-                                    android:id="@+id/tv_title_1"
-                                    android:layout_width="250dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="start"
-                                    android:gravity="start"
-                                    android:textSize="26sp"
-                                    android:layout_marginLeft="10dp"
-                                    android:layout_marginRight="10dp"
-                                    android:ellipsize="marquee"
-                                    android:marqueeRepeatLimit ="marquee_forever"
-                                    android:fontFamily="@font/roboto_regular"
-                                    android:textColor="@android:color/black"
-                                    android:textStyle="bold"
-                                    android:singleLine="true" />
+                            <RelativeLayout
+                                android:id="@+id/anime_titles"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentStart="true"
+                                android:layout_marginRight="15dp"
+                                android:layout_toLeftOf="@+id/frameLayout">
 
-                                <TextView
-                                    android:id="@+id/tv_title_2"
-                                    android:ellipsize="marquee"
-                                    android:layout_marginLeft="10dp"
-                                    android:layout_marginRight="10dp"
-                                    android:marqueeRepeatLimit ="marquee_forever"
-                                    android:gravity="start"
-                                    android:layout_width="250dp"
+                                <!--LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"-->
+                                    <TextView
+                                        android:id="@+id/tv_title_1"
+                                        android:layout_width="250dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="start"
+                                        android:gravity="start"
+                                        android:textSize="26sp"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_marginRight="10dp"
+                                        android:ellipsize="marquee"
+                                        android:marqueeRepeatLimit ="marquee_forever"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:textColor="@android:color/black"
+                                        android:textStyle="bold"
+                                        android:singleLine="true" />
+
+                                    <TextView
+                                        android:id="@+id/tv_title_2"
+                                        android:ellipsize="marquee"
+                                        android:layout_marginLeft="10dp"
+                                        android:layout_marginRight="10dp"
+                                        android:marqueeRepeatLimit ="marquee_forever"
+                                        android:gravity="start"
+                                        android:layout_width="250dp"
+                                        android:layout_height="wrap_content"
+                                        android:textSize="26sp"
+                                        android:textStyle="bold"
+                                        android:fontFamily="@font/roboto_regular"
+                                        android:textColor="@android:color/black"
+                                        android:layout_gravity="start"
+                                        android:singleLine="true" />
+                                <!--/LinearLayout-->
+
+                            </RelativeLayout>
+
+                            <FrameLayout
+                                android:id="@+id/frameLayout"
+                                android:layout_width="120dp"
+                                android:layout_height="match_parent"
+                                android:layout_alignParentEnd="true"
+                                android:background="@drawable/temperature_background"
+                                android:layout_centerVertical="true">
+
+                                <TextSwitcher
+                                    android:id="@+id/ts_rank"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textSize="26sp"
-                                    android:textStyle="bold"
-                                    android:fontFamily="@font/roboto_regular"
-                                    android:textColor="@android:color/black"
-                                    android:layout_gravity="start"
-                                    android:singleLine="true" />
-                            <!--/LinearLayout-->
+                                    android:padding="2dp"
+                                    android:layout_gravity="center"/>
+
+                            </FrameLayout>
 
                         </RelativeLayout>
 
-                        <FrameLayout
-                            android:id="@+id/frameLayout"
-                            android:layout_width="120dp"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentEnd="true"
-                            android:background="@drawable/temperature_background"
-                            android:layout_centerVertical="true">
-
-                            <TextSwitcher
-                                android:id="@+id/ts_rank"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="2dp"
-                                android:layout_gravity="center"/>
-
-                        </FrameLayout>
-
-                    </RelativeLayout>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="210dp"
-                        android:layout_marginTop="18dp"
-                        android:layout_marginStart="@dimen/recycler_view_left_offset"
-                        android:layout_below="@id/search_anime_layout_temp"
-                        android:clipChildren="false"
-                        android:overScrollMode="never"
-                        app:layoutManager="com.example.blogmy.cards.CardSliderLayoutManager"
-                        app:viewUpdater="com.example.blogmy.cards.CardsUpdater"/>
-
-                    <FrameLayout
-                        android:id="@+id/search_score_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/recycler_view"
-                        android:layout_marginTop="15dp">
-
-                        <ImageView
-                            android:layout_width="13dp"
-                            android:layout_height="13dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="30dp"
-                            android:src="@drawable/star"
-                            android:scaleType="fitCenter"/>
-
-                        <TextSwitcher
-                            android:id="@+id/ts_score"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="@dimen/left_offset"/>
-
-                    </FrameLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/search_anime_description_bar"
-
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/search_score_layout"
-                        android:animateLayoutChanges="true">
-
-                        <TextSwitcher
-                            android:id="@+id/ts_description"
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recycler_view"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/left_offset"
-                            android:layout_marginEnd="10dp"/>
+                            android:layout_height="210dp"
+                            android:layout_marginTop="18dp"
+                            android:layout_marginStart="@dimen/recycler_view_left_offset"
+                            android:layout_below="@id/search_anime_layout_temp"
+                            android:clipChildren="false"
+                            android:overScrollMode="never"
+                            app:layoutManager="com.example.blogmy.cards.CardSliderLayoutManager"
+                            app:viewUpdater="com.example.blogmy.cards.CardsUpdater"/>
 
                         <FrameLayout
+                            android:id="@+id/search_score_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:layout_below="@id/ts_description">
+                            android:layout_below="@id/recycler_view"
+                            android:layout_marginTop="15dp">
 
                             <ImageView
                                 android:layout_width="13dp"
                                 android:layout_height="13dp"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginStart="30dp"
-                                android:src="@drawable/clock"
+                                android:src="@drawable/star"
                                 android:scaleType="fitCenter"/>
 
                             <TextSwitcher
-                                android:id="@+id/ts_clock"
+                                android:id="@+id/ts_score"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -354,45 +323,86 @@
 
                         </FrameLayout>
 
+                        <RelativeLayout
+                            android:id="@+id/search_anime_description_bar"
+
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/search_score_layout"
+                            android:animateLayoutChanges="true">
+
+                            <TextSwitcher
+                                android:id="@+id/ts_description"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/left_offset"
+                                android:layout_marginEnd="10dp"/>
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                android:layout_below="@id/ts_description">
+
+                                <ImageView
+                                    android:layout_width="13dp"
+                                    android:layout_height="13dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginStart="30dp"
+                                    android:src="@drawable/clock"
+                                    android:scaleType="fitCenter"/>
+
+                                <TextSwitcher
+                                    android:id="@+id/ts_clock"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginStart="@dimen/left_offset"/>
+
+                            </FrameLayout>
+
+                        </RelativeLayout>
+
                     </RelativeLayout>
 
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/search_anime_description_bar"
-                    android:layout_marginTop="20dp"
-                    android:background="@android:color/white"
-                    >
-                    <com.google.android.material.tabs.TabLayout
-                        android:id="@+id/search_anime_tab_layout"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:minHeight="60dp"
-                        app:tabGravity="fill"
-                        app:tabMode="fixed"
-                         />
+                        android:layout_height="match_parent"
+                        android:layout_below="@id/search_anime_description_bar"
+                        android:layout_marginTop="20dp"
+                        android:background="@android:color/white"
+                        >
 
-                    <com.example.blogmy.EnhancedWrapContentViewPager
-                        android:id="@+id/search_anime_viewpager"
-                        android:layout_width="match_parent"
-                        android:layout_below="@id/search_anime_tab_layout"
-                        android:minHeight="500dp"
-                        android:layout_height="wrap_content">
+                        <com.google.android.material.tabs.TabLayout
+                            android:id="@+id/search_anime_tab_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_gravity="center"
+                            android:minHeight="60dp"
+                            app:tabGravity="fill"
+                            app:tabMode="fixed" />
 
-                    </com.example.blogmy.EnhancedWrapContentViewPager>
+                        <com.example.blogmy.EnhancedWrapContentViewPager
+                            android:id="@+id/search_anime_viewpager"
+                            android:layout_width="match_parent"
+                            android:layout_below="@id/search_anime_tab_layout"
+                            android:minHeight="500dp"
+                            android:layout_height="wrap_content">
+
+                        </com.example.blogmy.EnhancedWrapContentViewPager>
 
 
-                </RelativeLayout>
+                    </RelativeLayout>
 
 
 
-            </LinearLayout>
+                </LinearLayout>
 
-        </ScrollView>
+            </androidx.core.widget.NestedScrollView>
 
-    </RelativeLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </LinearLayout>

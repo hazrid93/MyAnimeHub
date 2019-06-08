@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -26,9 +27,11 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +40,7 @@ import android.widget.ViewSwitcher;
 import com.example.blogmy.cards.SliderAdapter;
 import com.example.blogmy.cards.CardSliderLayoutManager;
 import com.example.blogmy.cards.CardSnapHelper;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -165,7 +169,8 @@ public class SearchAnime extends AppCompatActivity {
 
     private EnhancedWrapContentViewPager viewPager;
     private ViewPagerAdapter adapter;
-
+    private FloatingActionButton floatingActionButton;
+    private NestedScrollView scrollView;
     // private HorizontalScrollView anime_titles;
 
     @Override
@@ -197,6 +202,36 @@ public class SearchAnime extends AppCompatActivity {
 
         searchSubTypeButton = (Button) findViewById(R.id.search_subtype_button_type);
         searchPageButton = (Button) findViewById(R.id.search_page_button_type);
+
+
+        // START: SCROLLING PART AND FLOATING ACTION BUTTON
+        scrollView = (NestedScrollView) findViewById(R.id.search_anime_scroll);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.search_anime_floating_button);
+        // ALTERNATIVE, WARNING viewTreeObserver can cause memory leaks.
+        // https://developer.android.com/reference/android/view/ViewTreeObserver.html
+        // viewtreeobserver is needed so that we got the data reference when the view is laid out on screen
+        // scrollView.getViewTreeObserver().addOnScrollChangedListener
+        scrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                System.out.println("SCROLL DATA: " + "X: " + scrollX + ",Y: " + scrollY);
+                if(scrollY > 100){
+                    floatingActionButton.setVisibility(View.INVISIBLE);
+                } else {
+                    floatingActionButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        // on floatingactionbutton clicked, scroll the scrollview to top view.
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.fullScroll(ScrollView.FOCUS_UP);
+            }
+        });
+        // END: SCROLL SECTION
+
+
 
         // page number button
         searchPageButton.setOnClickListener(new View.OnClickListener() {
