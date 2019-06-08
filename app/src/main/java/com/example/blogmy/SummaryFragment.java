@@ -10,8 +10,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class SummaryFragment extends Fragment {
-    private TextView textView;
+    private TextView textView, textView_title;
     private String summaryData;
+    private String summaryTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,7 @@ public class SummaryFragment extends Fragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             summaryData = bundle.getString("summaryData");
+            summaryTitle = bundle.getString("summaryTitle");
         }
     }
 
@@ -33,7 +35,9 @@ public class SummaryFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         textView = (TextView) view.findViewById(R.id.fragment_textView);
+        textView_title = (TextView) view.findViewById(R.id.fragment_textView_title);
 
+        textView_title.setText(summaryTitle);
         textView.setText(summaryData);
     }
 

@@ -133,6 +133,7 @@ public class SearchAnime extends AppCompatActivity {
     private JSONObject animeStatsDetailsObject;
     // Summary fragment
     private String summaryData;
+    private String summaryTitle;
     // Stats fragment
     private String watching;
     private String completed;
@@ -326,6 +327,7 @@ public class SearchAnime extends AppCompatActivity {
         // Summary Fragment update
         Bundle bundleSum = new Bundle();
         bundleSum.putString("summaryData", summaryData);
+        bundleSum.putString("summaryTitle", summaryTitle);
         summaryFragment.setArguments(bundleSum);
 
         // Stats Fragment update
@@ -447,13 +449,16 @@ public class SearchAnime extends AppCompatActivity {
                 try {
                     if (animeDetailsObject.has("synopsis")) {
                         summaryData = animeDetailsObject.getString("synopsis");
+                        summaryTitle = animeDetailsObject.getString("title");
                     } else {
                         summaryData = "";
+                        summaryTitle = "";
                     }
                     //  enable updateDataCallback again later
                     //  updateDataCallback.onCallback("success");
                 } catch (JSONException e) {
                     summaryData = "";
+                    summaryTitle = "";
                     e.printStackTrace();
                 }
 
