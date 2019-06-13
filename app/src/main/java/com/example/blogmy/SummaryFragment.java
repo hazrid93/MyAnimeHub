@@ -1,5 +1,6 @@
 package com.example.blogmy;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ public class SummaryFragment extends Fragment {
 
 
         textView_title.setText(summaryTitle);
+        textView_title.setPaintFlags(textView_title.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         // set drawable programmatically
        // textView_title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.label_title, 0, 0, 0);
         textView.setText(summaryData);

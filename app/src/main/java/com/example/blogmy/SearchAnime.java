@@ -52,7 +52,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -78,6 +80,14 @@ public class SearchAnime extends AppCompatActivity {
     private static final String JIKAN_SUBTYPE_OVA = "ova";
     private static final String JIKAN_SUBTYPE_SPECIAL = "special";
     private static final String JIKAN_ANIME_STATS = "stats";
+
+    // season constants
+    private static final String JIKAN_SORTBY_SEASON = "season";
+    private static final String JIKAN_SUBTYPE_SPRING = "spring";
+    private static final String JIKAN_SUBTYPE_SUMMER = "summer";
+    private static final String JIKAN_SUBTYPE_FALL = "fall";
+    private static final String JIKAN_SUBTYPE_WINTER = "winter";
+    private static final String JIKAN_SEASON_YEAR_DEFAULT = Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
 
 
     private static final String JIKAN_TOP_AIRING_DEFAULT = JIKAN_URL + "/" + JIKAN_SORTBY_TOP + "/" + JIKAN_TYPE_ANIME + "/" + JIKAN_PAGE_1 + "/" + JIKAN_SUBTYPE_AIRING;
@@ -183,10 +193,12 @@ public class SearchAnime extends AppCompatActivity {
 
 
         // initializeIndex and buttons TOP/ANIME/1/AIRING
+        /*
         currentTypeTopButton = JIKAN_SORTBY_TOP;
         currentTypeButton = JIKAN_TYPE_ANIME;
         currentSubTypeButton = JIKAN_SUBTYPE_AIRING;
         currentPageButton = JIKAN_PAGE_1;
+        */
 
         toolbar = (Toolbar) findViewById(R.id.search_anime_list_toolbar);
         setSupportActionBar(toolbar);
@@ -195,13 +207,7 @@ public class SearchAnime extends AppCompatActivity {
 
 
         searchTypeTopButton = (Button) findViewById(R.id.search_top_button_type);
-        searchTypeTopButton.setPressed(true);
-        searchTypeTopButton.setClickable(false);
-
         searchTypeButton = (Button) findViewById(R.id.search_type_button_type);
-        searchTypeButton.setPressed(true);
-        searchTypeButton.setClickable(false);
-
         searchSubTypeButton = (Button) findViewById(R.id.search_subtype_button_type);
         searchPageButton = (Button) findViewById(R.id.search_page_button_type);
 
@@ -234,16 +240,79 @@ public class SearchAnime extends AppCompatActivity {
         // END: SCROLL SECTION
 
 
+        // search button
+        searchTypeTopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu menu = new PopupMenu(SearchAnime.this, v);
+                menu.getMenu().add(JIKAN_SORTBY_TOP.toUpperCase());
+                menu.getMenu().add(JIKAN_SORTBY_SEASON.toUpperCase());
+                menu.show();
+
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        searchTypeTopButton.setText(item.getTitle());
+
+                        // change search buttons when its 'SEASON'
+                        if(item.getTitle().equals(JIKAN_SORTBY_SEASON.toUpperCase())){
+                            searchTypeButton.setText(JIKAN_SEASON_YEAR_DEFAULT);
+                            searchPageButton.setText(JIKAN_SUBTYPE_SUMMER.toUpperCase());
+                            searchSubTypeButton.setVisibility(View.INVISIBLE);
+                        } else {
+                            searchTypeButton.setText(JIKAN_TYPE_ANIME.toUpperCase());
+                            searchPageButton.setText(JIKAN_PAGE_1);
+                            searchSubTypeButton.setVisibility(View.VISIBLE);
+                        }
+                      //  updateTopAiring();
+                        return false;
+                    }
+                });
+            }
+        });
+
+        searchTypeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu menu = new PopupMenu(SearchAnime.this, v);
+                if(searchTypeTopButton.getText().toString().equals(JIKAN_SORTBY_SEASON.toUpperCase())){
+                    for(int i=2000; i<= Integer.parseInt(JIKAN_SEASON_YEAR_DEFAULT); i++ ){
+                        menu.getMenu().add(Integer.toString(i));
+                    }
+                } else {
+                    menu.getMenu().add("ANIME");
+                }
+                menu.show();
+
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        searchTypeButton.setText(item.getTitle());
+                        //  updateTopAiring();
+                        return false;
+                    }
+                });
+            }
+        });
+
 
         // page number button
         searchPageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu menu = new PopupMenu(SearchAnime.this, v);
-                menu.getMenu().add("1");
-                menu.getMenu().add("2");
-                menu.getMenu().add("3");
-                menu.getMenu().add("4");
+                if(searchTypeTopButton.getText().toString().equals(JIKAN_SORTBY_SEASON.toUpperCase())){
+                    menu.getMenu().add(JIKAN_SUBTYPE_SUMMER.toUpperCase());
+                    menu.getMenu().add(JIKAN_SUBTYPE_SPRING.toUpperCase());
+                    menu.getMenu().add(JIKAN_SUBTYPE_FALL.toUpperCase());
+                    menu.getMenu().add(JIKAN_SUBTYPE_WINTER.toUpperCase());
+                } else {
+                    menu.getMenu().add("1");
+                    menu.getMenu().add("2");
+                    menu.getMenu().add("3");
+                    menu.getMenu().add("4");
+                }
+
                 menu.show();
 
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -262,12 +331,12 @@ public class SearchAnime extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 PopupMenu menu = new PopupMenu(SearchAnime.this, v);
-                menu.getMenu().add("airing");
-                menu.getMenu().add("upcoming");
-                menu.getMenu().add("tv");
-                menu.getMenu().add("movie");
-                menu.getMenu().add("ova");
-                menu.getMenu().add("special");
+                menu.getMenu().add("AIRING");
+                menu.getMenu().add("UPCOMING");
+                menu.getMenu().add("TV");
+                menu.getMenu().add("MOVIE");
+                menu.getMenu().add("OVA");
+                menu.getMenu().add("SPECIAL");
                 menu.show();
 
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

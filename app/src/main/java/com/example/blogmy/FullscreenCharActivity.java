@@ -121,6 +121,9 @@ public class FullscreenCharActivity extends AppCompatActivity {
 
                     full_image_char.setPosters(imageSlider);
                 } catch (JSONException e) {
+                    imageSlider = new ArrayList<Poster>();
+                    imageSlider.add(new RemoteImage(charURL));
+                    full_image_char.setPosters(imageSlider);
                     e.printStackTrace();
                 }
 

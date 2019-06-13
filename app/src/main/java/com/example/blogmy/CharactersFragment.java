@@ -137,7 +137,8 @@ public class CharactersFragment extends Fragment {
                 String charName = adapter.getItem(position).getName();
                 String charId = adapter.getItem(position).getMal_id();
                 String charURL = adapter.getItem(position).getImage_url();
-                Intent fullscreenIntent = new Intent(getActivity(), FullscreenCharActivity.class);
+
+                Intent fullscreenIntent = new Intent(classContext, FullscreenCharActivity.class);
                 fullscreenIntent.putExtra("charName", charName);
                 fullscreenIntent.putExtra("charId", charId);
                 fullscreenIntent.putExtra("charURL", charURL);
