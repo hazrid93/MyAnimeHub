@@ -18,8 +18,8 @@
         android:icon="@drawable/profile_icon"/>
 
     <item
-        android:id="@+id/nav_home"
-        android:title="Home"
+        android:id="@+id/nav_bookmark"
+        android:title="Bookmarks"
         android:icon="@drawable/home"/>
     <item
         android:id="@+id/nav_friends"

@@ -17,5 +17,6 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_fullscreen_char">FullscreenCharActivity</string>
+    <string name="title_activity_bookmark">BookmarkActivity</string>
 
 </resources>

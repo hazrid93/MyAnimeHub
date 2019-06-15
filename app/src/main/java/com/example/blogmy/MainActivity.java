@@ -412,7 +412,9 @@ public class MainActivity extends AppCompatActivity {
                 sendUserToPostActivity();
                 break;
 
-            case R.id.nav_home:
+            case R.id.nav_bookmark:
+                System.out.println("AZAD: IM STARTING HERE");
+                sendUserToBookmarkActivity();
                 break;
 
             case R.id.nav_friends:
@@ -441,6 +443,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private void sendUserToBookmarkActivity() {
+        Intent bookmarkIntent = new Intent(MainActivity.this, BookmarkActivity.class);
+        startActivity(bookmarkIntent);
     }
 
     private void sendUserToSearchAnimeActivity() {

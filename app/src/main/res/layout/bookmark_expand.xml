@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bookmark_exp_lyt_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:minHeight="56dp"
+        >
+
+        <View
+            android:layout_width="15dp"
+            android:layout_height="wrap_content" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/bookmark_exp_image"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/profile" />
+
+        <View
+            android:layout_width="15dp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/bookmark_exp_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Item Title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/grey_80" />
+
+        <View
+            android:layout_width="15dp"
+            android:layout_height="wrap_content" />
+
+        <ImageButton
+            android:id="@+id/bookmark_exp_bt_expand"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="@color/grey_60"
+            app:srcCompat="@drawable/down_arrow" />
+
+    </LinearLayout>
+
+   <!-- <LinearLayout
+        android:id="@+id/bookmark_exp_lyt_expand"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_3"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:text="Lorem Ipsum" />
+
+    </LinearLayout> -->
+
+</LinearLayout>
