@@ -38,7 +38,6 @@ public class AdapterListExpand extends RecyclerView.Adapter<AdapterListExpand.Or
 
     public AdapterListExpand(Context context, List<Anime> data) {
         items = data;
-        System.out.println("AZAD: " + items.toString() + " ," + items.size());
         ctx = context;
     }
 
@@ -55,7 +54,7 @@ public class AdapterListExpand extends RecyclerView.Adapter<AdapterListExpand.Or
             bookmark_exp_image = (CircleImageView) itemView.findViewById(R.id.bookmark_exp_image);
             bookmark_exp_name = (TextView) itemView.findViewById(R.id.bookmark_exp_name);
             bookmark_exp_bt_expand = (ImageButton) itemView.findViewById(R.id.bookmark_exp_bt_expand);
-       //     bookmark_exp_lyt_expand = (View) itemView.findViewById(R.id.bookmark_exp_lyt_expand);
+            bookmark_exp_lyt_expand = (View) itemView.findViewById(R.id.bookmark_exp_lyt_expand);
             bookmark_exp_lyt_parent = (View) itemView.findViewById(R.id.bookmark_exp_lyt_parent);
         }
 
@@ -85,9 +84,8 @@ public class AdapterListExpand extends RecyclerView.Adapter<AdapterListExpand.Or
             final Anime p = items.get(position);
             holder.setName(p.getName());
             holder.setImage(ctx, p.getImage());
-            System.out.println("AZAD: name=" + p.getName());
 
-            /*
+
              holder.bookmark_exp_lyt_parent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -115,7 +113,7 @@ public class AdapterListExpand extends RecyclerView.Adapter<AdapterListExpand.Or
                 holder.bookmark_exp_lyt_expand.setVisibility(View.GONE);
             }
             toggleArrow(p.expanded, holder.bookmark_exp_bt_expand, false);
-            */
+
 
     }
 
@@ -131,6 +129,7 @@ public class AdapterListExpand extends RecyclerView.Adapter<AdapterListExpand.Or
         return show;
     }
 
+    // rotate the down arrow
     public boolean toggleArrow(boolean show, View view, boolean delay) {
         if (show) {
             view.animate().setDuration(delay ? 200 : 0).rotation(180);
@@ -199,7 +198,6 @@ public class AdapterListExpand extends RecyclerView.Adapter<AdapterListExpand.Or
 
     @Override
     public int getItemCount() {
-        System.out.println("AZAD: get size is called: " + items.size());
         return items.size();
     }
 

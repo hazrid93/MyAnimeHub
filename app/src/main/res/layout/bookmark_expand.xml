@@ -13,7 +13,7 @@
         android:layout_height="56dp"
         android:background="@android:color/white"
         android:gravity="center_vertical"
-        android:minHeight="56dp"
+        android:minHeight="65dp"
         >
 
         <View
@@ -22,8 +22,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/bookmark_exp_image"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@android:color/transparent"
             android:src="@drawable/profile" />
 
@@ -54,7 +54,7 @@
 
     </LinearLayout>
 
-   <!-- <LinearLayout
+   <LinearLayout
         android:id="@+id/bookmark_exp_lyt_expand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -68,6 +68,6 @@
             android:layout_margin="15dp"
             android:text="Lorem Ipsum" />
 
-    </LinearLayout> -->
+    </LinearLayout>
 
 </LinearLayout>

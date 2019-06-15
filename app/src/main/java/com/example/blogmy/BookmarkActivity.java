@@ -31,11 +31,8 @@ public class BookmarkActivity extends AppCompatActivity {
         bookmarkList.setHasFixedSize(true);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(BookmarkActivity.this);
-       // linearLayoutManager.setReverseLayout(true);
-       // linearLayoutManager.setStackFromEnd(true);
         bookmarkList.setLayoutManager(linearLayoutManager);
-
-      //  parent_view = findViewById(android.R.id.content);
+        parent_view = findViewById(android.R.id.content);
         initComponent();
     }
 
@@ -45,24 +42,21 @@ public class BookmarkActivity extends AppCompatActivity {
 
         List<Anime> itemsData = new ArrayList<Anime>();
         itemsData.add(new Anime("https://www.staples-3p.com/s7/is/image/Staples/m004542954_sc7","test"));
-        //itemsData.add(new Anime("https://www.staples-3p.com/s7/is/image/Staples/m004542954_sc7","test2"));
-        //itemsData.add(new Anime("https://www.staples-3p.com/s7/is/image/Staples/m004542954_sc7","test2"));
-        //List<Anime> items = itemsData;
+        itemsData.add(new Anime("https://www.staples-3p.com/s7/is/image/Staples/m004542954_sc7","test2"));
+        itemsData.add(new Anime("https://www.staples-3p.com/s7/is/image/Staples/m004542954_sc7","test2"));
 
         //set data and list adapter
         mAdapter = new AdapterListExpand(BookmarkActivity.this, itemsData);
         bookmarkList.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
 
         // on item list clicked
-        /*
         mAdapter.setOnItemClickListener(new AdapterListExpand.OnItemClickListener() {
             @Override
             public void onItemClick(View view, Anime obj, int position) {
-             //   Snackbar.make(parent_view, "Item " + obj.name + " clicked", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(parent_view, "Item " + obj.name + " clicked", Snackbar.LENGTH_SHORT).show();
             }
         });
-        */
+
     }
 
 }
