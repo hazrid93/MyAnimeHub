@@ -1,5 +1,6 @@
 package com.example.blogmy;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
@@ -20,15 +21,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -40,8 +45,17 @@ import android.widget.ViewSwitcher;
 import com.example.blogmy.cards.SliderAdapter;
 import com.example.blogmy.cards.CardSliderLayoutManager;
 import com.example.blogmy.cards.CardSnapHelper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -49,6 +63,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.helper.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -174,7 +189,13 @@ public class SearchAnime extends AppCompatActivity {
     private String score_10_vt;
 
     // Characters fragment
+    // Also the current active anime selected
     private String anime_id;
+    private String bookmark_image;
+    private String bookmark_name;
+
+    // bookmark
+    private ImageButton bookmarkBtn;
 
 
 
@@ -184,10 +205,22 @@ public class SearchAnime extends AppCompatActivity {
     private NestedScrollView scrollView;
     // private HorizontalScrollView anime_titles;
 
+    //Firebase stuff
+    private FirebaseAuth mAuth;
+    private DatabaseReference usersRef;
+    private String currentUserID;
+    private final List<Anime> animeLists = new ArrayList<>();
+    private long countBookmark= 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_anime);
+
+        //Firebase stuff
+        mAuth = FirebaseAuth.getInstance();
+        currentUserID = mAuth.getCurrentUser().getUid();
+        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         // anime_titles = (HorizontalScrollView) findViewById(R.id.anime_titles);
 
@@ -210,7 +243,76 @@ public class SearchAnime extends AppCompatActivity {
         searchTypeButton = (Button) findViewById(R.id.search_type_button_type);
         searchSubTypeButton = (Button) findViewById(R.id.search_subtype_button_type);
         searchPageButton = (Button) findViewById(R.id.search_page_button_type);
+        bookmarkBtn = (ImageButton) findViewById(R.id.search_anime_bookmark_btn);
 
+        bookmarkBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.6F);
+                buttonClick.setDuration(300);
+                v.startAnimation(buttonClick);
+
+                if (!TextUtils.isEmpty(anime_id) && !TextUtils.isEmpty(bookmark_name)
+                        && !TextUtils.isEmpty(bookmark_image)) {
+
+                    usersRef.child(currentUserID).child("bookmarks").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()){
+                                long countBookmarkZ = dataSnapshot.getChildrenCount() + 1;
+                                Map currentAnimeMap = new HashMap();
+                                // if its the same anime trying to be added then don't change count
+                                if(dataSnapshot.hasChild(anime_id)){
+                                    Toast.makeText(SearchAnime.this, "This anime is already in your bookmarks", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    currentAnimeMap.put("id", anime_id);
+                                    currentAnimeMap.put("name", bookmark_name.trim());
+                                    currentAnimeMap.put("image", bookmark_image);
+                                    currentAnimeMap.put("counter", countBookmarkZ);
+
+                                    usersRef.child(currentUserID).child("bookmarks").child(anime_id)
+                                            .updateChildren(currentAnimeMap).addOnCompleteListener(new OnCompleteListener() {
+                                        @Override
+                                        public void onComplete(@NonNull Task task) {
+                                            if(task.isSuccessful()){
+                                                Toast.makeText(SearchAnime.this, "This anime is added into your bookmarks", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                }
+
+
+
+                            } else {
+                                // if the first bookmark
+                                countBookmark = 1;
+                                Map currentAnimeMap = new HashMap();
+                                currentAnimeMap.put("id", anime_id);
+                                currentAnimeMap.put("name", bookmark_name.trim());
+                                currentAnimeMap.put("image", bookmark_image);
+                                currentAnimeMap.put("counter", 1);
+
+                                usersRef.child(currentUserID).child("bookmarks").child(anime_id)
+                                        .updateChildren(currentAnimeMap).addOnCompleteListener(new OnCompleteListener() {
+                                    @Override
+                                    public void onComplete(@NonNull Task task) {
+                                        if(task.isSuccessful()){
+                                            Toast.makeText(SearchAnime.this, "This anime is added into your bookmarks", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+            }
+        });
 
         // START: SCROLLING PART AND FLOATING ACTION BUTTON
         scrollView = (NestedScrollView) findViewById(R.id.search_anime_scroll);
@@ -798,11 +900,15 @@ public class SearchAnime extends AppCompatActivity {
                 if(update == false){
                     sliderAdapter = new SliderAdapter(SearchAnime.this, picsList, topAiringAnime.size(), new OnCardClickListener());
                     anime_id = animeIdList.get(0);
+                    bookmark_image = picsList.get(0);
+                    bookmark_name = titleList.get(0);
                     initRecyclerView();
                     initTitleText();
                     initSwitchers();
                 } else {
                     anime_id = animeIdList.get(0);
+                    bookmark_image = picsList.get(0);
+                    bookmark_name = titleList.get(0);
                     sliderAdapter.updateData(picsList, new UpdateDataCallback(){
                         @Override
                         public void onCallback(String value) {
@@ -1032,6 +1138,8 @@ public class SearchAnime extends AppCompatActivity {
 
         currentPosition = pos;
         anime_id = animeIdList.get(pos);
+        bookmark_image = picsList.get(pos);
+        bookmark_name = titleList.get(pos);
 
         // get current active anime id here when card switch
 

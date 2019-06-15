@@ -2,8 +2,9 @@ package com.example.blogmy;
 
 public class Anime {
 
-    public String image;
+    public String id;
     public String name;
+    public String image;
     public boolean expanded = false;
     public boolean parent = false;
 
@@ -11,10 +12,19 @@ public class Anime {
 
     }
 
-    public Anime(String image, String name) {
+    public Anime(String image, String name, String id) {
         this.image = image;
         this.name = name;
+        this.id = id;
 
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getImage() {

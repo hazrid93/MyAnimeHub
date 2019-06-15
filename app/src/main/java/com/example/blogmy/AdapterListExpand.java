@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -23,6 +32,10 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AdapterListExpand extends RecyclerView.Adapter<AdapterListExpand.OriginalViewHolder> {
+    //Firebase stuff
+    private FirebaseAuth mAuth;
+    private DatabaseReference usersRef;
+    private String currentUserID;
 
     private List<Anime> items;
     private Context ctx;
@@ -39,14 +52,19 @@ public class AdapterListExpand extends RecyclerView.Adapter<AdapterListExpand.Or
     public AdapterListExpand(Context context, List<Anime> data) {
         items = data;
         ctx = context;
+        //Firebase stuff
+        mAuth = FirebaseAuth.getInstance();
+        currentUserID = mAuth.getCurrentUser().getUid();
+        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
     }
-
+    // onCreateViewHolder will use this class
     static class OriginalViewHolder extends RecyclerView.ViewHolder {
         CircleImageView bookmark_exp_image;
         TextView bookmark_exp_name;
         ImageButton bookmark_exp_bt_expand;
         View bookmark_exp_lyt_expand;
         View bookmark_exp_lyt_parent;
+        Button deleteButton;
 
         public OriginalViewHolder(View itemView) {
             super(itemView);
@@ -56,6 +74,7 @@ public class AdapterListExpand extends RecyclerView.Adapter<AdapterListExpand.Or
             bookmark_exp_bt_expand = (ImageButton) itemView.findViewById(R.id.bookmark_exp_bt_expand);
             bookmark_exp_lyt_expand = (View) itemView.findViewById(R.id.bookmark_exp_lyt_expand);
             bookmark_exp_lyt_parent = (View) itemView.findViewById(R.id.bookmark_exp_lyt_parent);
+            deleteButton = (Button) itemView.findViewById(R.id.bookmark_del_button);
         }
 
         public void setImage(Context ctx, String image){
@@ -85,7 +104,25 @@ public class AdapterListExpand extends RecyclerView.Adapter<AdapterListExpand.Or
             holder.setName(p.getName());
             holder.setImage(ctx, p.getImage());
 
+            holder.deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    usersRef.child(currentUserID).child("bookmarks").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.hasChild(p.getId())){
+                                usersRef.child(currentUserID).child("bookmarks").child(p.getId()).removeValue();
+                            }
+                        }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+            });
              holder.bookmark_exp_lyt_parent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

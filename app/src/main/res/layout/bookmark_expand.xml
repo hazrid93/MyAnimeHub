@@ -58,15 +58,31 @@
         android:id="@+id/bookmark_exp_lyt_expand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/grey_3"
         android:orientation="vertical"
         android:visibility="visible">
 
-        <TextView
+       <!-- <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:text="Lorem Ipsum" />
+            android:text="Lorem Ipsum" /> -->
+
+       <Button
+           android:id="@+id/bookmark_del_button"
+           android:layout_width="80dp"
+           android:layout_height="30dp"
+           android:layout_gravity="center_horizontal|end"
+           android:layout_marginEnd="20dp"
+           android:layout_marginTop="10dp"
+           android:layout_marginBottom="10dp"
+           android:background="@drawable/buttons_red"
+           android:text="DELETE"
+           android:textColor="@android:color/white"
+           android:textSize="14sp"
+           android:textStyle="bold"/>
 
     </LinearLayout>
 
