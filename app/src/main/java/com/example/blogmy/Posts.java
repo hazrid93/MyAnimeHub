@@ -6,7 +6,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Posts {
     // follow key value at 'Posts' in database
-    public String uid, time, date, description, fullname, summary;
+    public String uid, time, date, description, fullname, summary, visibility;
     public String profileimage;
     public String postimage;
 

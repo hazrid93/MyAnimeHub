@@ -74,6 +74,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -210,7 +211,6 @@ public class SearchAnime extends AppCompatActivity {
     private DatabaseReference usersRef;
     private String currentUserID;
     private final List<Anime> animeLists = new ArrayList<>();
-    private long countBookmark= 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -258,17 +258,18 @@ public class SearchAnime extends AppCompatActivity {
                     usersRef.child(currentUserID).child("bookmarks").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists()){
-                                long countBookmarkZ = dataSnapshot.getChildrenCount() + 1;
                                 Map currentAnimeMap = new HashMap();
                                 // if its the same anime trying to be added then don't change count
-                                if(dataSnapshot.hasChild(anime_id)){
+                                if(dataSnapshot.exists() && dataSnapshot.hasChild(anime_id)){
+                                    // dont update if exist
                                     Toast.makeText(SearchAnime.this, "This anime is already in your bookmarks", Toast.LENGTH_SHORT).show();
                                 } else {
+                                    // UTC timestamp in seconds
+                                    String ts = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
                                     currentAnimeMap.put("id", anime_id);
                                     currentAnimeMap.put("name", bookmark_name.trim());
                                     currentAnimeMap.put("image", bookmark_image);
-                                    currentAnimeMap.put("counter", countBookmarkZ);
+                                    currentAnimeMap.put("counter", ts);
 
                                     usersRef.child(currentUserID).child("bookmarks").child(anime_id)
                                             .updateChildren(currentAnimeMap).addOnCompleteListener(new OnCompleteListener() {
@@ -281,27 +282,6 @@ public class SearchAnime extends AppCompatActivity {
                                     });
                                 }
 
-
-
-                            } else {
-                                // if the first bookmark
-                                countBookmark = 1;
-                                Map currentAnimeMap = new HashMap();
-                                currentAnimeMap.put("id", anime_id);
-                                currentAnimeMap.put("name", bookmark_name.trim());
-                                currentAnimeMap.put("image", bookmark_image);
-                                currentAnimeMap.put("counter", 1);
-
-                                usersRef.child(currentUserID).child("bookmarks").child(anime_id)
-                                        .updateChildren(currentAnimeMap).addOnCompleteListener(new OnCompleteListener() {
-                                    @Override
-                                    public void onComplete(@NonNull Task task) {
-                                        if(task.isSuccessful()){
-                                            Toast.makeText(SearchAnime.this, "This anime is added into your bookmarks", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                            }
                         }
 
                         @Override
@@ -587,10 +567,6 @@ public class SearchAnime extends AppCompatActivity {
     }
 
     private void updateTopAiring(){
-        searchTypeTopButton.setPressed(true);
-        searchTypeTopButton.setClickable(false);
-        searchTypeButton.setPressed(true);
-        searchTypeButton.setClickable(false);
 
         RequestParams params = new RequestParams();
         String url =  JIKAN_URL + "/" + JIKAN_SORTBY_TOP + "/" + JIKAN_TYPE_ANIME + "/" + searchPageButton.getText().toString().toLowerCase() + "/" + searchSubTypeButton.getText().toString().toLowerCase();

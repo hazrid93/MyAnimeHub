@@ -413,7 +413,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.nav_bookmark:
-                System.out.println("AZAD: IM STARTING HERE");
                 sendUserToBookmarkActivity();
                 break;
 
