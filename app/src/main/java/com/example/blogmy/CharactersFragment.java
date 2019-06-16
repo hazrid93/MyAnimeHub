@@ -215,10 +215,10 @@ public class CharactersFragment extends Fragment {
 
     @Override
     public void onStop() {
-        progbar.setVisibility(View.GONE);
         super.onStop();
         System.out.println("CharacterFragment client interrupt");
         client.cancelAllRequests(true);
+        progbar.setVisibility(View.GONE);
     }
 
 
