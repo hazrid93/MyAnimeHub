@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SetupActivity"
-    android:background="@drawable/login_background">
+    android:background="@drawable/background_watercolour">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cyan_800_overlay" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/setup_profile_image"
