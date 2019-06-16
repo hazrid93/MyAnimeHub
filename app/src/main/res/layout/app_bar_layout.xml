@@ -6,4 +6,13 @@
     android:background="@color/colorPrimaryDark"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
+    <ProgressBar
+        android:id="@+id/toolbarprogress"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:rotation="0"
+        android:layout_gravity="right|end"
+        android:layout_marginRight="15dp"
+        android:visibility="gone" />
+
 </androidx.appcompat.widget.Toolbar>

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +55,7 @@ public class CharactersFragment extends Fragment {
     private Map<Integer,JSONObject> characters_data_map = null;
     private JSONArray character_array;
     private CharactersAdapter adapter;
+    public ProgressBar progbar;
 
     // Constants:
     // schema REST for top anime, https://jikan.docs.apiary.io/#reference/0/schedule/top-request-example+schema?console=1
@@ -106,6 +108,7 @@ public class CharactersFragment extends Fragment {
         System.out.println("CharacterFragment id: " + anime_id);
 
         characters_list_layout = (ListView) view.findViewById(R.id.character_list_layout);
+        progbar = (ProgressBar) getActivity().findViewById(R.id.toolbarprogress);
 
 
         // when using listview inside scrollview , use this hack to override the scrollview and scroll the listview instead
@@ -175,10 +178,11 @@ public class CharactersFragment extends Fragment {
 
     private void fetchCharactersResources(RequestParams params, String URL){
         client = new AsyncHttpClient();
-
+        progbar.setVisibility(View.VISIBLE);
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                progbar.setVisibility(View.GONE);
                 characters_data_map = new LinkedHashMap<Integer, JSONObject>();
                 characters_data_list = new ArrayList<Characters>();
 
@@ -195,6 +199,7 @@ public class CharactersFragment extends Fragment {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    progbar.setVisibility(View.GONE);
                 }
 
             }
@@ -203,12 +208,14 @@ public class CharactersFragment extends Fragment {
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
                 Log.e("CharactersFragment", "Fail" + e.toString());
                 Log.e("CharactersFragment", "Status code: " + statusCode);
+                progbar.setVisibility(View.GONE);
             }
         });
     }
 
     @Override
     public void onStop() {
+        progbar.setVisibility(View.GONE);
         super.onStop();
         System.out.println("CharacterFragment client interrupt");
         client.cancelAllRequests(true);

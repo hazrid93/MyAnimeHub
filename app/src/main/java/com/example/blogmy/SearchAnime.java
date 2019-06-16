@@ -36,6 +36,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -198,8 +199,6 @@ public class SearchAnime extends AppCompatActivity {
     // bookmark
     private ImageButton bookmarkBtn;
 
-
-
     private EnhancedWrapContentViewPager viewPager;
     private ViewPagerAdapter adapter;
     private FloatingActionButton floatingActionButton;
@@ -211,6 +210,9 @@ public class SearchAnime extends AppCompatActivity {
     private DatabaseReference usersRef;
     private String currentUserID;
     private final List<Anime> animeLists = new ArrayList<>();
+
+    // progress bar
+    public ProgressBar progbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,6 +234,10 @@ public class SearchAnime extends AppCompatActivity {
         currentSubTypeButton = JIKAN_SUBTYPE_AIRING;
         currentPageButton = JIKAN_PAGE_1;
         */
+
+        // progressbar
+        progbar = findViewById(R.id.toolbarprogress);
+        // progbar.setVisibility(View.VISIBLE);
 
         toolbar = (Toolbar) findViewById(R.id.search_anime_list_toolbar);
         setSupportActionBar(toolbar);
@@ -586,7 +592,7 @@ public class SearchAnime extends AppCompatActivity {
     // TODO: Add letsDoSomeNetworkingTopAnime(RequestParams params) here:
     private void letsDoSomeNetworkingAnimeDetails(final RequestParams params, String URL, final String animeId, final UpdateDataCallback updateDataCallback){
         final AsyncHttpClient client = new AsyncHttpClient();
-
+        progbar.setVisibility(View.VISIBLE);
         // 1. Summary fragment
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
@@ -608,6 +614,7 @@ public class SearchAnime extends AppCompatActivity {
                     summaryData = "";
                     summaryTitle = "";
                     e.printStackTrace();
+                    progbar.setVisibility(View.GONE);
                 }
 
                 String statsURL = JIKAN_ANIME_STATS_DEFAULT + animeId + "/" + JIKAN_ANIME_STATS;
@@ -615,6 +622,7 @@ public class SearchAnime extends AppCompatActivity {
                 client.get(statsURL, params, new JsonHttpResponseHandler(){
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                        progbar.setVisibility(View.GONE);
                         Log.d("SearchAnime", "Success");
                         // process the response object
                         animeStatsDetailsObject = response;
@@ -790,6 +798,7 @@ public class SearchAnime extends AppCompatActivity {
                             score_10_pct = 0.0;
                             score_10_vt = "0";
                             e.printStackTrace();
+                            progbar.setVisibility(View.GONE);
                         }
                     }
 
@@ -797,6 +806,7 @@ public class SearchAnime extends AppCompatActivity {
                     public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
                         Log.e("SearchAnime", "Fail" + e.toString());
                         Log.e("SearchAnime", "Status code: " + statusCode);
+                        progbar.setVisibility(View.GONE);
                     }
                 });
             }
@@ -805,6 +815,7 @@ public class SearchAnime extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
                 Log.e("SearchAnime", "Fail" + e.toString());
                 Log.e("SearchAnime", "Status code: " + statusCode);
+                progbar.setVisibility(View.GONE);
             }
         });
 
@@ -819,10 +830,11 @@ public class SearchAnime extends AppCompatActivity {
     // TODO: Add letsDoSomeNetworkingTopAnime(RequestParams params) here:
     private void letsDoSomeNetworkingTopAnime(RequestParams params, String URL, final boolean update){
         AsyncHttpClient client = new AsyncHttpClient();
-
+        progbar.setVisibility(View.VISIBLE);
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                progbar.setVisibility(View.GONE);
                 Toast.makeText(SearchAnime.this, "Request Successful", Toast.LENGTH_SHORT).show();
 
                 // add top airing anime data into the List topAiringAnime
@@ -846,6 +858,7 @@ public class SearchAnime extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    progbar.setVisibility(View.GONE);
                 }
 
                 for(int i=0; i < topAiringAnime.size(); i++){
@@ -869,6 +882,7 @@ public class SearchAnime extends AppCompatActivity {
                         }
 
                     } catch (JSONException e) {
+                        progbar.setVisibility(View.GONE);
                         e.printStackTrace();
                     }
                 }
@@ -907,6 +921,7 @@ public class SearchAnime extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
                 Log.e("SearchAnime", "Fail" + e.toString());
                 Log.e("SearchAnime", "Status code: " + statusCode);
+                progbar.setVisibility(View.GONE);
                 Toast.makeText(SearchAnime.this, "Request Failed", Toast.LENGTH_SHORT).show();
             }
         });
@@ -1225,5 +1240,11 @@ public class SearchAnime extends AppCompatActivity {
                 }
 
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        progbar.setVisibility(View.GONE);
     }
 }

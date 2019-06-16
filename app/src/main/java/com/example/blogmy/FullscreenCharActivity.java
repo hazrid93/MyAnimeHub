@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +35,7 @@ import cz.msebera.android.httpclient.Header;
 public class FullscreenCharActivity extends AppCompatActivity {
     private PosterSlider full_image_char;
     private String charName, charId, charURL;
-
+    public ProgressBar progbar;
     // Constants:
     // schema REST for top anime, https://jikan.docs.apiary.io/#reference/0/schedule/top-request-example+schema?console=1
     private static final String JIKAN_URL = "https://api.jikan.moe/v3";
@@ -79,6 +80,8 @@ public class FullscreenCharActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(charName);
+        //progress bar
+        progbar = findViewById(R.id.toolbarprogress);
 
         full_image_char = (PosterSlider) findViewById(R.id.char_image_full);
         initGetImages();
@@ -102,10 +105,11 @@ public class FullscreenCharActivity extends AppCompatActivity {
 
     private void fetchCharactersResources(RequestParams params, String URL){
         client = new AsyncHttpClient();
-
+        progbar.setVisibility(View.VISIBLE);
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
+                progbar.setVisibility(View.GONE);
                 characters_data_map = new LinkedHashMap<Integer, JSONObject>();
                 character_array = null;
                 try {
@@ -125,6 +129,7 @@ public class FullscreenCharActivity extends AppCompatActivity {
                     imageSlider.add(new RemoteImage(charURL));
                     full_image_char.setPosters(imageSlider);
                     e.printStackTrace();
+                    progbar.setVisibility(View.GONE);
                 }
 
             }
@@ -133,6 +138,7 @@ public class FullscreenCharActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
                 Log.e("FullscreenChar", "Fail" + e.toString());
                 Log.e("FullscreenChar", "Status code: " + statusCode);
+                progbar.setVisibility(View.GONE);
             }
         });
     }
@@ -141,6 +147,7 @@ public class FullscreenCharActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         client.cancelAllRequests(true);
+        progbar.setVisibility(View.GONE);
     }
 
 
