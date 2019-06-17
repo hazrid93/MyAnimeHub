@@ -402,4 +402,12 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
             selectPostImage.setImageURI(imageUri);
         }
     }
+    /*
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed(); // one inherited from android.support.v4.app.FragmentActivity
+        return false;
+    }
+    */
+
 }

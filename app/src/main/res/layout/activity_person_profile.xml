@@ -94,34 +94,32 @@
                     android:paddingRight="30dp"
                     android:paddingLeft="30dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="15dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/person_profile_status"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <Button
                         android:id="@+id/person_send_friend_request_btn"
                         android:layout_width="match_parent"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:text="Add Friend"
-                        android:layout_marginRight="5dp"
                         android:layout_below="@id/my_relationship_status"
                         android:background="@drawable/buttons"
                         android:textSize="14sp"
+                        android:layout_marginBottom="5dp"
                         android:textColor="@android:color/background_light"
                         android:textStyle="bold"/>
 
                     <Button
                         android:id="@+id/person_decline_friend_request_btn"
                         android:layout_width="match_parent"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:text="Decline"
-                        android:layout_marginLeft="5dp"
                         android:layout_below="@id/my_relationship_status"
                         android:background="@drawable/buttons"
+                        android:layout_marginBottom="5dp"
                         android:textSize="14sp"
                         android:textColor="@android:color/background_light"
                         android:textStyle="bold"/>

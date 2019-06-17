@@ -229,7 +229,7 @@ public class SettingsActivity extends AppCompatActivity {
         userMap.put("country", country);
         userMap.put("gender", gender);
         userMap.put("dob", dob);
-        userMap.put("relation", relation);
+        userMap.put("relationship", relation);
 
         settingsUserRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
             @Override

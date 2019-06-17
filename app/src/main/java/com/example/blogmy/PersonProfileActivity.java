@@ -231,13 +231,13 @@ public class PersonProfileActivity extends AppCompatActivity {
                             if(request_type.equals("sent")){
                                 CURRENT_STATE = "request_sent";
                                 sendFriendRequestButton.setText("Cancel Friend Request");
-                                declineFriendRequestButton.setVisibility(View.INVISIBLE);
+                                declineFriendRequestButton.setVisibility(View.GONE);
                                 declineFriendRequestButton.setEnabled(false);
                             }
                             else if(request_type.equals("received")) {
                                 CURRENT_STATE = "request_received";
                                 sendFriendRequestButton.setText("Accept Friend Request");
-                                declineFriendRequestButton.setVisibility(View.VISIBLE);
+                                declineFriendRequestButton.setVisibility(View.GONE);
                                 declineFriendRequestButton.setEnabled(true);
 
                                 declineFriendRequestButton.setOnClickListener(new View.OnClickListener() {
