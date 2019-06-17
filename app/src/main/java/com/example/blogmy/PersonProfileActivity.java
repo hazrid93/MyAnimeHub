@@ -34,11 +34,16 @@ public class PersonProfileActivity extends AppCompatActivity {
     private DatabaseReference FriendRequestRef, usersRef, friendsRef;
     private FirebaseAuth mAuth;
     private String senderUserId, receiverUserId, CURRENT_STATE, saveCurrentDate, saveCurrentTime;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_profile);
+        mToolbar = (Toolbar) findViewById(R.id.person_profile_page_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("User Profile");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAuth = FirebaseAuth.getInstance();
         receiverUserId = getIntent().getExtras().get("visit_user_id").toString();
         senderUserId = mAuth.getCurrentUser().getUid();
@@ -311,6 +316,12 @@ public class PersonProfileActivity extends AppCompatActivity {
         declineFriendRequestButton = (Button) findViewById(R.id.person_decline_friend_request_btn);
 
         CURRENT_STATE = "not_friends";
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed(); // one inherited from android.support.v4.app.FragmentActivity
+        return false;
     }
 
 }

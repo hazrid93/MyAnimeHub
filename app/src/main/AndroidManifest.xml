@@ -54,7 +54,6 @@
         <activity
             android:name=".PersonProfileActivity"
             android:label="@string/title_activity_person_profile"
-            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
