@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,12 +32,20 @@ public class ProfileActivity extends AppCompatActivity {
     private DatabaseReference profileUserRef, friendsRef, postsRef;
     private FirebaseAuth mAuth;
     private Button myPosts, myFriends;
+    private Toolbar mToolbar;
     private String currentUserId;
     private int count_friends = 0, count_posts = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        mToolbar = (Toolbar) findViewById(R.id.profile_page_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("User Profile");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
         profileUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
@@ -58,6 +67,10 @@ public class ProfileActivity extends AppCompatActivity {
         myFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
+                final AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.6F);
+                buttonClick.setDuration(300);
+                v.startAnimation(buttonClick);*/
                 sendUserToFriendsActivity();
             }
         });
@@ -65,6 +78,10 @@ public class ProfileActivity extends AppCompatActivity {
         myPosts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
+                final AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.6F);
+                buttonClick.setDuration(300);
+                v.startAnimation(buttonClick); */
                 sendUserToMyPostsActivity();
             }
         });
@@ -108,7 +125,7 @@ public class ProfileActivity extends AppCompatActivity {
                     userCountry.setText("Country: " + myCountry);
                     userGender.setText("Gender: " + myGender);
                     userRelationship.setText("Relationship: " + myRelationStatus);
-                    userDOB.setText("DOB: " + myDOB);
+                    userDOB.setText("Date Of Birth: " + myDOB);
                 }
             }
 
@@ -146,5 +163,13 @@ public class ProfileActivity extends AppCompatActivity {
         Intent myPostsIntent = new Intent(ProfileActivity.this, MyPostsActivity.class);
         startActivity(myPostsIntent);
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed(); // one inherited from android.support.v4.app.FragmentActivity
+        return false;
+    }
+
+
 
 }

@@ -123,8 +123,8 @@ public class CommentsActivity extends AppCompatActivity {
         public void setData(Comments commentsViewHolderData){
             username.setText("@" + commentsViewHolderData.getUsername());
             comment.setText(commentsViewHolderData.getComment());
-            time.setText("  Time: "+ commentsViewHolderData.getTime());
-            date.setText("  Date: " + commentsViewHolderData.getDate());
+            time.setText("Time: "+ commentsViewHolderData.getTime());
+            date.setText(commentsViewHolderData.getDate());
         }
     }
 

@@ -78,7 +78,6 @@
         <activity
             android:name=".ProfileActivity"
             android:label="ProfileActivity"
-            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
