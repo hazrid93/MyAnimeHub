@@ -236,7 +236,7 @@ public class ChatActivity extends AppCompatActivity {
         actionbar.setCustomView(action_bar_view);
 
         sendMessageButton = (ImageButton) findViewById(R.id.send_message_button);
-        sendImageFileButton = (ImageButton) findViewById(R.id.send_image_file_button);
+     //   sendImageFileButton = (ImageButton) findViewById(R.id.send_image_file_button);
         userMessageInput = (EditText) findViewById(R.id.input_message);
 
         receiverName = (TextView) findViewById(R.id.custom_profile_name);
