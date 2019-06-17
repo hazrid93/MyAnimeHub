@@ -71,7 +71,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             if(fromUserID.equals(messageSenderID)){
                 holder.senderMessageText.setVisibility(View.VISIBLE);
                 holder.senderMessageText.setBackgroundResource(R.drawable.sender_message_text_background);
-                holder.senderMessageText.setTextColor(Color.WHITE);
+                holder.senderMessageText.setTextColor(Color.BLACK);
                 holder.senderMessageText.setGravity(Gravity.START);
                 holder.senderMessageText.setText(messages.getMessage());
             } else {
