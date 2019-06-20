@@ -24,22 +24,25 @@
         android:layout_height="match_parent"
         android:background="@color/cyan_800_overlay" />
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messages_list_users"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/myChatLinearLayout"
         android:layout_below="@id/chat_bar_layout"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="false"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
     />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/myLinearLayout"
+        android:id="@+id/myChatLinearLayout"
         android:layout_alignParentBottom="true"
         android:background="@android:color/background_light"
         android:orientation="horizontal"
-        android:layout_alignParentStart="true"
       >
         <!--
         <ImageButton
