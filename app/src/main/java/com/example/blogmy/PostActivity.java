@@ -1,7 +1,11 @@
 package com.example.blogmy;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,14 +21,18 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
 
 import android.os.Environment;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +41,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import net.dankito.richtexteditor.android.RichTextEditor;
+import net.dankito.richtexteditor.android.toolbar.AllCommandsEditorToolbar;
 import net.dankito.richtexteditor.android.toolbar.GroupedCommandsEditorToolbar;
 import net.dankito.richtexteditor.callback.GetCurrentHtmlCallback;
 import net.dankito.richtexteditor.model.DownloadImageConfig;
@@ -47,6 +56,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -72,13 +82,11 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
 
     // RICH TEXT EDITOR PART
     private RichTextEditor editor;
-    private GroupedCommandsEditorToolbar bottomGroupedCommandsToolbar;
+    private AllCommandsEditorToolbar bottomGroupedCommandsToolbar;
     private IPermissionsService permissionsService = new PermissionsService(this);
 
     private static int imageCounter = 1;
-
     private long countPosts = 0;
-
     String current_user_id;
 
     @Override
@@ -87,9 +95,8 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         setContentView(R.layout.activity_post);
 
         // RICH TEXT EDITOR START
-        editor = (RichTextEditor) findViewById(R.id.editor);
+        editor = (RichTextEditor) findViewById(R.id.post_editorPost);
         editor.setHtml("<p>Hello There!</p>");
-        editor.enterEditingMode();
         // set editor not clickable, editable
         //editorTextView.setInputEnabled(false);
 
@@ -97,7 +104,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         // see also onRequestPermissionsResult() below
         editor.setPermissionsService(permissionsService);
 
-        bottomGroupedCommandsToolbar = (GroupedCommandsEditorToolbar) findViewById(R.id.editorToolbar);
+        bottomGroupedCommandsToolbar = (AllCommandsEditorToolbar) findViewById(R.id.post_editorPostToolbar);
         bottomGroupedCommandsToolbar.setEditor(editor);
 
         // you can adjust predefined toolbars by removing single commands
@@ -119,6 +126,8 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         editor.setDownloadImageConfig(new DownloadImageConfig(DownloadImageUiSetting.AllowSelectDownloadFolderInCode,
                 new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "downloaded_images")));
 
+
+        editor.enterEditingMode();
         // RICH TEXT EDITOR END
 
         postImageReference = FirebaseStorage.getInstance().getReference();
@@ -127,7 +136,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
 
         //selectPostImage = (ImageButton) findViewById(R.id.select_post_image);
         updatePostButton = (Button) findViewById(R.id.update_post_button);
-        postSummary = (EditText) findViewById(R.id.post_summary);
+      //  postSummary = (EditText) findViewById(R.id.post_summary);
         loadingBar = new ProgressDialog(this);
 
         mAuth = FirebaseAuth.getInstance();
@@ -138,24 +147,48 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Update Post");
 
-        postSummary.requestFocus();
-
-        /*
-        selectPostImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGallery();
-            }
-        });
-        */
-
         
         updatePostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                summary = postSummary.getText().toString();
-                save();
+                // summary = postSummary.getText().toString();
+                // get summary from alert dialog instead of a textbox
+                // inflate the layout view on alert dialog
+                View view = getLayoutInflater().inflate(R.layout.dialog_post,editor,false);
+                AlertDialog.Builder builder = new AlertDialog.Builder(PostActivity.this);
+                builder.setTitle("Post Summary");
+
+                // Set up the input
+                final EditText input = (EditText) view.findViewById(R.id.dialog_summary);
+                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+                builder.setView(view);
+
+                // dialoginterface for alertdialog
+                builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        summary = input.getText().toString();
+                        // save the post after summary is set
+                        save();
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // cancel the alert dialog popup
+                        dialog.cancel();
+                    }
+                });
+
+                Dialog dialog = builder.create();
+                dialog.setCancelable(false);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+
+                // save the post
+               // save();
             }
         });
     }
@@ -203,6 +236,14 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         // use this to let callback only happen when all image processed
         imageCounter = 1;
 
+
+        if(imageSize==0){
+            // set to none to not display anything
+            downloadUrl = "none";
+            uploadImageCallback.onCallback(doc.toString());
+            return;
+        }
+
         for (final Element imageElement : images) {
             String imageUrl = imageElement.attr("src");
             // uploads this image to your server and returns remote image url (= url of image on your server)
@@ -235,8 +276,6 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
             Toast.makeText(this, "Please add description for your post", Toast.LENGTH_SHORT).show();
         } else if(TextUtils.isEmpty(summary)){
             Toast.makeText(this, "Please add summary for your post", Toast.LENGTH_SHORT).show();
-        } else if(imageSize == 0) {
-            Toast.makeText(this, "Please add at least one image for your post", Toast.LENGTH_SHORT).show();
         } else {
             loadingBar.setTitle("Add new post");
             loadingBar.setMessage("Please wait...");
@@ -267,34 +306,72 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         saveCurrentTime = currentTime.format(calForTime.getTime());
 
         postRandomName = saveCurrentDate + "-" + saveCurrentTime;
+        int indexdot = imageUrl.lastIndexOf('.');
+        String imageUrlCut = imageUrl.substring(0,indexdot);
         // getLastPathSegment <-- the image name
         // final StorageReference filePath = postImageReference.child("Post Images").child(imageUri.getLastPathSegment() + postRandomName + ".jpg");
-        final StorageReference filePath = postImageReference.child("Post Images").child(imageUrl.substring(imageUrl.lastIndexOf('/'),imageUrl.lastIndexOf('.')) + "_" +postRandomName + ".jpg");
+        final StorageReference filePath = postImageReference.child("Post Images").child(imageUrl.substring(imageUrlCut.lastIndexOf('/'),imageUrl.lastIndexOf('.')) + "_" +postRandomName + ".jpg");
 
-        InputStream stream;
         try {
-            stream = new FileInputStream(imageUrl);
-            // save post to firebase storage.
-            filePath.putStream(stream).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            /*
+            URL url = new URL(imageUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            stream = connection.getInputStream(); */
+            //  final Bitmap bitmapLoad;
+            //  bitmapLoad = Picasso.with(EditPostActivity.this).load(imageUrl).resize(200,200).centerInside().get();
+
+            // reference to target need to be kept to avoid being garbage collected
+            final Target target = new Target() {
                 @Override
-                public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task) {
-                    if(task.isSuccessful()){
-                        filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri uri) {
-                                myCallback.onCallback(uri.toString());
-                                Toast.makeText(PostActivity.this, "Image is uploaded successfully", Toast.LENGTH_SHORT).show();
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos);
+                    final byte[] fileBytes = baos.toByteArray();
 
+                    // save post to firebase storage.
+                    filePath.putBytes(fileBytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task) {
+                            if(task.isSuccessful()){
+                                filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        myCallback.onCallback(uri.toString());
+                                        Toast.makeText(PostActivity.this, "Image is uploaded successfully", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                });
+
+                            } else {
+                                String messsage = task.getException().getMessage();
+                                Toast.makeText(PostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
                             }
-                        });
-
-                    } else {
-                        String messsage = task.getException().getMessage();
-                        Toast.makeText(PostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
-                    }
+                        }
+                    });
                 }
-            });
-        } catch (FileNotFoundException e) {
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                }
+            };
+            Picasso.with(PostActivity.this).load(imageUrl).into(target);
+            //final Uri resultUri = result.getUri();
+                    /*
+            Bitmap bitmap;
+            bitmap = new Compressor(this)
+                    .setMaxHeight(300) //Set height and width
+                    .setMaxWidth(300)
+                    .setQuality(70)
+                    .compressToBitmap(BitmapFactory.decodeFileDescriptor(stream.g));*/
+
+
+        } catch(Exception e){
             e.printStackTrace();
         }
 
