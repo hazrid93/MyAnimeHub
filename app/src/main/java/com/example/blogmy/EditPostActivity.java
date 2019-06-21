@@ -478,7 +478,7 @@ public class EditPostActivity extends AppCompatActivity {
                 if(dataSnapshot.exists()){
                     String userFullName = dataSnapshot.child("fullname").getValue().toString();
                     String userProfileImage = dataSnapshot.child("profileimage").getValue().toString();
-                    String ts = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
+                   // String ts = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
                     HashMap postMap = new HashMap();
                     postMap.put("uid",current_user_id);
                     postMap.put("date", saveCurrentDate);
@@ -488,7 +488,7 @@ public class EditPostActivity extends AppCompatActivity {
                     postMap.put("postimage", downloadUrl);
                     postMap.put("fullname", userFullName);
                     postMap.put("profileimage", userProfileImage);
-                    postMap.put("counter", Integer.valueOf(ts));
+                    postMap.put("counter", System.currentTimeMillis());
 
                     clickPostRef.updateChildren(postMap)
                             .addOnCompleteListener(new OnCompleteListener() {

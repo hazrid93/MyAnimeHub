@@ -271,11 +271,11 @@ public class SearchAnime extends AppCompatActivity {
                                     Toast.makeText(SearchAnime.this, "This anime is already in your bookmarks", Toast.LENGTH_SHORT).show();
                                 } else {
                                     // UTC timestamp in seconds
-                                    String ts = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
+                                   // String ts = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
                                     currentAnimeMap.put("id", anime_id);
                                     currentAnimeMap.put("name", bookmark_name.trim());
                                     currentAnimeMap.put("image", bookmark_image);
-                                    currentAnimeMap.put("counter", Integer.valueOf(ts));
+                                    currentAnimeMap.put("counter", System.currentTimeMillis());
 
                                     usersRef.child(currentUserID).child("bookmarks").child(anime_id)
                                             .updateChildren(currentAnimeMap).addOnCompleteListener(new OnCompleteListener() {
