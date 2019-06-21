@@ -222,52 +222,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="38dp">
 
-                        <RelativeLayout
-                            android:id="@+id/anime_titles"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="15dp"
-                            android:layout_toLeftOf="@+id/frameLayout">
 
-                            <!--LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="match_parent"-->
-                            <TextView
-                                android:id="@+id/tv_title_1"
-                                android:layout_width="250dp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="start"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="10dp"
-                                android:ellipsize="marquee"
-                                android:fontFamily="@font/roboto_regular"
-                                android:gravity="start"
-                                android:marqueeRepeatLimit="marquee_forever"
-                                android:singleLine="true"
-                                android:textColor="@android:color/black"
-                                android:textSize="26sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/tv_title_2"
-                                android:layout_width="250dp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="start"
-                                android:layout_marginLeft="10dp"
-                                android:layout_marginRight="10dp"
-                                android:ellipsize="marquee"
-                                android:fontFamily="@font/roboto_regular"
-                                android:gravity="start"
-                                android:marqueeRepeatLimit="marquee_forever"
-                                android:singleLine="true"
-                                android:textColor="@android:color/black"
-                                android:textSize="26sp"
-                                android:textStyle="bold" />
-                            <!--/LinearLayout-->
-
-                        </RelativeLayout>
 
                         <FrameLayout
                             android:id="@+id/frameLayout"
@@ -288,11 +243,54 @@
 
                     </RelativeLayout>
 
+                    <RelativeLayout
+                        android:id="@+id/anime_titles"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/search_anime_layout_temp">
+
+                        <!--LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"-->
+                        <TextView
+                            android:id="@+id/tv_title_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="-10dp"
+                            android:paddingRight="80dp"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="start"
+                            android:ellipsize="end"
+                            android:singleLine="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="26sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_title_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="-10dp"
+                            android:paddingRight="80dp"
+                            android:gravity="start"
+                            android:fontFamily="@font/roboto_regular"
+                            android:ellipsize="end"
+                            android:singleLine="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="26sp"
+                            android:textStyle="bold" />
+                        <!--/LinearLayout-->
+
+                    </RelativeLayout>
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="210dp"
-                        android:layout_below="@id/search_anime_layout_temp"
+                        android:layout_below="@id/anime_titles"
                         android:layout_marginStart="@dimen/recycler_view_left_offset"
                         android:layout_marginTop="18dp"
                         android:clipChildren="false"
