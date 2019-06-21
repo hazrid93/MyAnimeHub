@@ -94,7 +94,7 @@
             android:fontFamily="@font/roboto_regular"
             android:textColor="@android:color/black"/>
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/click_post_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
@@ -104,21 +104,30 @@
             android:layout_marginBottom="10dp"
             android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            />
-
+            /> -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.2dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:id="@+id/separator"
+            android:visibility="visible"
+            android:background="@android:color/darker_gray"/>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp">
 
             <ImageButton
                 android:id="@+id/like_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/white"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@android:color/transparent"
+                android:padding="5dp"
+                android:layout_gravity="center"
                 android:src="@drawable/dislike"/>
 
             <TextView
@@ -126,7 +135,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0 Likes"
-                android:padding="15dp"
+                android:padding="12dp"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 />
@@ -137,10 +146,10 @@
                 android:gravity="end">
                 <ImageButton
                     android:id="@+id/comment_button"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:backgroundTint="@android:color/white"
-                    android:scaleType="fitCenter"
+                    android:scaleType="centerCrop"
                     android:baselineAlignBottom="false"
                     android:src="@drawable/chat_red"/>
         </RelativeLayout>

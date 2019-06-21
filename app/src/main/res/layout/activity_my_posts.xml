@@ -10,6 +10,20 @@
         android:id="@+id/my_posts_bar_layout"
         layout="@layout/app_bar_layout"></include>
 
+    <ImageView
+        android:id="@+id/background_login_1"
+        android:layout_below="@id/my_posts_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_watercolour" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_below="@id/my_posts_bar_layout"
+        android:layout_height="match_parent"
+        android:background="@color/cyan_800_overlay" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/my_all_posts_list"
         android:layout_width="match_parent"

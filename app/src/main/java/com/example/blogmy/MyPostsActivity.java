@@ -68,7 +68,7 @@ public class MyPostsActivity extends AppCompatActivity {
 
     private void displayAllMyPosts() {
 
-        Query sortPostsInDescendingOrder = postRef.orderByChild("uid").startAt(currentUserId).endAt(currentUserId + "\uf8ff");
+        Query sortPostsInDescendingOrder = postRef.orderByChild("counter").startAt(currentUserId).endAt(currentUserId + "\uf8ff");
         options = new FirebaseRecyclerOptions.Builder<Posts>().setQuery(sortPostsInDescendingOrder, Posts.class).build();
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Posts, PostsViewHolder>(options) {
             @Override
@@ -158,7 +158,7 @@ public class MyPostsActivity extends AppCompatActivity {
             date = itemView.findViewById(R.id.post_date);
             time = itemView.findViewById(R.id.post_time);
             summary = itemView.findViewById(R.id.click_post_description);
-            postimage = (ImageView) itemView.findViewById(R.id.click_post_image);
+            //postimage = (ImageView) itemView.findViewById(R.id.click_post_image);
             profileimage = (CircleImageView) itemView.findViewById(R.id.post_profile_image);
 
             likePostButton = (ImageButton) itemView.findViewById(R.id.like_button);
@@ -177,7 +177,7 @@ public class MyPostsActivity extends AppCompatActivity {
 
             // https://github.com/square/picasso/issues/1291 seems like require runtime permission.
             Picasso.with(getApplicationContext()).load(postViewHolderData.getProfileimage()).into(profileimage);
-            Picasso.with(getApplicationContext()).load(postViewHolderData.getPostimage()).into(postimage);
+            //Picasso.with(getApplicationContext()).load(postViewHolderData.getPostimage()).into(postimage);
         }
 
         public void setLikeButtonStatus(final String postKey){

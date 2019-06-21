@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
             date = itemView.findViewById(R.id.post_date);
             time = itemView.findViewById(R.id.post_time);
             summary = itemView.findViewById(R.id.click_post_description);
-            postimage = (ImageView) itemView.findViewById(R.id.click_post_image);
+           // postimage = (ImageView) itemView.findViewById(R.id.click_post_image);
             profileimage = (CircleImageView) itemView.findViewById(R.id.post_profile_image);
 
             likePostButton = (ImageButton) itemView.findViewById(R.id.like_button);
@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-            Picasso.with(getApplicationContext()).load(postViewHolderData.getPostimage()).into(postimage);
+          //  Picasso.with(getApplicationContext()).load(postViewHolderData.getPostimage()).into(postimage);
         }
 
         public void setLikeButtonStatus(final String postKey){

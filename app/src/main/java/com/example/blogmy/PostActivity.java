@@ -64,6 +64,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 
 public class PostActivity<imageCounter> extends AppCompatActivity {
@@ -386,7 +387,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         Calendar calForTime =  Calendar.getInstance();
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
         saveCurrentTime = currentTime.format(calForTime.getTime());
-
+        /*
         postRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -402,6 +403,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
 
             }
         });
+        */
 
         usersRef.child(current_user_id).addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -410,7 +412,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
                 if(dataSnapshot.exists()){
                     String userFullName = dataSnapshot.child("fullname").getValue().toString();
                     String userProfileImage = dataSnapshot.child("profileimage").getValue().toString();
-
+                    String ts = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
                     HashMap postMap = new HashMap();
                     postMap.put("uid",current_user_id);
                     postMap.put("date", saveCurrentDate);
@@ -420,7 +422,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
                     postMap.put("postimage", downloadUrl);
                     postMap.put("fullname", userFullName);
                     postMap.put("profileimage", userProfileImage);
-                    postMap.put("counter", countPosts);
+                    postMap.put("counter", ts);
 
                     postRef.child(current_user_id + postRandomName).updateChildren(postMap)
                             .addOnCompleteListener(new OnCompleteListener() {

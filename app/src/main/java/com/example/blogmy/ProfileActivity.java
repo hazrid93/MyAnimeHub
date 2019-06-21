@@ -86,7 +86,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        postsRef.orderByChild("uid").startAt(currentUserId).endAt(currentUserId + "\uf8ff")
+        postsRef.orderByChild("counter").startAt(currentUserId).endAt(currentUserId + "\uf8ff")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
