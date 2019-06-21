@@ -275,7 +275,7 @@ public class SearchAnime extends AppCompatActivity {
                                     currentAnimeMap.put("id", anime_id);
                                     currentAnimeMap.put("name", bookmark_name.trim());
                                     currentAnimeMap.put("image", bookmark_image);
-                                    currentAnimeMap.put("counter", ts);
+                                    currentAnimeMap.put("counter", Integer.valueOf(ts));
 
                                     usersRef.child(currentUserID).child("bookmarks").child(anime_id)
                                             .updateChildren(currentAnimeMap).addOnCompleteListener(new OnCompleteListener() {

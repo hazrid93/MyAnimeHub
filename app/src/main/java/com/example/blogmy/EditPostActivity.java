@@ -488,7 +488,7 @@ public class EditPostActivity extends AppCompatActivity {
                     postMap.put("postimage", downloadUrl);
                     postMap.put("fullname", userFullName);
                     postMap.put("profileimage", userProfileImage);
-                    postMap.put("counter", ts);
+                    postMap.put("counter", Integer.valueOf(ts));
 
                     clickPostRef.updateChildren(postMap)
                             .addOnCompleteListener(new OnCompleteListener() {

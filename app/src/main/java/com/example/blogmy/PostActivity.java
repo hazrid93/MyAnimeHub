@@ -422,7 +422,7 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
                     postMap.put("postimage", downloadUrl);
                     postMap.put("fullname", userFullName);
                     postMap.put("profileimage", userProfileImage);
-                    postMap.put("counter", ts);
+                    postMap.put("counter", Integer.valueOf(ts));
 
                     postRef.child(current_user_id + postRandomName).updateChildren(postMap)
                             .addOnCompleteListener(new OnCompleteListener() {

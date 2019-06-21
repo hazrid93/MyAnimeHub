@@ -68,7 +68,7 @@ public class MyPostsActivity extends AppCompatActivity {
 
     private void displayAllMyPosts() {
 
-        Query sortPostsInDescendingOrder = postRef.orderByChild("counter").startAt(currentUserId).endAt(currentUserId + "\uf8ff");
+        Query sortPostsInDescendingOrder = postRef.orderByChild("uid").startAt(currentUserId).endAt(currentUserId + "\uf8ff");
         options = new FirebaseRecyclerOptions.Builder<Posts>().setQuery(sortPostsInDescendingOrder, Posts.class).build();
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Posts, PostsViewHolder>(options) {
             @Override
