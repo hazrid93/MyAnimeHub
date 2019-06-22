@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseError;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,7 +51,7 @@ public class SetupActivity extends AppCompatActivity {
     private Button saveInformationButton;
     private CircleImageView profileImage;
     private FirebaseAuth mAuth;
-    private DatabaseReference userRef;
+    private DatabaseReference userRef,userDetailRef;
     private ProgressDialog loadingBar;
     private StorageReference userProfileImageRef;
     String currentUserId;
@@ -65,6 +66,7 @@ public class SetupActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
         userRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        userDetailRef = FirebaseDatabase.getInstance().getReference().child("Users");
         userProfileImageRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
         loadingBar = new ProgressDialog(this);
 
@@ -102,6 +104,8 @@ public class SetupActivity extends AppCompatActivity {
                 }
             }
         });
+
+
 
         // listen to an update to /User/<currentUID> node.
         userRef.addValueEventListener(new ValueEventListener() {
@@ -232,7 +236,7 @@ public class SetupActivity extends AppCompatActivity {
     }
 
     private void saveAccountSetupInformation(){
-        String user_name = userName.getText().toString();
+        final String user_name = userName.getText().toString();
         String user_full_name = userFullName.getText().toString();
         String user_country = userCountry.getText().toString();
 
@@ -254,35 +258,97 @@ public class SetupActivity extends AppCompatActivity {
             Toast.makeText(this, "Please set your profile picture...", Toast.LENGTH_SHORT).show();
 
         } else {
-
+            // dont allow same user name
+            /*
+            Firebase userRef= new Firebase(USERS_LOCATION);
+            userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot.getValue() !== null) {
+                        //user exists, do something
+                    } else {
+                        //user does not exist, do something else
+                    }
+                }
+                @Override
+                public void onCancelled(FirebaseError arg0) {
+                }
+            });
+            */
             loadingBar.setTitle("Creating new account");
             loadingBar.setMessage("Please wait...");
             loadingBar.show();
             loadingBar.setCanceledOnTouchOutside(true);
 
-            HashMap userMap = new HashMap<>();
+            final HashMap userMap = new HashMap<>();
             userMap.put("username", user_name);
             userMap.put("fullname", user_full_name);
             userMap.put("country", user_country);
-            userMap.put("status", "Temporary status (CHANGEME)");
-            userMap.put("gender", "male (CHANGEME)");
+            userMap.put("status", "Feeling good!");
+            userMap.put("gender", "none");
             // date of birth
-            userMap.put("dob", "none (CHANGEME)");
-            userMap.put("relationship", "single (CHANGEME)");
-            userRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
+            userMap.put("dob", "1 January 2019");
+            userMap.put("relationship", "none");
+
+            userDetailRef.orderByChild("username").equalTo(user_name).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onComplete(@NonNull Task task) {
-                    if(task.isSuccessful()){
-                        sendUserToMainActivity();
-                        Toast.makeText(SetupActivity.this, "Your account is created successfully", Toast.LENGTH_SHORT).show();
-                        loadingBar.dismiss();
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        boolean userexisted = false;
+                        for(DataSnapshot uniqueKeySnapshot : dataSnapshot.getChildren()){
+                            //Loop 1 to go through all the child nodes of users
+                            //for(DataSnapshot booksSnapshot : uniqueKeySnapshot.child("username").g){
+                            //loop 2 to go through all the child nodes of books node
+                            if(uniqueKeySnapshot.child("username").getValue().toString().equals(user_name)){
+                                userexisted = true;
+                            }
+                            //}
+                        }
+
+                        if(userexisted){
+                            Toast.makeText(SetupActivity.this, "This username is taken", Toast.LENGTH_SHORT).show();
+                            loadingBar.dismiss();
+                        } else {
+                            userRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
+                                @Override
+                                public void onComplete(@NonNull Task task) {
+                                    if(task.isSuccessful()){
+                                        sendUserToMainActivity();
+                                        Toast.makeText(SetupActivity.this, "Your account is created successfully", Toast.LENGTH_SHORT).show();
+                                        loadingBar.dismiss();
+                                    } else {
+                                        String message = task.getException().getMessage();
+                                        Toast.makeText(SetupActivity.this, message, Toast.LENGTH_SHORT).show();
+                                        loadingBar.dismiss();
+                                    }
+                                }
+                            });
+                        }
                     } else {
-                        String message = task.getException().getMessage();
-                        Toast.makeText(SetupActivity.this, message, Toast.LENGTH_SHORT).show();
-                        loadingBar.dismiss();
+                        userRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
+                            @Override
+                            public void onComplete(@NonNull Task task) {
+                                if(task.isSuccessful()){
+                                    sendUserToMainActivity();
+                                    Toast.makeText(SetupActivity.this, "Your account is created successfully", Toast.LENGTH_SHORT).show();
+                                    loadingBar.dismiss();
+                                } else {
+                                    String message = task.getException().getMessage();
+                                    Toast.makeText(SetupActivity.this, message, Toast.LENGTH_SHORT).show();
+                                    loadingBar.dismiss();
+                                }
+                            }
+                        });
                     }
                 }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    loadingBar.dismiss();
+                }
             });
+
+
         }
     }
 

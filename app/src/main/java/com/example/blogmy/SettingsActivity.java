@@ -49,7 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
     private TextInputEditText userName, userProfileName, userStatus, userCountry, userGender, userRelationship, userDOB;
     private Button updateAccountSettingsButton;
     private CircleImageView userProfImage;
-    private DatabaseReference settingsUserRef;
+    private DatabaseReference settingsUserRef,userDetailRef;
     private FirebaseAuth mAuth;
     private ProgressDialog loadingBar;
     final static int Gallery_Pick = 1;
@@ -72,6 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
         currentUserId = mAuth.getCurrentUser().getUid();
         // ref to database at user node.
         settingsUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        userDetailRef = FirebaseDatabase.getInstance().getReference().child("Users");
         loadingBar = new ProgressDialog(this);
         mToolbar = (Toolbar) findViewById(R.id.settings_toolbar);
         // link the activity view with toolbar view
@@ -220,9 +221,9 @@ public class SettingsActivity extends AppCompatActivity {
         updateAccountInfo(username, profilename, status, country, gender, dob , relation);
     }
 
-    private void updateAccountInfo(String username,String profilename,String status,String country,String gender,String dob,String relation) {
+    private void updateAccountInfo(final String username, String profilename, String status, String country, String gender, String dob, String relation) {
 
-        HashMap userMap = new HashMap();
+        final HashMap userMap = new HashMap();
         userMap.put("username", username);
         userMap.put("profilename", profilename);
         userMap.put("status", status);
@@ -231,20 +232,63 @@ public class SettingsActivity extends AppCompatActivity {
         userMap.put("dob", dob);
         userMap.put("relationship", relation);
 
-        settingsUserRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
+        userDetailRef.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task task) {
-                if(task.isSuccessful()){
-                    sendUserToMainActivity();
-                    Toast.makeText(SettingsActivity.this, "Account settings updated successfully", Toast.LENGTH_SHORT).show();
-                    loadingBar.dismiss();
-                } else {
-                    Toast.makeText(SettingsActivity.this, "Error occured, whilte updating account settings", Toast.LENGTH_SHORT).show();
-                    loadingBar.dismiss();
-                }
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
 
+                    boolean userexisted = false;
+                    for(DataSnapshot uniqueKeySnapshot : dataSnapshot.getChildren()){
+                        //Loop 1 to go through all the child nodes of users
+                        //for(DataSnapshot booksSnapshot : uniqueKeySnapshot.child("username").g){
+                            //loop 2 to go through all the child nodes of books node
+                            if(uniqueKeySnapshot.child("username").getValue().toString().equals(username)){
+                                userexisted = true;
+                            }
+                        //}
+                    }
+
+                    if(userexisted){
+                        Toast.makeText(SettingsActivity.this, "This username is taken", Toast.LENGTH_SHORT).show();
+                        loadingBar.dismiss();
+                    } else {
+                        settingsUserRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
+                            @Override
+                            public void onComplete(@NonNull Task task) {
+                                if(task.isSuccessful()){
+                                    sendUserToMainActivity();
+                                    Toast.makeText(SettingsActivity.this, "Account settings updated successfully", Toast.LENGTH_SHORT).show();
+                                    loadingBar.dismiss();
+                                } else {
+                                    Toast.makeText(SettingsActivity.this, "Error occured, while updating account settings", Toast.LENGTH_SHORT).show();
+                                    loadingBar.dismiss();
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    settingsUserRef.updateChildren(userMap).addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            if(task.isSuccessful()){
+                                sendUserToMainActivity();
+                                Toast.makeText(SettingsActivity.this, "Account settings updated successfully", Toast.LENGTH_SHORT).show();
+                                loadingBar.dismiss();
+                            } else {
+                                Toast.makeText(SettingsActivity.this, "Error occured, while updating account settings", Toast.LENGTH_SHORT).show();
+                                loadingBar.dismiss();
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                loadingBar.dismiss();
             }
         });
+
     }
 
     private void sendUserToMainActivity(){

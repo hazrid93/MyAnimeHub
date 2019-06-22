@@ -206,7 +206,7 @@
                 android:layout_marginTop="25dp"
                 android:layout_marginBottom="35dp"
                 android:background="@drawable/buttons"
-                android:text="Login"
+                android:text="Update"
                 android:textColor="@android:color/white"
                 android:textSize="15sp"
                 android:textStyle="bold"/>
