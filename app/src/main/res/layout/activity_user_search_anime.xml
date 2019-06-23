@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserSearchAnimeActivity">
+
+    <include
+        android:id="@+id/user_search_anime_bar_layout"
+        layout="@layout/app_bar_layout" ></include>
+
+    <ImageView
+        android:id="@+id/background_login_1"
+        android:layout_below="@id/user_search_anime_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_watercolour" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_below="@id/user_search_anime_bar_layout"
+        android:layout_height="match_parent"
+        android:background="@color/cyan_800_overlay" />
+
+    <RelativeLayout
+        android:id="@+id/user_anime_search_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_search_anime_bar_layout"
+        android:gravity="center"
+        android:layout_marginTop="20dp">
+
+        <EditText
+            android:id="@+id/user_search_anime_text"
+            android:layout_width="280dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/inputs"
+            android:hint="Search..."
+            android:inputType="text"
+            android:padding="10dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="@color/colorProfile"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/user_search_anime_button"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@id/user_search_anime_text"
+            android:background="@drawable/inputs"
+            android:backgroundTint="@android:color/transparent"
+            android:gravity="center"
+            android:src="@drawable/search" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/user_search_result_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_anime_search_layout"
+        android:text="Search Result For: "
+        android:layout_marginLeft="10dp"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:textSize="22sp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/user_search_anime_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/user_search_result_text"
+        android:layout_alignParentTop="false"
+        android:layout_marginTop="20dp"
+        />
+
+</RelativeLayout>
