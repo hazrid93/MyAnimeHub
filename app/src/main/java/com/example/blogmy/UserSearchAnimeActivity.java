@@ -5,10 +5,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -71,6 +74,8 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
     private UserSearchAnimeAdapter animeAdapter;
     private JSONArray anime_array;
     private TextView searchAnimeText;
+    private EditText searchInputText;
+    private ImageButton searchInputButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +92,8 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         searchAnimeText = (TextView) findViewById(R.id.user_search_result_text);
-
+        searchInputText = (EditText) findViewById(R.id.user_search_anime_text) ;
+        searchInputButton = (ImageButton) findViewById(R.id.user_search_anime_button);
 
         progbar = (ProgressBar) findViewById(R.id.toolbarprogress);
         // fetch the result upon oncreate
@@ -95,6 +101,16 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
             searchAnimeText.setText("Search Result For: " + anime_id);
             initGetCharacter();
         }
+
+        searchInputButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String inputText = searchInputText.getText().toString();
+                anime_id = inputText;
+                searchAnimeText.setText("Search Result For: " + anime_id);
+                initGetCharacter();
+            }
+        });
 
     }
 
@@ -129,7 +145,7 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
                  //   System.out.println("AZADSEARCH: " + anime_array.toString());
                     if (anime_array != null) {
                         for (int i=0;i<anime_array.length();i++){
-                            System.out.println("AZADSEARCH: " + anime_array.getJSONObject(i).toString());
+                            //System.out.println("AZADSEARCH: " + anime_array.getJSONObject(i).toString());
                             // String mal_id, String image_url, String title, String airing, String score, String episodes, String start_date, String end_date
                             anime_data_list.add(new UserSearchAnime(anime_array.getJSONObject(i).getString("mal_id"), anime_array.getJSONObject(i).getString("image_url"), anime_array.getJSONObject(i).getString("title")
                                 , anime_array.getJSONObject(i).getString("airing"), anime_array.getJSONObject(i).getString("score"), anime_array.getJSONObject(i).getString("episodes")

@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_below="@id/user_search_anime_bar_layout"
         android:layout_height="match_parent"
-        android:background="@color/overlay_dark_80" />
+        android:background="@color/overlay_dark_60" />
 
     <LinearLayout
         android:id="@+id/user_anime_search_layout"
@@ -53,8 +53,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_toEndOf="@id/user_search_anime_text"
-            android:background="@drawable/inputs"
-            android:backgroundTint="@android:color/transparent"
+            android:background="@android:color/transparent"
             android:gravity="center"
             android:src="@drawable/search" />
 

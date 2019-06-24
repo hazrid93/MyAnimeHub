@@ -25,9 +25,11 @@
 
             <ImageView
                 android:id="@+id/anime_search_picture"
-                android:layout_width="130dp"
+                android:layout_width="110dp"
                 android:layout_height="130dp"
-                android:src="@drawable/profile"/>
+                android:src="@drawable/profile"
+                android:layout_marginLeft="5dp"
+                android:scaleType="fitXY"/>
 
         </RelativeLayout>
 
