@@ -22,9 +22,9 @@
         android:layout_width="match_parent"
         android:layout_below="@id/user_search_anime_bar_layout"
         android:layout_height="match_parent"
-        android:background="@color/cyan_800_overlay" />
+        android:background="@color/overlay_dark_80" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/user_anime_search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,29 +34,31 @@
 
         <EditText
             android:id="@+id/user_search_anime_text"
-            android:layout_width="280dp"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_alignParentStart="true"
             android:background="@drawable/inputs"
             android:hint="Search..."
             android:inputType="text"
+            android:layout_weight="1"
             android:padding="10dp"
+            android:layout_marginLeft="10dp"
             android:textColor="@android:color/black"
             android:textColorHint="@color/colorProfile"
             android:textSize="18sp" />
 
         <ImageButton
             android:id="@+id/user_search_anime_button"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_toEndOf="@id/user_search_anime_text"
             android:background="@drawable/inputs"
             android:backgroundTint="@android:color/transparent"
             android:gravity="center"
             android:src="@drawable/search" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/user_search_result_text"
@@ -66,6 +68,7 @@
         android:text="Search Result For: "
         android:layout_marginLeft="10dp"
         android:textStyle="bold"
+        android:textColor="@color/grey_50"
         android:layout_marginTop="20dp"
         android:textSize="22sp"/>
 

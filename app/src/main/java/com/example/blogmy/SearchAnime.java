@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -216,6 +217,9 @@ public class SearchAnime extends AppCompatActivity {
     // progress bar
     public ProgressBar progbar;
 
+    private ImageButton searchAnimeButton;
+    private EditText searchAnimeText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -256,6 +260,23 @@ public class SearchAnime extends AppCompatActivity {
         subtypeButtonArrow = (TextView) findViewById(R.id.search_subtype_button_arrow);
         pageButtonArrow = (TextView) findViewById(R.id.search_page_button_arrow);
 
+        // search anime part
+        searchAnimeButton = (ImageButton) findViewById(R.id.search_anime_button);
+        searchAnimeText = (EditText) findViewById(R.id.search_anime_box_input);
+
+        searchAnimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String input = searchAnimeText.getText().toString();
+                Intent searchAnimeIntent = new Intent(SearchAnime.this, UserSearchAnimeActivity.class);
+                searchAnimeIntent.putExtra("anime_id", input);
+                startActivity(searchAnimeIntent);
+
+            }
+        });
+
+
+        // search anime part end
 
         bookmarkBtn.setOnClickListener(new View.OnClickListener() {
             @Override

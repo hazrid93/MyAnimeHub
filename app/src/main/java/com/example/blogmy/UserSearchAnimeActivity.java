@@ -6,9 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -17,10 +19,14 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -58,9 +64,13 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
     private String anime_id;
     private RecyclerView animeReturnList;
     private LinearLayoutManager linearLayoutManager;
+    private Map<Integer,JSONObject> anime_data_map = null;
     // replace this later with a class to represent search result
     // create adapter for this class as well.
-    private final List<UserSearchAnime> animeList = new ArrayList<>();
+    private List<UserSearchAnime> anime_data_list;
+    private UserSearchAnimeAdapter animeAdapter;
+    private JSONArray anime_array;
+    private TextView searchAnimeText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,15 +80,21 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
             anime_id = bundle.getString("anime_id");
         }
         setContentView(R.layout.activity_user_search_anime);
-
         mToolbar = (Toolbar) findViewById(R.id.user_search_anime_bar_layout);
         // Do this to get action bar class functionality
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Anime Search");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        searchAnimeText = (TextView) findViewById(R.id.user_search_result_text);
+
 
         progbar = (ProgressBar) findViewById(R.id.toolbarprogress);
+        // fetch the result upon oncreate
+        if(!TextUtils.isEmpty(anime_id)){
+            searchAnimeText.setText("Search Result For: " + anime_id);
+            initGetCharacter();
+        }
 
     }
 
@@ -87,30 +103,41 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
         // example url https://api.jikan.moe/v3/search/anime?q=Naruto&sort=descending
         // escape url with URLEncoder.encode("your URL here", "UTF8")
         RequestParams params = new RequestParams();
-        fetchCharactersResources(params, JIKAN_ANIME_DETAILS_DEFAULT + anime_id + "/" + JIKAN_ANIME_CHARACTERS);
+        String encodedUrl = null;
+        try {
+            encodedUrl = URLEncoder.encode(JIKAN_ANIME_SEARCH_DEFAULT + "?q=" + anime_id + "&sort=descending","UTF8");
+            fetchCharactersResources(params, encodedUrl);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     private void fetchCharactersResources(RequestParams params, String URL){
 
-        client = new AsyncHttpClient();
-        progbar.setVisibility(View.VISIBLE);
-        client.get(URL, params, new JsonHttpResponseHandler(){
+            client = new AsyncHttpClient();
+            progbar.setVisibility(View.VISIBLE);
+            client.get(URL, params, new JsonHttpResponseHandler(){
+
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
                 progbar.setVisibility(View.GONE);
-                characters_data_map = new LinkedHashMap<Integer, JSONObject>();
-                characters_data_list = new ArrayList<Characters>();
-
-
-                character_array = null;
+                anime_array = null;
+                anime_data_list = new ArrayList<UserSearchAnime>();
+               // populateData();
                 try {
-                    character_array = (JSONArray)response.getJSONArray("characters");
-                    characters_data_list= Characters.fromJson(character_array);
-                    System.out.println("CharactersFragment data list: " + characters_data_list.size());
-                    adapter = new CharactersAdapter(classContext, R.layout.characters_lists, characters_data_list);
-                    characters_list_layout.setAdapter(adapter);
-                    // adapter.addAll(characters_data_list);
+                    anime_array = (JSONArray)response.getJSONArray("results");
+                 //   System.out.println("AZADSEARCH: " + anime_array.toString());
+                    if (anime_array != null) {
+                        for (int i=0;i<anime_array.length();i++){
+                            System.out.println("AZADSEARCH: " + anime_array.getJSONObject(i).toString());
+                            // String mal_id, String image_url, String title, String airing, String score, String episodes, String start_date, String end_date
+                            anime_data_list.add(new UserSearchAnime(anime_array.getJSONObject(i).getString("mal_id"), anime_array.getJSONObject(i).getString("image_url"), anime_array.getJSONObject(i).getString("title")
+                                , anime_array.getJSONObject(i).getString("airing"), anime_array.getJSONObject(i).getString("score"), anime_array.getJSONObject(i).getString("episodes")
+                                , anime_array.getJSONObject(i).getString("start_date"), anime_array.getJSONObject(i).getString("end_date")));
+                        }
 
+                        populateData();
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -121,20 +148,20 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
-                Log.e("CharactersFragment", "Fail" + e.toString());
-                Log.e("CharactersFragment", "Status code: " + statusCode);
+                Log.e("UserSearchAnimeActivity", "Fail" + e.toString());
+                Log.e("UserSearchAnimeActivity", "Status code: " + statusCode);
                 progbar.setVisibility(View.GONE);
             }
         });
     }
 
     private void populateData(){
-        messagesAdapter = new MessagesAdapter(messagesList);
-        userMessagesList = (RecyclerView) findViewById(R.id.messages_list_users);
+        animeAdapter = new UserSearchAnimeAdapter(anime_data_list);
+        animeReturnList = (RecyclerView) findViewById(R.id.user_search_anime_result);
         linearLayoutManager = new LinearLayoutManager(this);
-        userMessagesList.setHasFixedSize(true);
-        userMessagesList.setLayoutManager(linearLayoutManager);
-        userMessagesList.setAdapter(messagesAdapter);
+        animeReturnList.setHasFixedSize(true);
+        animeReturnList.setLayoutManager(linearLayoutManager);
+        animeReturnList.setAdapter(animeAdapter);
     }
 
     @Override
@@ -142,5 +169,11 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
         super.onStop();
         client.cancelAllRequests(true);
         progbar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed(); // one inherited from android.support.v4.app.FragmentActivity
+        return false;
     }
 }

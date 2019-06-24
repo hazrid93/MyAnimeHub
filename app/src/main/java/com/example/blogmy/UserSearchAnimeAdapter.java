@@ -33,6 +33,11 @@ public class UserSearchAnimeAdapter extends RecyclerView.Adapter<UserSearchAnime
 
         // get context from a image view
         // https://developer.android.com/reference/android/view/View.html#getContext%28%29
+        holder.animeTitle.setText(messages.getTitle());
+        holder.animeScore.setText("Score: " + messages.getScore());
+        holder.animeEpisodes.setText("Episodes: " + messages.getEpisodes());
+        holder.animeStart.setText(messages.getStart_date());
+        holder.animeEnd.setText(messages.getEnd_date());
         Picasso.with(holder.animeImage.getContext()).load(messages.getImage_url()).placeholder(R.drawable.profile).into(holder.animeImage);
 
     }

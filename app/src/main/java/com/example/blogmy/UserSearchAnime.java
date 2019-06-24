@@ -88,4 +88,36 @@ public class UserSearchAnime {
         }
         return formattedDate;
     }
+
+    public void setMal_id(String mal_id) {
+        this.mal_id = mal_id;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setAiring(String airing) {
+        this.airing = airing;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
+    }
+
+    public void setEpisodes(String episodes) {
+        this.episodes = episodes;
+    }
+
+    public void setStart_date(String start_date) {
+        this.start_date = start_date;
+    }
+
+    public void setEnd_date(String end_date) {
+        this.end_date = end_date;
+    }
 }
