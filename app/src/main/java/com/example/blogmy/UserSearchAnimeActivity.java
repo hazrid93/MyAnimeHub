@@ -42,11 +42,15 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
     private static final String JIKAN_SUBTYPE_SPECIAL = "special";
     private static final String JIKAN_ANIME_STATS = "stats";
     private static final String JIKAN_ANIME_CHARACTERS = "characters_staff";
+    private static final String JIKAN_ANIME_SEARCH = "search";
 
 
     private static final String JIKAN_TOP_AIRING_DEFAULT = JIKAN_URL + "/" + JIKAN_SORTBY_TOP + "/" + JIKAN_TYPE_ANIME + "/" + JIKAN_PAGE_1 + "/" + JIKAN_SUBTYPE_AIRING;
     private static final String JIKAN_ANIME_DETAILS_DEFAULT = JIKAN_URL + "/" + JIKAN_TYPE_ANIME + "/";
-    private static final String JIKAN_ANIME_STATS_DEFAULT= JIKAN_URL + "/" + JIKAN_TYPE_ANIME + "/";
+    private static final String JIKAN_ANIME_STATS_DEFAULT = JIKAN_URL + "/" + JIKAN_TYPE_ANIME + "/";
+
+    // need to add https://api.jikan.moe/v3/search/anime  +  ?q=Naruto&sort=descending
+    private static final String JIKAN_ANIME_SEARCH_DEFAULT = JIKAN_URL + "/" + JIKAN_ANIME_SEARCH + "/" + JIKAN_TYPE_ANIME ;
 
     private Toolbar mToolbar;
     private AsyncHttpClient client;
@@ -54,7 +58,9 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
     private String anime_id;
     private RecyclerView animeReturnList;
     private LinearLayoutManager linearLayoutManager;
-    private final List<Messages> animeList = new ArrayList<>();
+    // replace this later with a class to represent search result
+    // create adapter for this class as well.
+    private final List<UserSearchAnime> animeList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,11 +84,14 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
 
     // using JIKAN api
     private void initGetCharacter() {
+        // example url https://api.jikan.moe/v3/search/anime?q=Naruto&sort=descending
+        // escape url with URLEncoder.encode("your URL here", "UTF8")
         RequestParams params = new RequestParams();
         fetchCharactersResources(params, JIKAN_ANIME_DETAILS_DEFAULT + anime_id + "/" + JIKAN_ANIME_CHARACTERS);
     }
 
     private void fetchCharactersResources(RequestParams params, String URL){
+
         client = new AsyncHttpClient();
         progbar.setVisibility(View.VISIBLE);
         client.get(URL, params, new JsonHttpResponseHandler(){
