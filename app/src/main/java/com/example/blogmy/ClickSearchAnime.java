@@ -1,38 +1,19 @@
 package com.example.blogmy;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StyleRes;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
-
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.ActivityOptions;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
@@ -44,11 +25,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.example.blogmy.cards.SliderAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.StyleRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 import com.example.blogmy.cards.CardSliderLayoutManager;
 import com.example.blogmy.cards.CardSnapHelper;
+import com.example.blogmy.cards.SliderAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -65,22 +54,27 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.jsoup.helper.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import cz.msebera.android.httpclient.Header;
 
-public class SearchAnime extends AppCompatActivity {
+public class ClickSearchAnime extends AppCompatActivity {
 
     // Constants:
     // schema REST for top anime, https://jikan.docs.apiary.io/#reference/0/schedule/top-request-example+schema?console=1
@@ -111,9 +105,9 @@ public class SearchAnime extends AppCompatActivity {
     private static final String JIKAN_TOP_AIRING_DEFAULT = JIKAN_URL + "/" + JIKAN_SORTBY_TOP + "/" + JIKAN_TYPE_ANIME + "/" + JIKAN_PAGE_1 + "/" + JIKAN_SUBTYPE_AIRING;
     private static final String JIKAN_ANIME_DETAILS_DEFAULT = JIKAN_URL + "/" + JIKAN_TYPE_ANIME + "/";
     private static final String JIKAN_ANIME_STATS_DEFAULT= JIKAN_URL + "/" + JIKAN_TYPE_ANIME + "/";
-
+    /*
     private Map<Integer,JSONObject> topAiringAnime = null;
-
+    */
     private List<String> animeIdList;
     private List<String> picsList;
     private List<String> typeList;
@@ -122,6 +116,19 @@ public class SearchAnime extends AppCompatActivity {
     private List<String> rankList;
     private List<String> startTimeList;
     private List<String> endTimeList;
+
+    /*
+    private String animeIdList;
+    private String picsList;
+    private String typeList;
+    private String titleList;
+    private String scoreList;
+    private String rankList;
+    private String startTimeList;
+    private String endTimeList;
+    */
+
+
 
     private SliderAdapter sliderAdapter = null;
 
@@ -139,21 +146,8 @@ public class SearchAnime extends AppCompatActivity {
     private int titleOffset2;
     private long titleAnimDuration;
     private int currentPosition;
-    private TextView subtypeButtonArrow;
-    private TextView pageButtonArrow;
-
     private Toolbar toolbar;
     private TabLayout tabLayout;
-
-    // INDEX PART
-    private Button searchTypeTopButton;
-    private Button searchTypeButton;
-    private Button searchSubTypeButton;
-    private Button searchPageButton;
-    private String currentTypeTopButton;
-    private String currentTypeButton;
-    private String currentSubTypeButton;
-    private String currentPageButton;
 
     // Fragments
     private Fragment summaryFragment;
@@ -195,7 +189,7 @@ public class SearchAnime extends AppCompatActivity {
 
     // Characters fragment
     // Also the current active anime selected
-    private String anime_id;
+    private String anime_id = "";
     private String bookmark_image;
     private String bookmark_name;
 
@@ -223,59 +217,28 @@ public class SearchAnime extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_anime);
+        setContentView(R.layout.activity_click_search_anime);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            // Get the anime Id that is currently toggled.
+            anime_id = bundle.getString("anime_id");
+        }
 
         //Firebase stuff
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        // anime_titles = (HorizontalScrollView) findViewById(R.id.anime_titles);
-
-
-        // initializeIndex and buttons TOP/ANIME/1/AIRING
-        /*
-        currentTypeTopButton = JIKAN_SORTBY_TOP;
-        currentTypeButton = JIKAN_TYPE_ANIME;
-        currentSubTypeButton = JIKAN_SUBTYPE_AIRING;
-        currentPageButton = JIKAN_PAGE_1;
-        */
-
         // progressbar
         progbar = findViewById(R.id.toolbarprogress);
-        // progbar.setVisibility(View.VISIBLE);
 
-        toolbar = (Toolbar) findViewById(R.id.search_anime_list_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.click_search_anime_list_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Anime Explorer");
 
-
-        searchTypeTopButton = (Button) findViewById(R.id.search_top_button_type);
-        searchTypeButton = (Button) findViewById(R.id.search_type_button_type);
-        searchSubTypeButton = (Button) findViewById(R.id.search_subtype_button_type);
-        searchPageButton = (Button) findViewById(R.id.search_page_button_type);
-        bookmarkBtn = (ImageButton) findViewById(R.id.search_anime_bookmark_btn);
-
-        subtypeButtonArrow = (TextView) findViewById(R.id.search_subtype_button_arrow);
-        pageButtonArrow = (TextView) findViewById(R.id.search_page_button_arrow);
-
-        // search anime part
-        searchAnimeButton = (ImageButton) findViewById(R.id.search_anime_button);
-        searchAnimeText = (EditText) findViewById(R.id.search_anime_box_input);
-
-        searchAnimeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String input = searchAnimeText.getText().toString();
-                Intent searchAnimeIntent = new Intent(SearchAnime.this, UserSearchAnimeActivity.class);
-                searchAnimeIntent.putExtra("anime_id", input);
-                startActivity(searchAnimeIntent);
-
-            }
-        });
-
-
+        bookmarkBtn = (ImageButton) findViewById(R.id.click_search_anime_bookmark_btn);
         // search anime part end
 
         bookmarkBtn.setOnClickListener(new View.OnClickListener() {
@@ -295,7 +258,7 @@ public class SearchAnime extends AppCompatActivity {
                                 // if its the same anime trying to be added then don't change count
                                 if(dataSnapshot.exists() && dataSnapshot.hasChild(anime_id)){
                                     // dont update if exist
-                                    Toast.makeText(SearchAnime.this, "This anime is already in your bookmarks", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ClickSearchAnime.this, "This anime is already in your bookmarks", Toast.LENGTH_SHORT).show();
                                 } else {
                                     // UTC timestamp in seconds
                                    // String ts = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
@@ -309,7 +272,7 @@ public class SearchAnime extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task task) {
                                             if(task.isSuccessful()){
-                                                Toast.makeText(SearchAnime.this, "This anime is added into your bookmarks", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(ClickSearchAnime.this, "This anime is added into your bookmarks", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
@@ -328,8 +291,8 @@ public class SearchAnime extends AppCompatActivity {
         });
 
         // START: SCROLLING PART AND FLOATING ACTION BUTTON
-        scrollView = (NestedScrollView) findViewById(R.id.search_anime_scroll);
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.search_anime_floating_button);
+        scrollView = (NestedScrollView) findViewById(R.id.click_search_anime_scroll);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.click_search_anime_floating_button);
         floatingActionButton.setVisibility(View.INVISIBLE);
         // ALTERNATIVE, WARNING viewTreeObserver can cause memory leaks.
         // https://developer.android.com/reference/android/view/ViewTreeObserver.html
@@ -354,121 +317,8 @@ public class SearchAnime extends AppCompatActivity {
         });
         // END: SCROLL SECTION
 
-
-        // search button
-        searchTypeTopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu menu = new PopupMenu(SearchAnime.this, v);
-                menu.getMenu().add(JIKAN_SORTBY_TOP.toUpperCase());
-                menu.getMenu().add(JIKAN_SORTBY_SEASON.toUpperCase());
-                menu.show();
-
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        searchTypeTopButton.setText(item.getTitle());
-
-                        // change search buttons when its 'SEASON'
-                        if(item.getTitle().equals(JIKAN_SORTBY_SEASON.toUpperCase())){
-                            searchTypeButton.setText(JIKAN_SEASON_YEAR_DEFAULT);
-                            searchPageButton.setText(JIKAN_SUBTYPE_SUMMER.toUpperCase());
-                            searchSubTypeButton.setVisibility(View.GONE);
-                            subtypeButtonArrow.setVisibility(View.GONE);
-                        } else {
-                            searchTypeButton.setText(JIKAN_TYPE_ANIME.toUpperCase());
-                            searchPageButton.setText(JIKAN_PAGE_1);
-                            searchSubTypeButton.setVisibility(View.VISIBLE);
-                            subtypeButtonArrow.setVisibility(View.VISIBLE);
-                        }
-                        updateTopAiring();
-                        return false;
-                    }
-                });
-            }
-        });
-
-        searchTypeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu menu = new PopupMenu(SearchAnime.this, v);
-                if(searchTypeTopButton.getText().toString().equals(JIKAN_SORTBY_SEASON.toUpperCase())){
-                    for(int i=2000; i<= Integer.parseInt(JIKAN_SEASON_YEAR_DEFAULT); i++ ){
-                        menu.getMenu().add(Integer.toString(i));
-                    }
-                } else {
-                    menu.getMenu().add("ANIME");
-                }
-                menu.show();
-
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        searchTypeButton.setText(item.getTitle());
-                        updateTopAiring();
-                        return false;
-                    }
-                });
-            }
-        });
-
-
-        // page number button
-        searchPageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu menu = new PopupMenu(SearchAnime.this, v);
-                if(searchTypeTopButton.getText().toString().equals(JIKAN_SORTBY_SEASON.toUpperCase())){
-                    menu.getMenu().add(JIKAN_SUBTYPE_SUMMER.toUpperCase());
-                    menu.getMenu().add(JIKAN_SUBTYPE_SPRING.toUpperCase());
-                    menu.getMenu().add(JIKAN_SUBTYPE_FALL.toUpperCase());
-                    menu.getMenu().add(JIKAN_SUBTYPE_WINTER.toUpperCase());
-                } else {
-                    menu.getMenu().add("1");
-                    menu.getMenu().add("2");
-                    menu.getMenu().add("3");
-                    menu.getMenu().add("4");
-                }
-
-                menu.show();
-
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        searchPageButton.setText(item.getTitle());
-                        updateTopAiring();
-                        return false;
-                    }
-                });
-            }
-        });
-
-        // subtype button
-        searchSubTypeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu menu = new PopupMenu(SearchAnime.this, v);
-                menu.getMenu().add("AIRING");
-                menu.getMenu().add("UPCOMING");
-                menu.getMenu().add("TV");
-                menu.getMenu().add("MOVIE");
-                menu.getMenu().add("OVA");
-                menu.getMenu().add("SPECIAL");
-                menu.show();
-
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        searchSubTypeButton.setText(item.getTitle());
-                        updateTopAiring();
-                        return false;
-                    }
-                });
-            }
-        });
-
         // Pager fragment initialization
-        viewPager = (EnhancedWrapContentViewPager) findViewById(R.id.search_anime_viewpager);
+        viewPager = (EnhancedWrapContentViewPager) findViewById(R.id.click_search_anime_viewpager);
         // Set the ViewPagerAdapter into ViewPager
         adapter = new ViewPagerAdapter(getSupportFragmentManager());
         summaryFragment = new SummaryFragment();
@@ -479,31 +329,21 @@ public class SearchAnime extends AppCompatActivity {
         adapter.addFrag(charactersFragment, "Characters");
         viewPager.setAdapter(adapter);
 
-        TabLayout mTabLayout = (TabLayout) findViewById(R.id.search_anime_tab_layout);
+        TabLayout mTabLayout = (TabLayout) findViewById(R.id.click_search_anime_tab_layout);
         mTabLayout.setupWithViewPager(viewPager);
 
-
-        /* Listener to viewpager
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                viewPager.getAdapter().notifyDataSetChanged();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        */
-
-        // get initial top airing during activity launch
-        initGetTopAiring();
+        if(!TextUtils.isEmpty(anime_id)) {
+            // get anime details  during activity launch
+            /*
+            initGetAnimeDetails(anime_id, new ClickSearchAnime.UpdateDataCallback() {
+                @Override
+                public void onCallback(String value) {
+                    updateFragment();
+                }
+            });
+            */
+            initGetTopAiring(anime_id);
+        }
     }
 
 
@@ -595,25 +435,6 @@ public class SearchAnime extends AppCompatActivity {
         }
     }
 
-    // using JIKAN api
-    private void initGetTopAiring() {
-        RequestParams params = new RequestParams();
-        letsDoSomeNetworkingTopAnime(params, JIKAN_TOP_AIRING_DEFAULT, false);
-    }
-
-    private void updateTopAiring(){
-        String url = null;
-        RequestParams params = new RequestParams();
-        if(searchTypeTopButton.getText().toString().equals(JIKAN_SORTBY_SEASON.toUpperCase())) {
-            url = JIKAN_URL + "/" + JIKAN_SORTBY_SEASON + "/" + searchTypeButton.getText().toString()+ "/" + searchPageButton.getText().toString().toLowerCase();
-        } else {
-            url = JIKAN_URL + "/" + JIKAN_SORTBY_TOP + "/" + JIKAN_TYPE_ANIME + "/" + searchPageButton.getText().toString().toLowerCase() + "/" + searchSubTypeButton.getText().toString().toLowerCase();
-        }
-
-        if(!TextUtils.isEmpty(url)) {
-            letsDoSomeNetworkingTopAnime(params, url, true);
-        }
-    }
 
     // using JIKAN api
     private void initGetAnimeDetails(String animeId, final UpdateDataCallback updateDataCallback) {
@@ -859,6 +680,11 @@ public class SearchAnime extends AppCompatActivity {
         void onCallback(String value);
     }
 
+    // using JIKAN api
+    private void initGetTopAiring(String animeId) {
+        RequestParams params = new RequestParams();
+        letsDoSomeNetworkingTopAnime(params, JIKAN_ANIME_DETAILS_DEFAULT + animeId, false);
+    }
 
     // TODO: Add letsDoSomeNetworkingTopAnime(RequestParams params) here:
     private void letsDoSomeNetworkingTopAnime(RequestParams params, String URL, final boolean update){
@@ -868,10 +694,9 @@ public class SearchAnime extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
                 progbar.setVisibility(View.GONE);
-                Toast.makeText(SearchAnime.this, "Request Successful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ClickSearchAnime.this, "Request Successful", Toast.LENGTH_SHORT).show();
 
                 // add top airing anime data into the List topAiringAnime
-                topAiringAnime = new LinkedHashMap<Integer, JSONObject>();
                 animeIdList = new ArrayList<String>();
                 picsList = new ArrayList<String>();
                 typeList = new ArrayList<String>();
@@ -881,82 +706,40 @@ public class SearchAnime extends AppCompatActivity {
                 startTimeList = new ArrayList<String>();
                 endTimeList = new ArrayList<String>();
 
-                JSONArray jArray = null;
-                try {
-
-                    if(searchTypeTopButton.getText().toString().equals(JIKAN_SORTBY_SEASON.toUpperCase())) {
-                        jArray = (JSONArray)response.getJSONArray("anime");
-                    } else {
-                        jArray = (JSONArray)response.getJSONArray("top");
-                    }
-
-                    if (jArray != null) {
-                        for (int i=0;i<jArray.length();i++){
-                            topAiringAnime.put(i,jArray.getJSONObject(i));
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    progbar.setVisibility(View.GONE);
-                }
-
-                for(int i=0; i < topAiringAnime.size(); i++){
                     try {
-                        if(topAiringAnime.get(i).has("mal_id")){
-                            animeIdList.add(topAiringAnime.get(i).get("mal_id").toString());
-                        } else {
-                            animeIdList.add("");
+                        animeIdList.add(response.getString("mal_id"));
+                        picsList.add(response.getString("image_url"));
+                        titleList.add(response.getString("title"));
+                        rankList.add(response.getString("rank"));
+                        scoreList.add(response.getString("score"));
+                        typeList.add(response.getString("type"));
+
+                        // Start date
+                        DateFormat startoriginalFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH);
+                        DateFormat starttargetFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        Date startdate = null;
+                        String startformattedDate = "";
+                        try {
+                            startdate = startoriginalFormat.parse(response.getJSONObject("aired").getString("from"));
+                            startformattedDate = starttargetFormat.format(startdate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
 
-                        if(topAiringAnime.get(i).has("image_url")) {
-                            picsList.add(topAiringAnime.get(i).get("image_url").toString());
-                        } else {
-                            picsList.add("");
+                        // End date
+                        DateFormat endoriginalFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH);
+                        DateFormat endtargetFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        Date enddate = null;
+                        String endformattedDate = "";
+                        try {
+                            enddate = startoriginalFormat.parse(response.getJSONObject("aired").getString("to"));
+                            endformattedDate = starttargetFormat.format(enddate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
 
-                        if(topAiringAnime.get(i).has("title")) {
-                            titleList.add("   " + topAiringAnime.get(i).get("title").toString() + "   ");
-                        } else {
-                            titleList.add("");
-                        }
-
-                        if(topAiringAnime.get(i).has("rank")) {
-                            rankList.add(topAiringAnime.get(i).get("rank").toString());
-                        } else {
-                            rankList.add(Integer.toString(i));
-                        }
-
-                        if(topAiringAnime.get(i).has("score")) {
-                            scoreList.add(topAiringAnime.get(i).get("score").toString());
-                        } else {
-                            scoreList.add("");
-                        }
-
-                        if(topAiringAnime.get(i).has("type")) {
-                            typeList.add(topAiringAnime.get(i).get("type").toString());
-                        } else {
-                            typeList.add("");
-                        }
-
-                        if(topAiringAnime.get(i).has("start_date")) {
-                            if (topAiringAnime.get(i).get("start_date").toString().equals("null")) {
-                                startTimeList.add("?");
-                            } else {
-                                startTimeList.add(topAiringAnime.get(i).get("start_date").toString());
-                            }
-                        } else {
-                            startTimeList.add("");
-                        }
-
-                        if(topAiringAnime.get(i).has("start_date")) {
-                            if (topAiringAnime.get(i).get("end_date").toString().equals("null")) {
-                                endTimeList.add("?");
-                            } else {
-                                endTimeList.add(topAiringAnime.get(i).get("end_date").toString());
-                            }
-                        } else {
-                            endTimeList.add("");
-                        }
+                        startTimeList.add(startformattedDate);
+                        endTimeList.add(endformattedDate);
 
                     } catch (JSONException e) {
                         animeIdList.add("");
@@ -970,35 +753,15 @@ public class SearchAnime extends AppCompatActivity {
                         progbar.setVisibility(View.GONE);
                         e.printStackTrace();
                     }
-                }
 
-                if(update == false){
-                    sliderAdapter = new SliderAdapter(SearchAnime.this, picsList, topAiringAnime.size(), new OnCardClickListener());
-                    anime_id = animeIdList.get(0);
-                    bookmark_image = picsList.get(0);
-                    bookmark_name = titleList.get(0);
-                    initRecyclerView();
-                    initTitleText();
-                    initSwitchers();
-                } else {
-                    anime_id = animeIdList.get(0);
-                    bookmark_image = picsList.get(0);
-                    bookmark_name = titleList.get(0);
-                    sliderAdapter.updateData(picsList, new SliderAdapter.UpdateDataCallback(){
-                        @Override
-                        public void onCallback(String value) {
-                            sliderAdapter.notifyDataSetChanged();
-                            updateTitleText();
-                            updateSwitchers();
 
-                            recyclerView.scrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT);
-                           // layoutManager.scrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT);
-                        }
-                    });
-
-                    //layoutManager.scrollToPosition(RecyclerView.SCROLLBAR_POSITION_DEFAULT);
-                }
-
+                sliderAdapter = new SliderAdapter(ClickSearchAnime.this, picsList, 1, new OnCardClickListener());
+                anime_id = animeIdList.get(0);
+                bookmark_image = picsList.get(0);
+                bookmark_name = titleList.get(0);
+                initRecyclerView();
+                initTitleText();
+                initSwitchers();
 
             }
 
@@ -1007,13 +770,13 @@ public class SearchAnime extends AppCompatActivity {
                 Log.e("SearchAnime", "Fail" + e.toString());
                 Log.e("SearchAnime", "Status code: " + statusCode);
                 progbar.setVisibility(View.GONE);
-                Toast.makeText(SearchAnime.this, "Request Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ClickSearchAnime.this, "Request Failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void initRecyclerView() {
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.click_recycler_view);
         recyclerView.setAdapter(sliderAdapter);
         recyclerView.setHasFixedSize(true);
 
@@ -1038,11 +801,8 @@ public class SearchAnime extends AppCompatActivity {
 
     private void updateSwitchers(){
 
-        if(searchTypeTopButton.getText().toString().equals(JIKAN_SORTBY_SEASON.toUpperCase())) {
-            rankSwitcher.setCurrentText("Rank: " + rankList.get(0) + "/" + "-");
-        } else {
-            rankSwitcher.setCurrentText("Rank: " + rankList.get(0) + "/" + topAiringAnime.size()*Integer.parseInt(searchPageButton.getText().toString()));
-        }
+        rankSwitcher.setCurrentText("Rank: " + rankList.get(0) + "/-");
+
         if(TextUtils.isEmpty(scoreList.get(0)) || scoreList.get(0).equals("null")){
             scoreSwitcher.setText("Score: N/A");
         } else {
@@ -1060,16 +820,12 @@ public class SearchAnime extends AppCompatActivity {
     }
 
     private void initSwitchers() {
-        rankSwitcher = (TextSwitcher) findViewById(R.id.ts_rank);
+        rankSwitcher = (TextSwitcher) findViewById(R.id.click_ts_rank);
         rankSwitcher.setFactory(new TextViewFactory(R.style.RankTextView, true));
 
-        if(searchTypeTopButton.getText().toString().equals(JIKAN_SORTBY_SEASON.toUpperCase())) {
-            rankSwitcher.setCurrentText("Rank: " + rankList.get(0) + "/" + "-");
-        } else {
-            rankSwitcher.setCurrentText("Rank: " + rankList.get(0) + "/" + topAiringAnime.size()*Integer.parseInt(searchPageButton.getText().toString()));
-        }
+        rankSwitcher.setCurrentText("Rank: " + rankList.get(0) + "/" + "-");
 
-        scoreSwitcher = (TextSwitcher) findViewById(R.id.ts_score);
+        scoreSwitcher = (TextSwitcher) findViewById(R.id.click_ts_score);
         scoreSwitcher.setFactory(new TextViewFactory(R.style.ScoreTextView, false));
         if(TextUtils.isEmpty(scoreList.get(0)) || scoreList.get(0).equals("null")){
             scoreSwitcher.setText("Score: N/A");
@@ -1077,22 +833,15 @@ public class SearchAnime extends AppCompatActivity {
             scoreSwitcher.setText("Score: " + scoreList.get(0)+ "/10");
         }
 
-        clockSwitcher = (TextSwitcher) findViewById(R.id.ts_clock);
+        clockSwitcher = (TextSwitcher) findViewById(R.id.click_ts_clock);
         clockSwitcher.setFactory(new TextViewFactory(R.style.ClockTextView, false));
         clockSwitcher.setCurrentText(startTimeList.get(0) + " ~ " + endTimeList.get(0));
 
-        descriptionsSwitcher = (TextSwitcher) findViewById(R.id.ts_description);
+        descriptionsSwitcher = (TextSwitcher) findViewById(R.id.click_ts_description);
         descriptionsSwitcher.setInAnimation(this, android.R.anim.fade_in);
         descriptionsSwitcher.setOutAnimation(this, android.R.anim.fade_out);
         descriptionsSwitcher.setFactory(new TextViewFactory(R.style.DescriptionTextView, false));
         descriptionsSwitcher.setCurrentText("Type: " + typeList.get(0));
-
-        /*
-        previewImgSwitcher = (ImageSwitcher) findViewById(R.id.ts_preview_image);
-        previewImgSwitcher.setInAnimation(this, R.anim.fade_in);
-        previewImgSwitcher.setOutAnimation(this, R.anim.fade_out);
-        previewImgSwitcher.setFactory(new ImageViewFactory());
-        */
 
 
         // get current active initial = 0 , anime id here when card switch
@@ -1125,7 +874,7 @@ public class SearchAnime extends AppCompatActivity {
         titleOffset1 = getResources().getDimensionPixelSize(R.dimen.left_offset);
         titleOffset2 = getResources().getDimensionPixelSize(R.dimen.card_width);
 
-        title1TextView = (TextView) findViewById(R.id.tv_title_1);
+        title1TextView = (TextView) findViewById(R.id.click_tv_title_1);
         title1TextView.setX(titleOffset1);
 
         title1TextView.setText(titleList.get(0));
@@ -1142,7 +891,7 @@ public class SearchAnime extends AppCompatActivity {
         }, 1000);
         */
 
-        title2TextView = (TextView) findViewById(R.id.tv_title_2);
+        title2TextView = (TextView) findViewById(R.id.click_tv_title_2);
         title2TextView.setX(titleOffset2);
         title2TextView.setSelected(true);
         title2TextView.setAlpha(0f);
@@ -1215,25 +964,20 @@ public class SearchAnime extends AppCompatActivity {
         title1TextView.setSelected(true);
         title2TextView.setSelected(true);
 
-        rankSwitcher.setInAnimation(SearchAnime.this, animH[0]);
-        rankSwitcher.setOutAnimation(SearchAnime.this, animH[1]);
+        rankSwitcher.setInAnimation(ClickSearchAnime.this, animH[0]);
+        rankSwitcher.setOutAnimation(ClickSearchAnime.this, animH[1]);
+        rankSwitcher.setCurrentText("Rank: " + rankList.get(pos) + "/" + "-");
 
-        if(searchTypeTopButton.getText().toString().equals(JIKAN_SORTBY_SEASON.toUpperCase())) {
-            rankSwitcher.setCurrentText("Rank: " + rankList.get(pos) + "/" + "-");
-        } else {
-            rankSwitcher.setText("Rank: " + rankList.get(pos) + "/" + topAiringAnime.size() * Integer.parseInt(searchPageButton.getText().toString()));
-        }
-
-        scoreSwitcher.setInAnimation(SearchAnime.this, animV[0]);
-        scoreSwitcher.setOutAnimation(SearchAnime.this, animV[1]);
+        scoreSwitcher.setInAnimation(ClickSearchAnime.this, animV[0]);
+        scoreSwitcher.setOutAnimation(ClickSearchAnime.this, animV[1]);
         if(TextUtils.isEmpty(scoreList.get(pos)) || scoreList.get(pos).equals("null")){
             scoreSwitcher.setText("Score: N/A");
         } else {
             scoreSwitcher.setText("Score: " + scoreList.get(pos)+ "/10");
         }
 
-        clockSwitcher.setInAnimation(SearchAnime.this, animV[0]);
-        clockSwitcher.setOutAnimation(SearchAnime.this, animV[1]);
+        clockSwitcher.setInAnimation(ClickSearchAnime.this, animV[0]);
+        clockSwitcher.setOutAnimation(ClickSearchAnime.this, animV[1]);
         clockSwitcher.setText(startTimeList.get(pos) + " ~ " + endTimeList.get(pos));
 
         descriptionsSwitcher.setText("Type: " + typeList.get(pos));
@@ -1261,7 +1005,7 @@ public class SearchAnime extends AppCompatActivity {
 
         InputStream in = null;
         try {
-            in = new java.net.URL(resId).openStream();
+            in = new URL(resId).openStream();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1284,14 +1028,14 @@ public class SearchAnime extends AppCompatActivity {
         @SuppressWarnings("deprecation")
         @Override
         public View makeView() {
-            final TextView textView = new TextView(SearchAnime.this);
+            final TextView textView = new TextView(ClickSearchAnime.this);
 
             if (center) {
                 textView.setGravity(Gravity.CENTER);
             }
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                textView.setTextAppearance(SearchAnime.this, styleId);
+                textView.setTextAppearance(ClickSearchAnime.this, styleId);
             } else {
                 textView.setTextAppearance(styleId);
             }
@@ -1304,7 +1048,7 @@ public class SearchAnime extends AppCompatActivity {
     private class ImageViewFactory implements ViewSwitcher.ViewFactory {
         @Override
         public View makeView() {
-            final ImageView imageView = new ImageView(SearchAnime.this);
+            final ImageView imageView = new ImageView(ClickSearchAnime.this);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
             final ViewGroup.LayoutParams lp = new ImageSwitcher.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -1358,5 +1102,11 @@ public class SearchAnime extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         progbar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed(); // one inherited from android.support.v4.app.FragmentActivity
+        return false;
     }
 }

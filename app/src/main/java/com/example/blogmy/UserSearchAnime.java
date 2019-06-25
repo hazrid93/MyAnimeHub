@@ -62,7 +62,7 @@ public class UserSearchAnime {
     }
 
     public String getStart_date() {
-        DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.XXX", Locale.ENGLISH);
+        DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH);
         DateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         String formattedDate = "";
@@ -76,7 +76,7 @@ public class UserSearchAnime {
     }
 
     public String getEnd_date() {
-        DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.XXX", Locale.ENGLISH);
+        DateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH);
         DateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
         String formattedDate = "";

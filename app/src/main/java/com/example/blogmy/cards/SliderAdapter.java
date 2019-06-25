@@ -28,9 +28,13 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderCard> {
         this.listener = listener;
     }
 
-    public void updateData(List<String> content, SearchAnime.UpdateDataCallback updateDataCallback){
+    public void updateData(List<String> content, UpdateDataCallback updateDataCallback){
         this.content = content;
         updateDataCallback.onCallback("true");
+    }
+
+    public interface UpdateDataCallback {
+        void onCallback(String value);
     }
 
     @Override

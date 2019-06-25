@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/background_watercolour" />
+        android:src="@drawable/lenalee_background" />
 
     <View
         android:layout_width="match_parent"
@@ -30,6 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/user_search_anime_bar_layout"
         android:gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginTop="20dp">
 
         <EditText

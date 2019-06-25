@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:orientation="vertical"
+    tools:context=".ClickSearchAnime">
+
+    <include
+        android:id="@+id/click_search_anime_list_toolbar"
+        layout="@layout/app_bar_layout"></include>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/click_search_anime_list_toolbar">
+
+        <ImageView
+            android:id="@+id/background_login_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/lenalee_background" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/cyan_800_overlay" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/click_search_anime_floating_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:src="@drawable/arrow_up_bold_outline"
+            app:backgroundTint="@color/red_700" />
+
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/click_search_anime_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="5dp">
+
+                    <RelativeLayout
+                        android:id="@+id/click_search_anime_layout_temp"
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp">
+
+
+
+                        <FrameLayout
+                            android:id="@+id/click_frameLayout"
+                            android:layout_width="120dp"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/temperature_background">
+
+                            <TextSwitcher
+                                android:id="@+id/click_ts_rank"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:padding="2dp" />
+
+                        </FrameLayout>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/click_anime_titles"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@id/click_search_anime_layout_temp">
+
+                        <!--LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"-->
+                        <TextView
+                            android:id="@+id/click_tv_title_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="0dp"
+                            android:paddingRight="80dp"
+                            android:fontFamily="@font/roboto_regular"
+                            android:gravity="start"
+                            android:ellipsize="end"
+                            android:singleLine="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="26sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/click_tv_title_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="0dp"
+                            android:paddingRight="80dp"
+                            android:gravity="start"
+                            android:fontFamily="@font/roboto_regular"
+                            android:ellipsize="end"
+                            android:singleLine="true"
+                            android:textColor="@android:color/black"
+                            android:textSize="26sp"
+                            android:textStyle="bold" />
+                        <!--/LinearLayout-->
+
+                    </RelativeLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/click_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="210dp"
+                        android:layout_below="@id/click_anime_titles"
+                        android:layout_marginStart="@dimen/recycler_view_left_offset"
+                        android:layout_marginTop="18dp"
+                        android:clipChildren="false"
+                        android:overScrollMode="never"
+                        app:layoutManager="com.example.blogmy.cards.CardSliderLayoutManager"
+                        app:viewUpdater="com.example.blogmy.cards.CardsUpdater" />
+
+                    <FrameLayout
+                        android:id="@+id/click_search_score_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/click_recycler_view"
+                        android:layout_marginTop="15dp">
+
+                        <ImageView
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="30dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/star" />
+
+                        <TextSwitcher
+                            android:id="@+id/click_ts_score"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="@dimen/left_offset" />
+
+                    </FrameLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/click_search_anime_description_bar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/click_search_score_layout"
+                        android:animateLayoutChanges="true">
+
+                        <TextSwitcher
+                            android:id="@+id/click_ts_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/left_offset"
+                            android:layout_marginEnd="10dp" />
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/click_ts_description"
+                            android:layout_marginTop="15dp">
+
+                            <ImageView
+                                android:layout_width="13dp"
+                                android:layout_height="13dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="30dp"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/clock" />
+
+                            <TextSwitcher
+                                android:id="@+id/click_ts_clock"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginStart="@dimen/left_offset" />
+
+                        </FrameLayout>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="10dp"
+                        android:layout_below="@id/click_search_anime_description_bar">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:textSize="14sp"
+                                android:textAlignment="center"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="Add to bookmarks "/>
+                            <ImageButton
+                                android:id="@+id/click_search_anime_bookmark_btn"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:scaleType="centerCrop"
+                                android:background="@android:color/transparent"
+                                android:src="@android:drawable/ic_input_add"/>
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/click_search_anime_description_bar"
+                    android:layout_marginTop="20dp"
+                    android:background="@android:color/white">
+
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/click_search_anime_tab_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_gravity="center"
+                        android:minHeight="60dp"
+                        app:tabGravity="fill"
+                        app:tabMode="fixed" />
+
+                    <com.example.blogmy.EnhancedWrapContentViewPager
+                        android:id="@+id/click_search_anime_viewpager"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/click_search_anime_tab_layout"
+                        android:minHeight="500dp">
+
+                    </com.example.blogmy.EnhancedWrapContentViewPager>
+
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</LinearLayout>
