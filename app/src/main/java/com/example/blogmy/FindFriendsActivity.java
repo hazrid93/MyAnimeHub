@@ -110,7 +110,7 @@ public class FindFriendsActivity extends AppCompatActivity {
     public class FindFriendsViewHolder extends RecyclerView.ViewHolder{
         View mView;
         CircleImageView profileimage;
-        TextView fullname, status;
+        TextView fullname, status, username;
 
         public FindFriendsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -118,13 +118,14 @@ public class FindFriendsActivity extends AppCompatActivity {
 
             fullname = (TextView) itemView.findViewById(R.id.all_users_profile_full_name);
             status = (TextView) itemView.findViewById(R.id.all_users_status);
+            username = (TextView) itemView.findViewById(R.id.all_users_profile_username);
             profileimage = (CircleImageView) itemView.findViewById(R.id.all_users_profile_image);
         }
 
         public void setData(Context ctx, FindFriends friendsViewHolderData){
             fullname.setText(friendsViewHolderData.getFullname());
             status.setText(friendsViewHolderData.getStatus());
-
+            username.setText("@"+friendsViewHolderData.getUsername());
             // https://github.com/square/picasso/issues/1291 seems like require runtime permission.
             Picasso.with(ctx).load(friendsViewHolderData.getProfileimage()).placeholder(R.drawable.profile).into(profileimage);
         }
