@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:layout_margin="16dp"
-                android:src="@drawable/round_add_button"
+                android:src="@drawable/add_plus_button"
                 app:backgroundTint="@color/red_700" />
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

@@ -387,6 +387,8 @@ public class PostActivity<imageCounter> extends AppCompatActivity {
         Calendar calForTime =  Calendar.getInstance();
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
         saveCurrentTime = currentTime.format(calForTime.getTime());
+
+        postRandomName = saveCurrentDate + "-" + saveCurrentTime + "-" + System.currentTimeMillis();
         /*
         postRef.addValueEventListener(new ValueEventListener() {
             @Override

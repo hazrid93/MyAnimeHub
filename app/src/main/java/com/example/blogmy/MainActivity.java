@@ -179,11 +179,11 @@ public class MainActivity extends AppCompatActivity {
         // The "base query" is a query with no startAt/endAt/limit clauses that the adapter can use
         // to form smaller queries for each page.
        // Query sortPostsInDescendingOrder = postRef.orderByChild("counter");
-        Query query = postRef;
+        Query query = postRef.orderByChild("counter");
         // https://developer.android.com/reference/android/arch/paging/PagedList.Config.html
         PagedList.Config config = new PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
-                .setPrefetchDistance(5)
+                .setEnablePlaceholders(true)
+                .setPrefetchDistance(1)
                 .setPageSize(10)
                 .build();
 

@@ -203,4 +203,10 @@ public class MyPostsActivity extends AppCompatActivity {
 
         }
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        firebaseRecyclerAdapter.stopListening();
+    }
 }
