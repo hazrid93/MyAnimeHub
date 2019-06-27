@@ -7,15 +7,15 @@
     tools:context=".MainActivity"
     android:background="@color/mainBackground"
     android:id="@+id/drawable_layout">
-    
+
     <RelativeLayout
         android:layout_width="match_parent"
+        android:id="@+id/main_page_rel_layout"
         android:layout_height="match_parent">
 
         <include
             android:id="@+id/main_page_toolbar"
             layout="@layout/app_bar_layout">
-
         </include>
 
         <ImageView
@@ -32,24 +32,43 @@
             android:layout_height="match_parent"
             android:background="@color/cyan_800_overlay" />
 
-        <FrameLayout
-            android:id="@+id/main_container"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:layout_below="@id/main_page_toolbar"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="0dp"
-            android:layout_marginBottom="0dp">
+            android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/all_users_post_list"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_new_post_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                android:src="@drawable/round_add_button"
+                app:backgroundTint="@color/red_700" />
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-               />
-        </FrameLayout>
+                android:layout_height="match_parent">
 
-        <ImageButton
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/all_users_post_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
+    </RelativeLayout>
+
+
+        <!--<ImageButton
             android:id="@+id/add_new_post_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -61,10 +80,9 @@
             android:baselineAlignBottom="false"
             android:focusableInTouchMode="false"
             android:scaleType="centerCrop"
-            android:src="@drawable/add_post_high" />
+            android:src="@drawable/add_post_high" /> -->
 
 
-    </RelativeLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"

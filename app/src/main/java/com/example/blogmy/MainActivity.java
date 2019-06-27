@@ -4,6 +4,10 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.paging.DatabasePagingOptions;
+import com.firebase.ui.database.paging.FirebaseRecyclerPagingAdapter;
+import com.firebase.ui.database.paging.LoadingState;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -11,9 +15,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import androidx.paging.PagedList;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -49,9 +55,11 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private FirebaseAuth mAuth;
     private DatabaseReference userRef, postRef, likesRef;
-    private ImageButton addNewPost;
-    private FirebaseRecyclerOptions<Posts> options;
-    private FirebaseRecyclerAdapter<Posts, PostsViewHolder> firebaseRecyclerAdapter;
+    private FloatingActionButton addNewPost;
+    // private FirebaseRecyclerOptions<Posts> options;
+    // private FirebaseRecyclerAdapter<Posts, PostsViewHolder> firebaseRecyclerAdapter;
+    private FirebaseRecyclerPagingAdapter<Posts, PostsViewHolder> firebaseRecyclerAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     boolean likeChecker = false;
 
     // nav profile part
@@ -74,7 +82,14 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Home");
 
-        addNewPost = (ImageButton) findViewById(R.id.add_new_post_button);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                firebaseRecyclerAdapter.refresh();
+            }
+        });
+        addNewPost = (FloatingActionButton) findViewById(R.id.add_new_post_button);
 
         // Find view by id must be done inside OnCreate and not before this during class instantiation because the UI has not been inflated.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawable_layout);
@@ -161,76 +176,122 @@ public class MainActivity extends AppCompatActivity {
 
     // using firebaseUI library
     private void displayAllUsersPost(){
-        Query sortPostsInDescendingOrder = postRef.orderByChild("counter");
-        options = new FirebaseRecyclerOptions.Builder<Posts>().setQuery(sortPostsInDescendingOrder, Posts.class).build();
-        firebaseRecyclerAdapter =
-               new FirebaseRecyclerAdapter<Posts, PostsViewHolder>(options) {
+        // The "base query" is a query with no startAt/endAt/limit clauses that the adapter can use
+        // to form smaller queries for each page.
+       // Query sortPostsInDescendingOrder = postRef.orderByChild("counter");
+        Query query = postRef;
+        // https://developer.android.com/reference/android/arch/paging/PagedList.Config.html
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .setPrefetchDistance(5)
+                .setPageSize(10)
+                .build();
 
-                        // call PostsViewHolder static class
-                       @Override
-                       protected void onBindViewHolder(@NonNull PostsViewHolder postsViewHolder, int i, @NonNull Posts posts) {
-                           // get the key of the particular snapshot data at this index
-                           final String postKey = getRef(i).getKey();
-                           postsViewHolder.setData(posts);
-                           postsViewHolder.setLikeButtonStatus(postKey);
-                           postsViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                               @Override
-                               public void onClick(View v) {
-                                   Intent clickPostIntent = new Intent(MainActivity.this,ClickPostActivity.class);
-                                   clickPostIntent.putExtra("PostKey", postKey);
-                                   startActivity(clickPostIntent);
-                               }
-                           });
+        // The options for the adapter combine the paging configuration with query information
+        // and application-specific options for lifecycle, etc.
+        DatabasePagingOptions<Posts> optionsPage = new DatabasePagingOptions.Builder<Posts>()
+                .setLifecycleOwner(this)
+                .setQuery(query, config, Posts.class)
+                .build();
 
-                           postsViewHolder.likePostButton.setOnClickListener(new View.OnClickListener() {
-                               @Override
-                               public void onClick(View v) {
-                                   likeChecker = true;
-                                   likesRef.addValueEventListener(new ValueEventListener() {
-                                       @Override
-                                       public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                           if(likeChecker == true){
-                                               if(dataSnapshot.child(postKey).hasChild(currentUserId)){
-                                                   likesRef.child(postKey).child(currentUserId).removeValue();
-                                                   likeChecker = false;
-                                               } else {
+        // options = new FirebaseRecyclerOptions.Builder<Posts>().setQuery(query, Posts.class).build();
+        firebaseRecyclerAdapter = new FirebaseRecyclerPagingAdapter<Posts, PostsViewHolder>(optionsPage) {
 
-                                                   // add data into 'Likes' database using the Post key and add the userUid in there,
-                                                   // any duplicated userUid will not add another one.
-                                                   likesRef.child(postKey).child(currentUserId).setValue(true);
-                                                   likeChecker = false;
-                                               }
+                    // call PostsViewHolder static class
+                   @Override
+                   protected void onBindViewHolder(@NonNull PostsViewHolder postsViewHolder, int i, @NonNull Posts posts) {
+                       // get the key of the particular snapshot data at this index
+                       final String postKey = getRef(i).getKey();
+                       postsViewHolder.setData(posts);
+                       postsViewHolder.setLikeButtonStatus(postKey);
+                       postsViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               Intent clickPostIntent = new Intent(MainActivity.this,ClickPostActivity.class);
+                               clickPostIntent.putExtra("PostKey", postKey);
+                               startActivity(clickPostIntent);
+                           }
+                       });
+
+                       postsViewHolder.likePostButton.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               likeChecker = true;
+                               likesRef.addValueEventListener(new ValueEventListener() {
+                                   @Override
+                                   public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                       if(likeChecker == true){
+                                           if(dataSnapshot.child(postKey).hasChild(currentUserId)){
+                                               likesRef.child(postKey).child(currentUserId).removeValue();
+                                               likeChecker = false;
+                                           } else {
+
+                                               // add data into 'Likes' database using the Post key and add the userUid in there,
+                                               // any duplicated userUid will not add another one.
+                                               likesRef.child(postKey).child(currentUserId).setValue(true);
+                                               likeChecker = false;
                                            }
                                        }
+                                   }
 
-                                       @Override
-                                       public void onCancelled(@NonNull DatabaseError databaseError) {
+                                   @Override
+                                   public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                       }
-                                   });
-                               }
-                           });
+                                   }
+                               });
+                           }
+                       });
 
-                           postsViewHolder.commentPostButton.setOnClickListener(new View.OnClickListener() {
-                               @Override
-                               public void onClick(View v) {
-                                   Intent commentsIntent = new Intent(MainActivity.this, CommentsActivity.class);
-                                   commentsIntent.putExtra("PostKey", postKey);
-                                   startActivity(commentsIntent);
+                       postsViewHolder.commentPostButton.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               Intent commentsIntent = new Intent(MainActivity.this, CommentsActivity.class);
+                               commentsIntent.putExtra("PostKey", postKey);
+                               startActivity(commentsIntent);
 
-                               }
-                           });
-                       }
+                           }
+                       });
+                   }
 
-                       @NonNull
-                       @Override
-                       public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                           View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.all_post_layout,parent,false);
-                           PostsViewHolder viewHolder = new PostsViewHolder(view);
-                           return viewHolder;
-                       }
+                    @Override
+                    protected void onLoadingStateChanged(@NonNull LoadingState state) {
+                        switch (state) {
+                            case LOADING_INITIAL:
+                            case LOADING_MORE:
+                                // Do your loading animation
+                                mSwipeRefreshLayout.setRefreshing(true);
+                                break;
 
-                   };
+                            case LOADED:
+                                // Stop Animation
+                                mSwipeRefreshLayout.setRefreshing(false);
+                                break;
+
+                            case FINISHED:
+                                //Reached end of Data set
+                                mSwipeRefreshLayout.setRefreshing(false);
+                                break;
+
+                            case ERROR:
+                                retry();
+                                break;
+                        }
+                    }
+
+
+                   @NonNull
+                   @Override
+                   public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                       View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.all_post_layout,parent,false);
+                       PostsViewHolder viewHolder = new PostsViewHolder(view);
+                       return viewHolder;
+                   }
+
+                    @Override
+                    protected void onError(@NonNull DatabaseError databaseError) {
+                        retry();
+                    }
+            };
         postList.setAdapter(firebaseRecyclerAdapter);
         firebaseRecyclerAdapter.startListening();
 

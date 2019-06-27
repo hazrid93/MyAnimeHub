@@ -48,6 +48,10 @@ dependencies {
     implementation 'id.zelory:compressor:2.1.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
     implementation 'com.github.bumptech.glide:glide:4.6.1'
+    implementation 'android.arch.paging:runtime:1.0.1'
+    //Firebase Pagination Library
+    implementation 'com.firebaseui:firebase-ui-database:5.0.0'
+    //implementation 'com.shreyaspatil:FirebaseRecyclerPagination:1.0.1'
 
 }
 
