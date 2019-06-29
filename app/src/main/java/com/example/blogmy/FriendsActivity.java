@@ -6,13 +6,12 @@ import android.os.Bundle;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -28,20 +27,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendsActivity extends AppCompatActivity {
-    private RecyclerView myFriendList;
-    private DatabaseReference friendsRef, usersRef;
+    private RecyclerView myFriendList,myFriendReqList;
+    private DatabaseReference friendsRef, usersRef, friendReq;
     private FirebaseAuth mAuth;
     private Toolbar mToolbar;
-    private FirebaseRecyclerOptions<Friends> options;
-    private FirebaseRecyclerAdapter<Friends, FriendsViewHolder> firebaseRecyclerAdapter;
+    private FirebaseRecyclerOptions<Friends> options, optionsReq;
+    private FirebaseRecyclerAdapter<Friends, FriendsViewHolder> firebaseRecyclerAdapter,firebaseRecyclerAdapterReq;
     private String online_user_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,18 +49,30 @@ public class FriendsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         myFriendList = (RecyclerView) findViewById(R.id.friends_lists);
-        myFriendList.setHasFixedSize(true);
+        myFriendList.setHasFixedSize(false);
+
+        // friend request recycler
+        myFriendReqList = (RecyclerView) findViewById(R.id.friends_req_lists);
+        myFriendReqList.setHasFixedSize(false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         myFriendList.setLayoutManager(linearLayoutManager);
 
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this);
+        linearLayoutManager2.setReverseLayout(true);
+        linearLayoutManager2.setStackFromEnd(true);
+        myFriendReqList.setLayoutManager(linearLayoutManager2);
+
         mAuth = FirebaseAuth.getInstance();
         online_user_id = mAuth.getCurrentUser().getUid();
         usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
         friendsRef = FirebaseDatabase.getInstance().getReference().child("Friends").child(online_user_id);
-        
+        friendReq = FirebaseDatabase.getInstance().getReference().child("FriendRequests");
+
+        // populate recycler view
+        displayFriendRequestStatus();
         displayAllFriends();
     }
 
@@ -74,13 +81,90 @@ public class FriendsActivity extends AppCompatActivity {
         super.onStart();
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         firebaseRecyclerAdapter.stopListening();
+        firebaseRecyclerAdapterReq.stopListening();
     }
 
+    private void displayFriendRequestStatus() {
+        Query friendReqQuery = friendReq.child(online_user_id);
+        optionsReq = new FirebaseRecyclerOptions.Builder<Friends>().setQuery(friendReqQuery, Friends.class).build();
+        firebaseRecyclerAdapterReq = new FirebaseRecyclerAdapter<Friends, FriendsViewHolder>(optionsReq) {
 
+
+
+            @Override
+            protected void onBindViewHolder(@NonNull final FriendsViewHolder friendsViewHolder, int i, @NonNull Friends friends) {
+                friendsViewHolder.setRequestStatus(friends);
+                final String usersIDs = getRef(i).getKey();
+                usersRef.child(usersIDs).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            final String username = dataSnapshot.child("username").getValue().toString();
+                            final String profileImage = dataSnapshot.child("profileimage").getValue().toString();
+                            final String fullname = dataSnapshot.child("fullname").getValue().toString();
+                            final String type;
+
+                            if(dataSnapshot.hasChild("userState")){
+                                type = dataSnapshot.child("userState").child("type").getValue().toString();
+                                if(type.equals("online")){
+                                    friendsViewHolder.onlineStatusView.setVisibility(View.VISIBLE);
+                                    friendsViewHolder.setOnlineText("Online");
+
+                                } else {
+                                    friendsViewHolder.onlineStatusView.setVisibility(View.INVISIBLE);
+                                    friendsViewHolder.setOnlineText("Offline");
+                                }
+                            }
+
+                            friendsViewHolder.setFullName(fullname);
+                            friendsViewHolder.setUsername("@" + username);
+                            friendsViewHolder.setProfileImage(getApplicationContext(), profileImage);
+
+                            friendsViewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+
+                                    /*
+                                    Intent chatIntent = new Intent(FriendsActivity.this, ChatActivity.class);
+                                    chatIntent.putExtra("visit_user_id", usersIDs);
+                                    chatIntent.putExtra("userName", fullname);
+                                    startActivity(chatIntent);
+                                    */
+
+
+                                    Intent profileIntent = new Intent(FriendsActivity.this, PersonProfileActivity.class);
+                                    profileIntent.putExtra("visit_user_id", usersIDs);
+                                    startActivity(profileIntent);
+                                }
+                            });
+                        } else {
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @NonNull
+            @Override
+            public FriendsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.all_friends_display_layout,parent,false);
+                FriendsViewHolder viewHolder = new FriendsViewHolder(view);
+                return viewHolder;
+            }
+        };
+
+        myFriendReqList.setAdapter(firebaseRecyclerAdapterReq);
+        firebaseRecyclerAdapterReq.startListening();
+    }
 
     private void displayAllFriends() {
         options = new FirebaseRecyclerOptions.Builder<Friends>().setQuery(friendsRef, Friends.class).build();
@@ -169,6 +253,10 @@ public class FriendsActivity extends AppCompatActivity {
             this.date.setText("Friend since: " + friendsViewHolderData.getDate());
         }
 
+        public void setRequestStatus(Friends friendsViewHolderData){
+            this.date.setText("Status: " + friendsViewHolderData.getRequest_type());
+        }
+
 
         public void setOnlineStatusView(int status){
             this.onlineStatusView.setVisibility(status);
@@ -187,6 +275,12 @@ public class FriendsActivity extends AppCompatActivity {
         public void setProfileImage(Context ctx, String profileimage){
             Picasso.with(ctx).load(profileimage).placeholder(R.drawable.profile).into(this.profileimage);
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed(); // one inherited from android.support.v4.app.FragmentActivity
+        return false;
     }
 
 

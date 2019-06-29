@@ -1,15 +1,31 @@
 package com.example.blogmy;
 
+import android.text.TextUtils;
+
 public class Friends {
 
-    public String date;
+    public String date, request_type;
 
     public Friends() {
 
     }
 
-    public Friends(String date) {
+    public Friends(String date, String request_type) {
         this.date = date;
+        this.request_type = request_type;
+    }
+
+
+    public String getRequest_type() {
+        return request_type;
+    }
+
+    public void setRequest_type(String request_type) {
+        if(!TextUtils.isEmpty(request_type)){
+            this.request_type = request_type;
+        } else {
+            this.request_type = "";
+        }
     }
 
     public String getDate() {
@@ -17,7 +33,11 @@ public class Friends {
     }
 
     public void setDate(String date) {
-        this.date = date;
+        if(!TextUtils.isEmpty(date)){
+            this.date = date;
+        } else {
+            this.date = "";
+        }
     }
 
 

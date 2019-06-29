@@ -12,32 +12,84 @@
         layout="@layout/app_bar_layout">
     </include>
 
-
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/friends_list_toolbar">
 
-        <ImageView
-            android:id="@+id/background_login_1"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/background_watercolour" />
+         >
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/cyan_800_overlay" />
+            <ImageView
+                android:id="@+id/background_login_1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/background_watercolour" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/friends_lists"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="15dp"
-            />
-    </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/cyan_800_overlay" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/friends_req_lists"
+                android:layout_width="match_parent"
+                android:minHeight="5dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:layout_marginTop="10dp"
+                android:paddingEnd="10dp"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/friends_lists"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="5dp"
+                android:paddingStart="10dp"
+                android:layout_marginTop="5dp"
+                android:paddingEnd="10dp"
+                />
+            </LinearLayout>
+            <!--
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                           <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/friends_req_lists"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="10dp"
+                            android:layout_marginTop="15dp"
+                            android:paddingEnd="10dp"
+                            android:layout_marginBottom="15dp"
+                           android:visibility="gone"
+                            />
+
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/friends_lists"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:paddingStart="10dp"
+                                android:layout_marginTop="15dp"
+                                android:paddingEnd="10dp"
+                                android:layout_marginBottom="15dp"
+                                />
+
+                </LinearLayout>
+            </ScrollView> -->
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

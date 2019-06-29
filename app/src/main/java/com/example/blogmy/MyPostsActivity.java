@@ -215,4 +215,10 @@ public class MyPostsActivity extends AppCompatActivity {
         super.onDestroy();
         firebaseRecyclerAdapter.stopListening();
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed(); // one inherited from android.support.v4.app.FragmentActivity
+        return false;
+    }
 }

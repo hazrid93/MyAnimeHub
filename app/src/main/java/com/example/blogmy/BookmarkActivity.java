@@ -1,5 +1,6 @@
 package com.example.blogmy;
 
+import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -120,15 +121,25 @@ public class BookmarkActivity extends AppCompatActivity {
         mAdapter = new AdapterListExpand(BookmarkActivity.this, animeLists);
         bookmarkList.setAdapter(mAdapter);
         // on item list clicked
-        /*
+
         mAdapter.setOnItemClickListener(new AdapterListExpand.OnItemClickListener() {
             @Override
             public void onItemClick(View view, Anime obj, int position) {
-                Snackbar.make(parent_view, "Item " + obj.name + " clicked", Snackbar.LENGTH_SHORT).show();
+                //Snackbar.make(parent_view, "Item " + obj.name + " clicked", Snackbar.LENGTH_SHORT).show();
+                //System.out.println("CLICKER: " + messages.getMal_id());
+                Intent searchAnimeIntent = new Intent(BookmarkActivity.this, ClickSearchAnime.class);
+                searchAnimeIntent.putExtra("anime_id", obj.getId());
+                startActivity(searchAnimeIntent);
             }
         });
-        */
 
+
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed(); // one inherited from android.support.v4.app.FragmentActivity
+        return false;
     }
 
 }
