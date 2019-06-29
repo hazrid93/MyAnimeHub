@@ -328,7 +328,6 @@ public class SettingsActivity extends AppCompatActivity {
                             .compressToBitmap(new File(resultUri.getPath()));
                 } catch (Exception e){
                     e.printStackTrace();
-                    System.out.println("BlogMy: " + e.getMessage());
                     Toast.makeText(SettingsActivity.this, "Image cannot be cropped, try again.", Toast.LENGTH_SHORT).show();
                     loadingBar.dismiss();
                     return;

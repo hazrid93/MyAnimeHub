@@ -1105,6 +1105,19 @@ public class ClickSearchAnime extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+
+    @Override
     public boolean onSupportNavigateUp() {
         onBackPressed(); // one inherited from android.support.v4.app.FragmentActivity
         return false;

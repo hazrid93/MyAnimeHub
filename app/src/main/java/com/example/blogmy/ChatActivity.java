@@ -119,7 +119,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage() {
-        updateUserStatus("online");
         String messageText = userMessageInput.getText().toString();
 
         if(TextUtils.isEmpty(messageText)){
@@ -174,25 +173,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    public void updateUserStatus(String state){
-        String saveCurrentDate, saveCurrentTime;
-        Calendar calForDate =  Calendar.getInstance();
-        SimpleDateFormat currentDate = new SimpleDateFormat("MM dd, yyyy");
-        saveCurrentDate = currentDate.format(calForDate.getTime());
 
-        Calendar calForTime =  Calendar.getInstance();
-        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
-        saveCurrentTime = currentTime.format(calForTime.getTime());
-
-        Map currentStateMap = new HashMap();
-        currentStateMap.put("time", saveCurrentTime);
-        currentStateMap.put("date", saveCurrentDate);
-        currentStateMap.put("type", state);
-
-        usersRef.child(messageSenderID).child("userState")
-                .updateChildren(currentStateMap);
-
-    }
 
     private void displayReceiverInfo() {
         receiverName.setText(messageReceiverName);

@@ -72,35 +72,15 @@ public class FriendsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        updateUserStatus("online");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        updateUserStatus("offline");
         firebaseRecyclerAdapter.stopListening();
     }
 
-    public void updateUserStatus(String state){
-        String saveCurrentDate, saveCurrentTime;
-        Calendar calForDate =  Calendar.getInstance();
-        SimpleDateFormat currentDate = new SimpleDateFormat("MM dd, yyyy");
-        saveCurrentDate = currentDate.format(calForDate.getTime());
 
-        Calendar calForTime =  Calendar.getInstance();
-        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
-        saveCurrentTime = currentTime.format(calForTime.getTime());
-
-        Map currentStateMap = new HashMap();
-        currentStateMap.put("time", saveCurrentTime);
-        currentStateMap.put("date", saveCurrentDate);
-        currentStateMap.put("type", state);
-
-        usersRef.child(online_user_id).child("userState")
-                .updateChildren(currentStateMap);
-
-    }
 
     private void displayAllFriends() {
         options = new FirebaseRecyclerOptions.Builder<Friends>().setQuery(friendsRef, Friends.class).build();

@@ -293,6 +293,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        System.out.println("APP STATUS: LoginActivity : onStart");
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("APP STATUS: LoginActivity : onDestroy");
     }
 }

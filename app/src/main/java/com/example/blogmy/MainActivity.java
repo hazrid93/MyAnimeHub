@@ -295,7 +295,6 @@ public class MainActivity extends AppCompatActivity {
         postList.setAdapter(firebaseRecyclerAdapter);
         firebaseRecyclerAdapter.startListening();
 
-        updateUserStatus("online");
 
     }
     // has to use same method name as Posts model because FirebaseRecyclerAdapter/onBindViewHolder will call PostsViewHolder every scroll
@@ -385,25 +384,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        firebaseRecyclerAdapter.stopListening();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        firebaseRecyclerAdapter.stopListening();
         updateUserStatus("offline");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         // Check user authentication
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if(currentUser == null){
             sendToLogin();
         } else {
+            updateUserStatus("online");
             checkUserExistence();
             displayAllUsersPost();
         }

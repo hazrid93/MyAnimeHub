@@ -146,8 +146,13 @@ public class FullscreenCharActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        client.cancelAllRequests(true);
         progbar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        client.cancelAllRequests(true);
     }
 
 
