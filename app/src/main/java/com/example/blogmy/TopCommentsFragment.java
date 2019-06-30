@@ -2,8 +2,6 @@ package com.example.blogmy;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,30 +9,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
-import com.example.blogmy.cards.SliderAdapter;
-import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,19 +27,17 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
-import de.hdodenhof.circleimageview.CircleImageView;
 
-public class CharactersFragment extends Fragment {
+public class TopCommentsFragment extends Fragment {
     private String anime_id;
-    private ListView characters_list_layout;
-    private ArrayList<Characters> characters_data_list;
-    private Map<Integer,JSONObject> characters_data_map = null;
-    private JSONArray character_array;
-    private CharactersAdapter adapter;
+    private ListView  comments_list_layout;
+    private ArrayList<TopComments> comments_data_list;
+    private Map<Integer,JSONObject> comments_data_map = null;
+    private JSONArray comments_array;
+    private TopCommentsAdapter adapter;
     public ProgressBar progbar;
 
     // Constants:
@@ -82,6 +65,7 @@ public class CharactersFragment extends Fragment {
 
     private AsyncHttpClient client;
     private Context classContext;
+    private EnhancedWrapContentViewPager viewPager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,7 +81,9 @@ public class CharactersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.characters_fragment_tab, container, false);
+        // the current parent is the viewpager so container = viewpager
+        viewPager = (EnhancedWrapContentViewPager) container;
+        return inflater.inflate(R.layout.top_comments_fragment_tab, container, false);
     }
 
     // Views are fully created
@@ -105,13 +91,34 @@ public class CharactersFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        characters_list_layout = (ListView) view.findViewById(R.id.character_list_layout);
+        comments_list_layout = (ListView) view.findViewById(R.id.top_comments_lists);
         progbar = (ProgressBar) getActivity().findViewById(R.id.toolbarprogress);
+
+        /*
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                System.out.println("AZADVIEWPAGER2: " + position);
+                viewPager.reMeasureCurrentPage(viewPager.getCurrentItem());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        */
+
 
 
         // when using listview inside scrollview , use this hack to override the scrollview and scroll the listview instead
-        characters_list_layout.setOnTouchListener(new ListView.OnTouchListener() {
+
+        comments_list_layout.setOnTouchListener(new ListView.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 int action = event.getAction();
@@ -133,7 +140,9 @@ public class CharactersFragment extends Fragment {
             }
         });
 
-        characters_list_layout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        /*
+        comments_list_layout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String charName = adapter.getItem(position).getName();
@@ -147,6 +156,7 @@ public class CharactersFragment extends Fragment {
                 startActivity(fullscreenIntent);
             }
         });
+        */
         initGetCharacter();
 
 
@@ -171,7 +181,8 @@ public class CharactersFragment extends Fragment {
     // using JIKAN api
     private void initGetCharacter() {
         RequestParams params = new RequestParams();
-        fetchCharactersResources(params, JIKAN_ANIME_DETAILS_DEFAULT + anime_id + "/" + JIKAN_ANIME_CHARACTERS);
+        // get only first page of reviews (cached) 20 comments
+        fetchCharactersResources(params, JIKAN_ANIME_DETAILS_DEFAULT + anime_id + "/reviews/1");
     }
 
     private void fetchCharactersResources(RequestParams params, String URL){
@@ -180,19 +191,20 @@ public class CharactersFragment extends Fragment {
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
-                progbar.setVisibility(View.GONE);
-                characters_data_map = new LinkedHashMap<Integer, JSONObject>();
-                characters_data_list = new ArrayList<Characters>();
+
+                comments_data_map = new LinkedHashMap<Integer, JSONObject>();
+                comments_data_list = new ArrayList<TopComments>();
 
 
-                character_array = null;
+                comments_array = null;
                 try {
-                    character_array = (JSONArray)response.getJSONArray("characters");
-                    characters_data_list= Characters.fromJson(character_array);
-                    adapter = new CharactersAdapter(classContext, R.layout.characters_lists, characters_data_list);
-                    characters_list_layout.setAdapter(adapter);
+                    comments_array = (JSONArray)response.getJSONArray("reviews");
+                    comments_data_list= TopComments.fromJson(comments_array);
+                    adapter = new TopCommentsAdapter(classContext, R.layout.top_comments_lists, comments_data_list);
+                    comments_list_layout.setAdapter(adapter);
                    // adapter.addAll(characters_data_list);
-
+                    progbar.setVisibility(View.GONE);
+                    viewPager.reMeasureCurrentPage(viewPager.getCurrentItem());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -203,8 +215,8 @@ public class CharactersFragment extends Fragment {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
-                Log.e("CharactersFragment", "Fail" + e.toString());
-                Log.e("CharactersFragment", "Status code: " + statusCode);
+                Log.e("TopCommentsFragment", "Fail" + e.toString());
+                Log.e("TopCommentsFragment", "Status code: " + statusCode);
                 progbar.setVisibility(View.GONE);
             }
         });

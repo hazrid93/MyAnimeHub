@@ -189,7 +189,11 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        client.cancelAllRequests(true);
+        try {
+            client.cancelAllRequests(true);
+        }catch (Exception e){
+
+        }
     }
 
     @Override

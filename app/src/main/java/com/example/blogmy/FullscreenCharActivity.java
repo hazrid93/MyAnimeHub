@@ -152,7 +152,11 @@ public class FullscreenCharActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        client.cancelAllRequests(true);
+        try {
+            client.cancelAllRequests(true);
+        }catch (Exception e){
+
+        }
     }
 
 

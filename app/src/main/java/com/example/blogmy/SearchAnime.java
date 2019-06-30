@@ -159,6 +159,7 @@ public class SearchAnime extends AppCompatActivity {
     private Fragment summaryFragment;
     private Fragment statsFragment;
     private Fragment charactersFragment;
+    private Fragment topCommentsFragment;
     private JSONObject animeDetailsObject;
     private JSONObject animeStatsDetailsObject;
     // Summary fragment
@@ -474,16 +475,19 @@ public class SearchAnime extends AppCompatActivity {
         summaryFragment = new SummaryFragment();
         statsFragment = new StatsFragment();
         charactersFragment = new CharactersFragment();
+        topCommentsFragment = new TopCommentsFragment();
         adapter.addFrag(summaryFragment, "Summary");
         adapter.addFrag(statsFragment, "Stats");
         adapter.addFrag(charactersFragment, "Characters");
+        adapter.addFrag(topCommentsFragment,"Top Reviews (MAL)");
         viewPager.setAdapter(adapter);
 
         TabLayout mTabLayout = (TabLayout) findViewById(R.id.search_anime_tab_layout);
         mTabLayout.setupWithViewPager(viewPager);
 
 
-        /* Listener to viewpager
+        // Listener to viewpager
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -492,7 +496,7 @@ public class SearchAnime extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                viewPager.getAdapter().notifyDataSetChanged();
+                viewPager.reMeasureCurrentPage(viewPager.getCurrentItem());
             }
 
             @Override
@@ -500,7 +504,7 @@ public class SearchAnime extends AppCompatActivity {
 
             }
         });
-        */
+
 
         // get initial top airing during activity launch
         initGetTopAiring();
@@ -553,6 +557,11 @@ public class SearchAnime extends AppCompatActivity {
         Bundle bundleChar = new Bundle();
         bundleChar.putString("anime_id", anime_id);
         charactersFragment.setArguments(bundleChar);
+
+        // Top Comments Fragment update
+        Bundle bundleComments = new Bundle();
+        bundleComments.putString("anime_id", anime_id);
+        topCommentsFragment.setArguments(bundleComments);
 
         adapter.notifyDataSetChanged();
 

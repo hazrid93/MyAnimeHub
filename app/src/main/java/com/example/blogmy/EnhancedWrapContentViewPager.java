@@ -8,6 +8,8 @@ import androidx.viewpager.widget.ViewPager;
 
 public class EnhancedWrapContentViewPager extends ViewPager {
 
+    private int mCurrentPagePosition = 0;
+
     public EnhancedWrapContentViewPager (Context context) {
         super(context);
     }
@@ -38,6 +40,29 @@ public class EnhancedWrapContentViewPager extends ViewPager {
         }
         // super has to be called again so the new specs are treated as exact measurements
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+    /*
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        int height = 0;
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+            int h = child.getMeasuredHeight();
+            if (h > height) height = h;
+        }
+
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+    */
+
+    public void reMeasureCurrentPage(int position) {
+        mCurrentPagePosition = position;
+        requestLayout();
     }
 
 

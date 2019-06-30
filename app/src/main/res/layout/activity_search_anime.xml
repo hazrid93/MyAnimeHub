@@ -14,7 +14,7 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/search_anime_list_toolbar">
 
         <ImageView
@@ -42,13 +42,13 @@
         <androidx.core.widget.NestedScrollView
             android:id="@+id/search_anime_scroll"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -397,7 +397,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/search_anime_description_bar"
                     android:layout_marginTop="20dp"
                     android:background="@android:color/white">
@@ -418,7 +418,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/search_anime_tab_layout"
-                        android:minHeight="500dp">
+                        android:minHeight="200dp">
 
                     </com.example.blogmy.EnhancedWrapContentViewPager>
 
