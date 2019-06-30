@@ -857,6 +857,7 @@ public class SearchAnime extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
                 Log.e("SearchAnime", "Fail" + e.toString());
                 Log.e("SearchAnime", "Status code: " + statusCode);
+                Toast.makeText(SearchAnime.this, "Request failed", Toast.LENGTH_SHORT).show();
                 progbar.setVisibility(View.GONE);
             }
         });
@@ -1015,8 +1016,8 @@ public class SearchAnime extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
                 Log.e("SearchAnime", "Fail" + e.toString());
                 Log.e("SearchAnime", "Status code: " + statusCode);
-                progbar.setVisibility(View.GONE);
                 Toast.makeText(SearchAnime.this, "Request Failed", Toast.LENGTH_SHORT).show();
+                progbar.setVisibility(View.GONE);
             }
         });
     }
