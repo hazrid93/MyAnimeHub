@@ -21,6 +21,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -174,6 +175,17 @@ public class FriendsActivity extends AppCompatActivity {
                 friendsViewHolder.setData(friends);
                 final String usersIDs = getRef(i).getKey();
 
+                friendsViewHolder.username.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(!TextUtils.isEmpty(usersIDs)){
+                            Intent profileIntent = new Intent(FriendsActivity.this, PersonProfileActivity.class);
+                            profileIntent.putExtra("visit_user_id", usersIDs);
+                            startActivity(profileIntent);
+                        }
+                    }
+                });
+
                 usersRef.child(usersIDs).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -251,6 +263,7 @@ public class FriendsActivity extends AppCompatActivity {
 
         public void setData(Friends friendsViewHolderData){
             this.date.setText("Friend since: " + friendsViewHolderData.getDate());
+
         }
 
         public void setRequestStatus(Friends friendsViewHolderData){

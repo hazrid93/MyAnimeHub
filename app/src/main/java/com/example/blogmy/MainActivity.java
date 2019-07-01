@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // call PostsViewHolder static class
                    @Override
-                   protected void onBindViewHolder(@NonNull PostsViewHolder postsViewHolder, int i, @NonNull Posts posts) {
+                   protected void onBindViewHolder(@NonNull final PostsViewHolder postsViewHolder, final int i, @NonNull final Posts posts) {
                        // get the key of the particular snapshot data at this index
                        final String postKey = getRef(i).getKey();
                        postsViewHolder.setData(posts);
@@ -210,6 +211,21 @@ public class MainActivity extends AppCompatActivity {
                                Intent clickPostIntent = new Intent(MainActivity.this,ClickPostActivity.class);
                                clickPostIntent.putExtra("PostKey", postKey);
                                startActivity(clickPostIntent);
+                           }
+                       });
+
+                       // open user profile
+                       postsViewHolder.username.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               String visit_user_id = posts.getUid();
+
+                               if(!TextUtils.isEmpty(visit_user_id)){
+
+                                   Intent profileIntent = new Intent(MainActivity.this, PersonProfileActivity.class);
+                                   profileIntent.putExtra("visit_user_id", visit_user_id);
+                                   startActivity(profileIntent);
+                               }
                            }
                        });
 

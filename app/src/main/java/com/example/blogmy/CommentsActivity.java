@@ -1,5 +1,6 @@
 package com.example.blogmy;
 
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 
@@ -31,6 +32,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -108,6 +111,7 @@ public class CommentsActivity extends AppCompatActivity {
     public class CommentsViewHolder extends RecyclerView.ViewHolder{
         View mView;
         TextView username, comment, date, time;
+        String uid;
 
 
         public CommentsViewHolder(@NonNull View itemView) {
@@ -125,6 +129,7 @@ public class CommentsActivity extends AppCompatActivity {
             comment.setText(commentsViewHolderData.getComment());
             time.setText("Time: "+ commentsViewHolderData.getTime());
             date.setText(commentsViewHolderData.getDate());
+            uid = commentsViewHolderData.getUid();
         }
     }
 
@@ -171,8 +176,20 @@ public class CommentsActivity extends AppCompatActivity {
         options = new FirebaseRecyclerOptions.Builder<Comments>().setQuery(postRef, Comments.class).build();
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Comments, CommentsViewHolder>(options) {
             @Override
-            protected void onBindViewHolder(@NonNull CommentsViewHolder commentsViewHolder, int i, @NonNull Comments comments) {
+            protected void onBindViewHolder(@NonNull CommentsViewHolder commentsViewHolder, int i, @NonNull final Comments comments) {
                 commentsViewHolder.setData(comments);
+
+                commentsViewHolder.username.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String visit_user_id = comments.getUid();
+                        if(!TextUtils.isEmpty(visit_user_id)){
+                            Intent profileIntent = new Intent(CommentsActivity.this, PersonProfileActivity.class);
+                            profileIntent.putExtra("visit_user_id", visit_user_id);
+                            startActivity(profileIntent);
+                        }
+                    }
+                });
             }
 
             //this method will create view that will be populated by onBindViewHolder
