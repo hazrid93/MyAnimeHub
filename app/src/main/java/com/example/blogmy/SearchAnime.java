@@ -16,11 +16,14 @@ import androidx.viewpager.widget.ViewPager;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.ActivityOptions;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,6 +40,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextSwitcher;
@@ -61,6 +65,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.thefinestartist.finestwebview.FinestWebView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,7 +74,9 @@ import org.jsoup.helper.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -202,6 +209,7 @@ public class SearchAnime extends AppCompatActivity {
 
     // bookmark
     private ImageButton bookmarkBtn;
+    private ImageButton searchAnimeBtn;
 
     private EnhancedWrapContentViewPager viewPager;
     private ViewPagerAdapter adapter;
@@ -221,11 +229,14 @@ public class SearchAnime extends AppCompatActivity {
     private ImageButton searchAnimeButton;
     private EditText searchAnimeText;
 
+    // popup
+    private Dialog myDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_anime);
-
+        myDialog = new Dialog(this);
         //Firebase stuff
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
@@ -257,6 +268,106 @@ public class SearchAnime extends AppCompatActivity {
         searchSubTypeButton = (Button) findViewById(R.id.search_subtype_button_type);
         searchPageButton = (Button) findViewById(R.id.search_page_button_type);
         bookmarkBtn = (ImageButton) findViewById(R.id.search_anime_bookmark_btn);
+        searchAnimeBtn = (ImageButton) findViewById(R.id.search_anime_search_btn);
+
+        // dialog popup
+        // search anime on web
+        searchAnimeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.6F);
+                buttonClick.setDuration(300);
+                v.startAnimation(buttonClick);
+
+                TextView txtclose;
+                View btnGogoanime, btnCrunchyroll, btnNetflix, btn9anime;
+                myDialog.setContentView(R.layout.search_anime_website);
+                // onclick gogoanime
+                txtclose =(TextView) myDialog.findViewById(R.id.website_close);
+                btnGogoanime = (View) myDialog.findViewById(R.id.website_gogoanime);
+                btnGogoanime.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!TextUtils.isEmpty(bookmark_name)) {
+                            String query = bookmark_name.trim();
+                            try {
+                                query = URLEncoder.encode(query, "utf-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                            new FinestWebView.Builder(SearchAnime.this).show("https://animego.to//search.html?keyword=" + query);
+                        } else {
+                            Toast.makeText(SearchAnime.this, "Unable to find this anime, try again later.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                // onclick 9anime
+                btn9anime = (View) myDialog.findViewById(R.id.website_9anime);
+                btn9anime.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!TextUtils.isEmpty(bookmark_name)) {
+                            String query = bookmark_name.trim();
+                            try {
+                                query = URLEncoder.encode(query, "utf-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                            new FinestWebView.Builder(SearchAnime.this).show("https://www1.9anime.vip/search/" + query);
+                        } else {
+                            Toast.makeText(SearchAnime.this, "Unable to find this anime, try again later.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                // onclick crunchyroll
+                btnCrunchyroll = (View) myDialog.findViewById(R.id.website_crunchyroll);
+                btnCrunchyroll.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!TextUtils.isEmpty(bookmark_name)) {
+                            String query = bookmark_name.trim();
+                            try {
+                                query = URLEncoder.encode(query, "utf-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                            new FinestWebView.Builder(SearchAnime.this).show("https://www.crunchyroll.com/search?from=&q=" + query);
+                        } else {
+                            Toast.makeText(SearchAnime.this, "Unable to find this anime, try again later.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                btnNetflix = (View) myDialog.findViewById(R.id.website_netflix);
+                btnNetflix.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!TextUtils.isEmpty(bookmark_name)) {
+                            String query = bookmark_name.trim();
+                            try {
+                                query = URLEncoder.encode(query, "utf-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                            new FinestWebView.Builder(SearchAnime.this).show("https://www.netflix.com/search?q=" + query);
+                        } else {
+                            Toast.makeText(SearchAnime.this, "Unable to find this anime, try again later.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                txtclose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        myDialog.dismiss();
+                    }
+                });
+                myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                myDialog.show();
+            }
+        });
 
         subtypeButtonArrow = (TextView) findViewById(R.id.search_subtype_button_arrow);
         pageButtonArrow = (TextView) findViewById(R.id.search_page_button_arrow);
@@ -279,6 +390,8 @@ public class SearchAnime extends AppCompatActivity {
 
         // search anime part end
 
+
+        //bookmark button part
         bookmarkBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

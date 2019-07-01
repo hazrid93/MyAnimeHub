@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/grey_3"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:id="@+id/website_close"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:textColor="@android:color/black"
+            android:text="X"
+            android:textStyle="bold"
+            android:layout_gravity="end"
+            android:clickable="true"
+            android:gravity="center"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/circle_background"/>
+
+        <LinearLayout
+            android:id="@+id/website_gogoanime"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_shadow_pop"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto_regular"
+                android:text="GOGO-ANIME"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/website_9anime"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_shadow_pop"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto_regular"
+                android:text="9ANIME"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/website_crunchyroll"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_shadow_pop"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto_regular"
+                android:text="CRUNCHYROLL"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/website_netflix"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_shadow_pop"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:fontFamily="@font/roboto_regular"
+                android:text="NETFLIX"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

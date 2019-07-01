@@ -52,6 +52,7 @@ dependencies {
     //Firebase Pagination Library
     implementation 'com.firebaseui:firebase-ui-database:5.0.0'
     implementation 'org.apache.commons:commons-lang3:3.6'
+    implementation 'com.thefinestartist:finestwebview:1.2.7'
     //implementation 'com.shreyaspatil:FirebaseRecyclerPagination:1.0.1'
 
 }

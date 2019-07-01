@@ -204,11 +204,12 @@
 
                     <RelativeLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="50dp"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_margin="10dp"
                         android:layout_below="@id/click_search_anime_description_bar">
                         <LinearLayout
+                            android:id="@+id/click_search_anime_linear_layout_book"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:gravity="center_vertical"
@@ -225,11 +226,38 @@
                                 android:id="@+id/click_search_anime_bookmark_btn"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:scaleType="centerCrop"
+                                android:scaleType="fitCenter"
+                                android:layout_gravity="end"
+                                android:clickable="true"
                                 android:background="@android:color/transparent"
                                 android:src="@android:drawable/ic_input_add"/>
                         </LinearLayout>
-
+                        <LinearLayout
+                            android:layout_below="@id/click_search_anime_linear_layout_book"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="7dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="18dp"
+                                android:textSize="14sp"
+                                android:textAlignment="center"
+                                android:fontFamily="@font/roboto_regular"
+                                android:text="Watch this anime"/>
+                            <ImageButton
+                                android:id="@+id/click_search_anime_search_btn"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:scaleType="fitCenter"
+                                android:layout_gravity="end"
+                                android:clickable="true"
+                                android:padding="8dp"
+                                android:background="@android:color/transparent"
+                                android:src="@drawable/world"/>
+                        </LinearLayout>
                     </RelativeLayout>
 
                 </RelativeLayout>
