@@ -484,9 +484,6 @@ public class MainActivity extends AppCompatActivity {
                 sendUserToFindFriends();
                 break;
 
-            case R.id.nav_messages:
-                break;
-
             case R.id.nav_settings:
                 sendUserToSettingsActivity();
                 break;
