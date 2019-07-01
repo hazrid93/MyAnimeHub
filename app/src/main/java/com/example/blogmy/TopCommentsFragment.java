@@ -194,8 +194,6 @@ public class TopCommentsFragment extends Fragment {
 
                 comments_data_map = new LinkedHashMap<Integer, JSONObject>();
                 comments_data_list = new ArrayList<TopComments>();
-
-
                 comments_array = null;
                 try {
                     comments_array = (JSONArray)response.getJSONArray("reviews");

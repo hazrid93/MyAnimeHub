@@ -51,6 +51,7 @@ dependencies {
     implementation 'android.arch.paging:runtime:1.0.1'
     //Firebase Pagination Library
     implementation 'com.firebaseui:firebase-ui-database:5.0.0'
+    implementation 'org.apache.commons:commons-lang3:3.6'
     //implementation 'com.shreyaspatil:FirebaseRecyclerPagination:1.0.1'
 
 }

@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -44,9 +46,10 @@ public class TopCommentsAdapter extends ArrayAdapter<TopComments> {
         comment_name.setText("@" + comments.getUsername());
         comment_date.setText("Posted on: " + comments.getDate());
 
+        // escape strings
         String contentText = comments.getContent();
+        contentText = StringEscapeUtils.unescapeJava(contentText);
 
-        contentText = contentText.replace("\n", "\\n");
 
         comment_content.setText(contentText);
         comment_like.setText("Likes: " + comments.getHelpful_count());

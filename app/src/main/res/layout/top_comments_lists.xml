@@ -82,6 +82,7 @@
                     android:layout_height="wrap_content"
                     android:text="Likes: "
                     android:lines="1"
+                    android:textColor="@color/green_700"
                     android:layout_margin="5dp"/>
 
 
