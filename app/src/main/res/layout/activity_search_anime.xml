@@ -39,7 +39,7 @@
             app:backgroundTint="@color/red_700" />
 
 
-        <com.example.blogmy.VerticalScrollView
+        <androidx.core.widget.NestedScrollView
             android:id="@+id/search_anime_scroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -455,7 +455,7 @@
 
             </LinearLayout>
 
-        </com.example.blogmy.VerticalScrollView>
+        </androidx.core.widget.NestedScrollView>
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
