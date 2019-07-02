@@ -140,6 +140,14 @@ public class TopCommentsFragment extends Fragment {
             }
         });
 
+        comments_list_layout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                comments_list_layout.removeOnLayoutChangeListener(this);
+                viewPager.reMeasureCurrentPage(viewPager.getCurrentItem());
+            }
+        });
+
 
         /*
         comments_list_layout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -202,7 +210,6 @@ public class TopCommentsFragment extends Fragment {
                     comments_list_layout.setAdapter(adapter);
                    // adapter.addAll(characters_data_list);
                     progbar.setVisibility(View.GONE);
-                    viewPager.reMeasureCurrentPage(viewPager.getCurrentItem());
 
                 } catch (JSONException e) {
                     e.printStackTrace();

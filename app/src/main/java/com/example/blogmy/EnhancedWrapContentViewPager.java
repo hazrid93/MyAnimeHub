@@ -18,7 +18,7 @@ public class EnhancedWrapContentViewPager extends ViewPager {
         super(context, attrs);
     }
 
-
+    /*
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int mode = MeasureSpec.getMode(heightMeasureSpec);
@@ -41,7 +41,7 @@ public class EnhancedWrapContentViewPager extends ViewPager {
         // super has to be called again so the new specs are treated as exact measurements
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
-    /*
+    */
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -58,7 +58,7 @@ public class EnhancedWrapContentViewPager extends ViewPager {
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
-    */
+
 
     public void reMeasureCurrentPage(int position) {
         mCurrentPagePosition = position;

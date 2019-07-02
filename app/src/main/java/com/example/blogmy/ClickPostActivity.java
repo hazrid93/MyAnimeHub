@@ -72,6 +72,7 @@ public class ClickPostActivity extends AppCompatActivity {
         editPostButton.setVisibility(View.INVISIBLE);
         deletePostButton.setVisibility(View.INVISIBLE);
 
+
         // get current user id
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
@@ -111,7 +112,32 @@ public class ClickPostActivity extends AppCompatActivity {
         deletePostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteCurrentPost();
+                AlertDialog.Builder builder = new AlertDialog.Builder(ClickPostActivity.this);
+
+                builder.setTitle("Confirm");
+                builder.setMessage("Are you sure?");
+
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteCurrentPost();
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        // Do nothing
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
             }
         });
     }
