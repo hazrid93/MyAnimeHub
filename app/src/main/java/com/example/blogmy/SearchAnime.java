@@ -693,10 +693,22 @@ public class SearchAnime extends AppCompatActivity {
 
         // set to none to update fragments
         // https://stackoverflow.com/questions/37070137/cant-make-fragmentpageradapter-to-update-fragments-contents
+
         @Override
         public int getItemPosition(Object object) {
             return POSITION_NONE;
         }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+
+        public void addFrag(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
 
         @Override
         public Fragment getItem(int position) {
@@ -706,16 +718,6 @@ public class SearchAnime extends AppCompatActivity {
         @Override
         public int getCount() {
             return mFragmentList.size();
-        }
-
-        public void addFrag(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
         }
 
         @Override

@@ -136,13 +136,16 @@ public class CharactersFragment extends Fragment {
             }
         });
         */
+
+
         characters_list_layout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 characters_list_layout.removeOnLayoutChangeListener(this);
-                // viewPager.reMeasureCurrentPage(viewPager.getCurrentItem());
+                 // viewPager.reMeasureCurrentPage(viewPager);
             }
         });
+
 
         characters_list_layout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
