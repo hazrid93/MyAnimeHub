@@ -600,6 +600,7 @@ public class SearchAnime extends AppCompatActivity {
 
 
         // Listener to viewpager
+        /*
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -608,7 +609,7 @@ public class SearchAnime extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                viewPager.reMeasureCurrentPage(viewPager.getCurrentItem());
+                viewPager.reMeasureCurrentPage(viewPager);
             }
 
             @Override
@@ -616,6 +617,7 @@ public class SearchAnime extends AppCompatActivity {
 
             }
         });
+        */
 
 
         // get initial top airing during activity launch
@@ -683,6 +685,7 @@ public class SearchAnime extends AppCompatActivity {
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
+        private int mCurrentPosition = -1;
 
         public ViewPagerAdapter(FragmentManager manager) {
             super(manager);
@@ -713,6 +716,21 @@ public class SearchAnime extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object) {
+            super.setPrimaryItem(container, position, object);
+
+            if (position != mCurrentPosition && container instanceof EnhancedWrapContentViewPager) {
+                Fragment fragment = (Fragment) object;
+                EnhancedWrapContentViewPager pager = (EnhancedWrapContentViewPager) container;
+
+                if (fragment != null && fragment.getView() != null) {
+                    mCurrentPosition = position;
+                    pager.reMeasureCurrentPage(fragment.getView());
+                }
+            }
         }
     }
 

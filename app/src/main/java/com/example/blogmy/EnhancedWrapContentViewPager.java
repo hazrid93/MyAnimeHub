@@ -8,7 +8,7 @@ import androidx.viewpager.widget.ViewPager;
 
 public class EnhancedWrapContentViewPager extends ViewPager {
 
-    private int mCurrentPagePosition = 0;
+    private View mCurrentView;
 
     public EnhancedWrapContentViewPager (Context context) {
         super(context);
@@ -17,6 +17,7 @@ public class EnhancedWrapContentViewPager extends ViewPager {
     public EnhancedWrapContentViewPager (Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+
 
     /*
     @Override
@@ -44,6 +45,22 @@ public class EnhancedWrapContentViewPager extends ViewPager {
     */
 
     @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        if (mCurrentView != null) {
+            mCurrentView.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+
+            int height = Math.max(0, mCurrentView.getMeasuredHeight());
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+
+
+    /*
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
         int height = 0;
@@ -57,11 +74,13 @@ public class EnhancedWrapContentViewPager extends ViewPager {
         heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
+    }*/
 
 
-    public void reMeasureCurrentPage(int position) {
-        mCurrentPagePosition = position;
+
+
+    public void reMeasureCurrentPage(View currentView) {
+        mCurrentView = currentView;
         requestLayout();
     }
 

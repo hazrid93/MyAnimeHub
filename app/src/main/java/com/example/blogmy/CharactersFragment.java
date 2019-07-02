@@ -140,7 +140,7 @@ public class CharactersFragment extends Fragment {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 characters_list_layout.removeOnLayoutChangeListener(this);
-                viewPager.reMeasureCurrentPage(viewPager.getCurrentItem());
+                // viewPager.reMeasureCurrentPage(viewPager.getCurrentItem());
             }
         });
 
@@ -191,7 +191,7 @@ public class CharactersFragment extends Fragment {
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
-                progbar.setVisibility(View.GONE);
+
                 characters_data_map = new LinkedHashMap<Integer, JSONObject>();
                 characters_data_list = new ArrayList<Characters>();
 
@@ -203,6 +203,7 @@ public class CharactersFragment extends Fragment {
                     adapter = new CharactersAdapter(classContext, R.layout.characters_lists, characters_data_list);
                     characters_list_layout.setAdapter(adapter);
                    // adapter.addAll(characters_data_list);
+                    progbar.setVisibility(View.GONE);
 
 
                 } catch (JSONException e) {
