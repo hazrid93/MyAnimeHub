@@ -50,7 +50,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CharactersFragment extends Fragment {
     private String anime_id;
-    private ListView characters_list_layout;
+    private MyListView characters_list_layout;
     private ArrayList<Characters> characters_data_list;
     private Map<Integer,JSONObject> characters_data_map = null;
     private JSONArray character_array;
@@ -106,11 +106,12 @@ public class CharactersFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        characters_list_layout = (ListView) view.findViewById(R.id.character_list_layout);
+        characters_list_layout = (MyListView) view.findViewById(R.id.character_list_layout);
         progbar = (ProgressBar) getActivity().findViewById(R.id.toolbarprogress);
 
 
         // when using listview inside scrollview , use this hack to override the scrollview and scroll the listview instead
+        /*
         characters_list_layout.setOnTouchListener(new ListView.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -132,6 +133,7 @@ public class CharactersFragment extends Fragment {
                 return true;
             }
         });
+        */
 
         characters_list_layout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

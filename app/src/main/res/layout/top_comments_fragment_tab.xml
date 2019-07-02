@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
-    <ListView
+    <com.example.blogmy.MyListView
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
@@ -13,7 +12,7 @@
         android:id="@+id/top_comments_lists"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </ListView>
+    </com.example.blogmy.MyListView>
 
 
 </LinearLayout>
