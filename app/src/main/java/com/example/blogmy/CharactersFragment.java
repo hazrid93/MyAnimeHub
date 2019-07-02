@@ -82,6 +82,7 @@ public class CharactersFragment extends Fragment {
 
     private AsyncHttpClient client;
     private Context classContext;
+    private EnhancedWrapContentViewPager viewPager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,7 @@ public class CharactersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        viewPager = (EnhancedWrapContentViewPager) container;
         return inflater.inflate(R.layout.characters_fragment_tab, container, false);
     }
 
@@ -134,6 +136,13 @@ public class CharactersFragment extends Fragment {
             }
         });
         */
+        characters_list_layout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                characters_list_layout.removeOnLayoutChangeListener(this);
+                viewPager.reMeasureCurrentPage(viewPager.getCurrentItem());
+            }
+        });
 
         characters_list_layout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
