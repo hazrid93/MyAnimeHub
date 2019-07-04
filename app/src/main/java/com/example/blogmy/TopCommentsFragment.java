@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -222,6 +223,7 @@ public class TopCommentsFragment extends Fragment {
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
                 Log.e("TopCommentsFragment", "Fail" + e.toString());
                 Log.e("TopCommentsFragment", "Status code: " + statusCode);
+                Toast.makeText(classContext, "Fail to load user comments, please try again", Toast.LENGTH_SHORT).show();
                 progbar.setVisibility(View.GONE);
             }
         });
