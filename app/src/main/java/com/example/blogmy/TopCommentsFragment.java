@@ -33,7 +33,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class TopCommentsFragment extends Fragment {
     private String anime_id;
-    private MyListView  comments_list_layout;
+    private ListView  comments_list_layout;
     private ArrayList<TopComments> comments_data_list;
     private Map<Integer,JSONObject> comments_data_map = null;
     private JSONArray comments_array;
@@ -91,7 +91,7 @@ public class TopCommentsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        comments_list_layout = (MyListView) view.findViewById(R.id.top_comments_lists);
+        comments_list_layout = (ListView) view.findViewById(R.id.top_comments_lists);
         progbar = (ProgressBar) getActivity().findViewById(R.id.toolbarprogress);
 
         /*
@@ -117,7 +117,7 @@ public class TopCommentsFragment extends Fragment {
 
 
         // when using listview inside scrollview , use this hack to override the scrollview and scroll the listview instead
-        /*
+
         comments_list_layout.setOnTouchListener(new ListView.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -139,7 +139,6 @@ public class TopCommentsFragment extends Fragment {
                 return true;
             }
         });
-        */
 
         comments_list_layout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
