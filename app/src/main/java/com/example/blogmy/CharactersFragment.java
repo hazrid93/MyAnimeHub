@@ -180,11 +180,9 @@ public class CharactersFragment extends Fragment {
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
-                progbar.setVisibility(View.GONE);
+               // System.out.println("CHARACTER: " +response.toString());
                 characters_data_map = new LinkedHashMap<Integer, JSONObject>();
                 characters_data_list = new ArrayList<Characters>();
-
-
                 character_array = null;
                 try {
                     character_array = (JSONArray)response.getJSONArray("characters");
@@ -192,6 +190,7 @@ public class CharactersFragment extends Fragment {
                     adapter = new CharactersAdapter(classContext, R.layout.characters_lists, characters_data_list);
                     characters_list_layout.setAdapter(adapter);
                    // adapter.addAll(characters_data_list);
+                    progbar.setVisibility(View.GONE);
 
 
                 } catch (JSONException e) {
