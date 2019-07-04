@@ -600,6 +600,7 @@ public class SearchAnime extends AppCompatActivity {
 
 
         // Listener to viewpager
+        /*
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -616,7 +617,7 @@ public class SearchAnime extends AppCompatActivity {
 
             }
         });
-
+        */
 
         // get initial top airing during activity launch
         initGetTopAiring();
