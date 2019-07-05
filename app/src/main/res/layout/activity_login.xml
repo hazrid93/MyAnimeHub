@@ -161,8 +161,7 @@
         android:layout_below="@id/login_button"
         android:layout_marginStart="0dp"
         android:layout_marginBottom="8dp"
-        android:text="Don't have an account, need a new account?"
-
+        android:text="Click here to register a new account."
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="16sp" />
