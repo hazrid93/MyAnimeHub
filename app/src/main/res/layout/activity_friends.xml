@@ -38,7 +38,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
             <androidx.recyclerview.widget.RecyclerView
-                android:background="@color/grey_60"
+                android:background="@color/overlay_dark_40"
                 android:id="@+id/friends_req_lists"
                 android:layout_width="match_parent"
                 android:minHeight="5dp"
