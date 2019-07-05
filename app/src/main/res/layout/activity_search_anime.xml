@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
     tools:context=".SearchAnime">
 
     <include
@@ -15,6 +14,7 @@
     <ImageView
         android:id="@+id/background_login_1"
         android:layout_width="match_parent"
+        android:layout_below="@id/search_anime_list_toolbar"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@drawable/lenalee_background" />
@@ -22,6 +22,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/search_anime_list_toolbar"
         android:background="@color/cyan_800_overlay" />
 
     <RelativeLayout
@@ -44,8 +45,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_anime_list_toolbar">
-
+        android:layout_below="@id/searchanime_rel_ad">
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

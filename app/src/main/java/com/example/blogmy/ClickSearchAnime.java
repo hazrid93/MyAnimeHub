@@ -276,7 +276,7 @@ public class ClickSearchAnime extends AppCompatActivity {
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
-                            new FinestWebView.Builder(ClickSearchAnime.this).show("https://animego.to//search.html?keyword=" + query);
+                            new FinestWebView.Builder(ClickSearchAnime.this).webViewSupportZoom(true).webViewSupportMultipleWindows(true).webViewJavaScriptEnabled(true).webViewJavaScriptCanOpenWindowsAutomatically(true).show("https://animego.to//search.html?keyword=" + query);
                         } else {
                             Toast.makeText(ClickSearchAnime.this, "Unable to find this anime, try again later.", Toast.LENGTH_SHORT).show();
                         }
