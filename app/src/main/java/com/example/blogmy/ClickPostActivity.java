@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,11 +49,18 @@ public class ClickPostActivity extends AppCompatActivity {
     private RichTextEditor editorView;
     private GroupedCommandsEditorToolbar bottomGroupedCommandsToolbar;
     private IPermissionsService permissionsService = new PermissionsService(this);
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_click_post);
+
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        mAdView = findViewById(R.id.clickpostactivity_adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         postKey = getIntent().getExtras().get("PostKey").toString();
         clickPostRef = FirebaseDatabase.getInstance().getReference().child("Posts").child(postKey);

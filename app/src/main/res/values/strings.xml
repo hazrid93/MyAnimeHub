@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BlogMy</string>
+    <string name="app_name">MyAnimeHub</string>
     <string name="drawer_open">Drawer Open</string>
     <string name="drawer_close">Drawer Close</string>
     <string name="title_activity_post">PostActivity</string>

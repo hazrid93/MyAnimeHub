@@ -17,12 +17,29 @@
     </include>
 
     <RelativeLayout
+        android:id="@+id/click_post_rel_ad"
+        android:layout_below="@id/click_post_page_toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <com.google.android.gms.ads.AdView
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/clickpostactivity_adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+        </com.google.android.gms.ads.AdView>
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/click_post_page_toolbar"
-        android:paddingTop="20dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
+        android:layout_below="@id/click_post_rel_ad"
+        android:paddingTop="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
 
     <RelativeLayout
         android:layout_width="match_parent"

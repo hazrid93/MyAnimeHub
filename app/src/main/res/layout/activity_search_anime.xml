@@ -1,33 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
-    android:orientation="vertical"
     tools:context=".SearchAnime">
 
     <include
         android:id="@+id/search_anime_list_toolbar"
         layout="@layout/app_bar_layout"></include>
 
+
+    <ImageView
+        android:id="@+id/background_login_1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/lenalee_background" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/cyan_800_overlay" />
+
+    <RelativeLayout
+        android:id="@+id/searchanime_rel_ad"
+        android:layout_below="@id/search_anime_list_toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <com.google.android.gms.ads.AdView
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/searchanimeactivity_adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+        </com.google.android.gms.ads.AdView>
+    </RelativeLayout>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/search_anime_list_toolbar">
 
-        <ImageView
-            android:id="@+id/background_login_1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/lenalee_background" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/cyan_800_overlay" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/search_anime_floating_button"
@@ -39,6 +58,7 @@
             app:backgroundTint="@color/red_700" />
 
 
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/search_anime_scroll"
             android:layout_width="match_parent"
@@ -46,10 +66,13 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true">
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+
 
                 <RelativeLayout
                     android:id="@+id/my_anime_search_layout"
@@ -460,4 +483,4 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</LinearLayout>
+</RelativeLayout>

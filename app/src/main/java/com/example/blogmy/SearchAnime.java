@@ -51,6 +51,9 @@ import android.widget.ViewSwitcher;
 import com.example.blogmy.cards.SliderAdapter;
 import com.example.blogmy.cards.CardSliderLayoutManager;
 import com.example.blogmy.cards.CardSnapHelper;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -231,11 +234,18 @@ public class SearchAnime extends AppCompatActivity {
 
     // popup
     private Dialog myDialog;
-
+    private AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_anime);
+
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        mAdView = findViewById(R.id.searchanimeactivity_adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
         myDialog = new Dialog(this);
         //Firebase stuff
         mAuth = FirebaseAuth.getInstance();

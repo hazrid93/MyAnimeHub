@@ -8,6 +8,8 @@
     android:background="@color/mainBackground"
     android:id="@+id/drawable_layout">
 
+
+    <!--https://stackoverflow.com/questions/46370836/android-movable-draggable-floating-action-button-fab -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/main_page_rel_layout"
@@ -32,19 +34,13 @@
             android:layout_height="match_parent"
             android:background="@color/cyan_800_overlay" />
 
+
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_below="@id/main_page_toolbar"
+            android:id="@+id/mainactivity_coordinate_layout"
             android:layout_height="match_parent">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_new_post_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="16dp"
-                android:src="@drawable/add_plus_button"
-                app:backgroundTint="@color/red_700" />
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipe_refresh_layout"
@@ -52,37 +48,62 @@
                 android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:id="@+id/all_users_post_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+            <RelativeLayout
+                android:layout_below="@id/swipe_refresh_layout"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+                <com.google.android.gms.ads.AdView
+                    xmlns:ads="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/mainactivity_adView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"
+                    ads:adSize="BANNER"
+                    ads:adUnitId="ca-app-pub-3940256099942544/6300978111">
+                </com.google.android.gms.ads.AdView>
+            </RelativeLayout>
+
+            <com.example.blogmy.MovableFloatingActionButton
+                android:id="@+id/add_new_post_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_gravity="center_vertical|end"
+                android:src="@drawable/add_plus_button"
+                app:backgroundTint="@color/red_700" />
 
 
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-
-
     </RelativeLayout>
 
 
-        <!--<ImageButton
-            android:id="@+id/add_new_post_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="12dp"
-            android:layout_marginBottom="4dp"
-            android:background="@color/colorPrimaryDark"
-            android:baselineAlignBottom="false"
-            android:focusableInTouchMode="false"
-            android:scaleType="centerCrop"
-            android:src="@drawable/add_post_high" /> -->
 
 
+
+    <!--<ImageButton
+        android:id="@+id/add_new_post_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/colorPrimaryDark"
+        android:baselineAlignBottom="false"
+        android:focusableInTouchMode="false"
+        android:scaleType="centerCrop"
+        android:src="@drawable/add_post_high" /> -->
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
@@ -93,5 +114,8 @@
         app:menu="@menu/navigation_menu">
 
     </com.google.android.material.navigation.NavigationView>
+
+
+
 
 </androidx.drawerlayout.widget.DrawerLayout>
