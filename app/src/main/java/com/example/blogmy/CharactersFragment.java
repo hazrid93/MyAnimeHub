@@ -204,9 +204,10 @@ public class CharactersFragment extends Fragment {
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
                 Log.e("CharactersFragment", "Fail" + e.toString());
                 Log.e("CharactersFragment", "Status code: " + statusCode);
-                Toast.makeText(classContext, "Fail to characters data, please try again", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(classContext, "Fail to characters data, please try again", Toast.LENGTH_SHORT).show();
                 progbar.setVisibility(View.GONE);
                 initGetCharacter();
+
             }
         });
     }

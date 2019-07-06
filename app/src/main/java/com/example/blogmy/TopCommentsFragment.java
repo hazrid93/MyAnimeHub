@@ -223,9 +223,10 @@ public class TopCommentsFragment extends Fragment {
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
                 Log.e("TopCommentsFragment", "Fail" + e.toString());
                 Log.e("TopCommentsFragment", "Status code: " + statusCode);
-                Toast.makeText(classContext, "Fail to load user comments, please try again", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(classContext, "Fail to load user comments, please try again", Toast.LENGTH_SHORT).show();
                 progbar.setVisibility(View.GONE);
                 initGetCharacter();
+
             }
         });
     }

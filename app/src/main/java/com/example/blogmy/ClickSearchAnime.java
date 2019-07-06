@@ -560,7 +560,7 @@ public class ClickSearchAnime extends AppCompatActivity {
     }
 
     // TODO: Add letsDoSomeNetworkingTopAnime(RequestParams params) here:
-    private void letsDoSomeNetworkingAnimeDetails(final RequestParams params, String URL, final String animeId, final UpdateDataCallback updateDataCallback){
+    private void letsDoSomeNetworkingAnimeDetails(final RequestParams params, final String URL, final String animeId, final UpdateDataCallback updateDataCallback){
         final AsyncHttpClient client = new AsyncHttpClient();
         progbar.setVisibility(View.VISIBLE);
         // 1. Summary fragment
@@ -786,6 +786,7 @@ public class ClickSearchAnime extends AppCompatActivity {
                 Log.e("SearchAnime", "Fail" + e.toString());
                 Log.e("SearchAnime", "Status code: " + statusCode);
                 progbar.setVisibility(View.GONE);
+                letsDoSomeNetworkingAnimeDetails( params, URL, animeId, updateDataCallback);
             }
         });
 
@@ -803,14 +804,14 @@ public class ClickSearchAnime extends AppCompatActivity {
     }
 
     // TODO: Add letsDoSomeNetworkingTopAnime(RequestParams params) here:
-    private void letsDoSomeNetworkingTopAnime(RequestParams params, String URL, final boolean update){
+    private void letsDoSomeNetworkingTopAnime(final RequestParams params, final String URL, final boolean update){
         AsyncHttpClient client = new AsyncHttpClient();
         progbar.setVisibility(View.VISIBLE);
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
                 progbar.setVisibility(View.GONE);
-                Toast.makeText(ClickSearchAnime.this, "Request Successful", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(ClickSearchAnime.this, "Request Successful", Toast.LENGTH_SHORT).show();
 
                 // add top airing anime data into the List topAiringAnime
                 animeIdList = new ArrayList<String>();
@@ -886,7 +887,8 @@ public class ClickSearchAnime extends AppCompatActivity {
                 Log.e("SearchAnime", "Fail" + e.toString());
                 Log.e("SearchAnime", "Status code: " + statusCode);
                 progbar.setVisibility(View.GONE);
-                Toast.makeText(ClickSearchAnime.this, "Request Failed", Toast.LENGTH_SHORT).show();
+                letsDoSomeNetworkingTopAnime(params, URL,  update);
+               // Toast.makeText(ClickSearchAnime.this, "Request Failed", Toast.LENGTH_SHORT).show();
             }
         });
     }

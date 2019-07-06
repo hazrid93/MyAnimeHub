@@ -128,7 +128,7 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
         }
     }
 
-    private void fetchCharactersResources(RequestParams params, String URL){
+    private void fetchCharactersResources(final RequestParams params, final String URL){
 
             client = new AsyncHttpClient();
             progbar.setVisibility(View.VISIBLE);
@@ -167,6 +167,7 @@ public class UserSearchAnimeActivity extends AppCompatActivity {
                 Log.e("UserSearchAnimeActivity", "Fail" + e.toString());
                 Log.e("UserSearchAnimeActivity", "Status code: " + statusCode);
                 progbar.setVisibility(View.GONE);
+                fetchCharactersResources( params, URL);
             }
         });
     }

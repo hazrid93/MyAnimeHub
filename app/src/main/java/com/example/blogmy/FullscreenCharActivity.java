@@ -103,7 +103,7 @@ public class FullscreenCharActivity extends AppCompatActivity {
         fetchCharactersResources(params, JIKAN_ANIME_CHARACTER_DEFAULT + charId + "/" + JIKAN_PICTURES);
     }
 
-    private void fetchCharactersResources(RequestParams params, String URL){
+    private void fetchCharactersResources(final RequestParams params, final String URL){
         client = new AsyncHttpClient();
         progbar.setVisibility(View.VISIBLE);
         client.get(URL, params, new JsonHttpResponseHandler(){
@@ -139,6 +139,7 @@ public class FullscreenCharActivity extends AppCompatActivity {
                 Log.e("FullscreenChar", "Fail" + e.toString());
                 Log.e("FullscreenChar", "Status code: " + statusCode);
                 progbar.setVisibility(View.GONE);
+                fetchCharactersResources( params,  URL);
             }
         });
     }

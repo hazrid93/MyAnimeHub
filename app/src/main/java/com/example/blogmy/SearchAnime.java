@@ -755,7 +755,7 @@ public class SearchAnime extends AppCompatActivity {
     }
 
     // TODO: Add letsDoSomeNetworkingTopAnime(RequestParams params) here:
-    private void letsDoSomeNetworkingAnimeDetails(final RequestParams params, String URL, final String animeId, final UpdateDataCallback updateDataCallback){
+    private void letsDoSomeNetworkingAnimeDetails(final RequestParams params, final String URL, final String animeId, final UpdateDataCallback updateDataCallback){
         final AsyncHttpClient client = new AsyncHttpClient();
         progbar.setVisibility(View.VISIBLE);
         // 1. Summary fragment
@@ -980,8 +980,9 @@ public class SearchAnime extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
                 Log.e("SearchAnime", "Fail" + e.toString());
                 Log.e("SearchAnime", "Status code: " + statusCode);
-                Toast.makeText(SearchAnime.this, "Request failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SearchAnime.this, "Request failed", Toast.LENGTH_SHORT).show();
                 progbar.setVisibility(View.GONE);
+                letsDoSomeNetworkingAnimeDetails(params, URL, animeId, updateDataCallback);
             }
         });
 
@@ -994,14 +995,15 @@ public class SearchAnime extends AppCompatActivity {
 
 
     // TODO: Add letsDoSomeNetworkingTopAnime(RequestParams params) here:
-    private void letsDoSomeNetworkingTopAnime(RequestParams params, String URL, final boolean update){
+    private void letsDoSomeNetworkingTopAnime(final RequestParams params, final String URL, final boolean update){
+
         AsyncHttpClient client = new AsyncHttpClient();
         progbar.setVisibility(View.VISIBLE);
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response){
                 progbar.setVisibility(View.GONE);
-                Toast.makeText(SearchAnime.this, "Request Successful", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SearchAnime.this, "Request Successful", Toast.LENGTH_SHORT).show();
 
                 // add top airing anime data into the List topAiringAnime
                 topAiringAnime = new LinkedHashMap<Integer, JSONObject>();
@@ -1139,8 +1141,9 @@ public class SearchAnime extends AppCompatActivity {
             public void onFailure(int statusCode, Header[] headers, Throwable e, JSONObject response){
                 Log.e("SearchAnime", "Fail" + e.toString());
                 Log.e("SearchAnime", "Status code: " + statusCode);
-                Toast.makeText(SearchAnime.this, "Request Failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SearchAnime.this, "Request Failed", Toast.LENGTH_SHORT).show();
                 progbar.setVisibility(View.GONE);
+                letsDoSomeNetworkingTopAnime(params, URL, update);
             }
         });
     }
