@@ -15,40 +15,10 @@
       },
       "oauth_client": [
         {
-          "client_id": "310088256574-996ti3kgm65mqt1ltqs4evgqkbpjrcdb.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCtxiC13klAeBqYhAr0tjrMhHI5IjvWJ38"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "310088256574-996ti3kgm65mqt1ltqs4evgqkbpjrcdb.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      },
-      "admob_app_id": "ca-app-pub-5012041161594376~1643148417"
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:310088256574:android:287ee68dd227b292",
-        "android_client_info": {
-          "package_name": "com.example.blogmy"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "310088256574-30anfpsudfhj1cfnm3sb4v9k792dfi4a.apps.googleusercontent.com",
+          "client_id": "310088256574-ioqiq1kmiugmp4h42rlh4qvmtju2hmlu.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.blogmy",
+            "package_name": "com.azad.myanimehub",
             "certificate_hash": "ed5197cee1566cad071e61a0fb4c913ae1c44866"
           }
         },
@@ -71,7 +41,8 @@
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-5012041161594376~1643148417"
     }
   ],
   "configuration_version": "1"

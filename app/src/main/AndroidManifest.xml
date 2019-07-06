@@ -16,6 +16,7 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme">
         <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+        <!-- original id ca-app-pub-5012041161594376~1643148417-->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-5012041161594376~1643148417"/>

@@ -79,8 +79,8 @@ public class ClickPostActivity extends AppCompatActivity {
         editPostButton = (Button) findViewById(R.id.edit_post_button);
         deletePostButton = (Button) findViewById(R.id.delete_post_button);
 
-        editPostButton.setVisibility(View.INVISIBLE);
-        deletePostButton.setVisibility(View.INVISIBLE);
+        editPostButton.setVisibility(View.GONE);
+        deletePostButton.setVisibility(View.GONE);
 
 
         // get current user id
@@ -101,12 +101,17 @@ public class ClickPostActivity extends AppCompatActivity {
                     if (currentUserID.equals(databaseUserID)) {
                         editPostButton.setVisibility(View.VISIBLE);
                         deletePostButton.setVisibility(View.VISIBLE);
+                    } else {
+                        editPostButton.setVisibility(View.GONE);
+                        deletePostButton.setVisibility(View.GONE);
                     }
 
                     editPostButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            editCurrentPost(description);
+                            if(currentUserID.equals(databaseUserID)) {
+                                editCurrentPost(description);
+                            }
                         }
                     });
                 }
@@ -122,31 +127,33 @@ public class ClickPostActivity extends AppCompatActivity {
         deletePostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ClickPostActivity.this);
+                if(currentUserID.equals(databaseUserID)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ClickPostActivity.this);
 
-                builder.setTitle("Confirm");
-                builder.setMessage("Are you sure?");
+                    builder.setTitle("Confirm");
+                    builder.setMessage("Are you sure?");
 
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteCurrentPost();
-                        dialog.dismiss();
-                    }
-                });
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteCurrentPost();
+                            dialog.dismiss();
+                        }
+                    });
 
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-                        // Do nothing
-                        dialog.dismiss();
-                    }
-                });
+                            // Do nothing
+                            dialog.dismiss();
+                        }
+                    });
 
-                AlertDialog alert = builder.create();
-                alert.show();
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
 
             }
         });

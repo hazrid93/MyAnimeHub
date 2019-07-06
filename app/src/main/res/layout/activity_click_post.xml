@@ -21,6 +21,8 @@
         android:layout_below="@id/click_post_page_toolbar"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
+        <!-- test id : ca-app-pub-3940256099942544/6300978111 -->
+        <!-- original id: ca-app-pub-5012041161594376/8512798777 -->
         <com.google.android.gms.ads.AdView
             xmlns:ads="http://schemas.android.com/apk/res-auto"
             android:id="@+id/clickpostactivity_adView"
@@ -63,8 +65,8 @@
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp">
         <Button
             android:id="@+id/edit_post_button"
             android:layout_width="150dp"
