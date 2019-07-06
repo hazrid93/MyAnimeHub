@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -346,6 +347,8 @@ public class EditPostActivity extends AppCompatActivity {
     }
 
     private void storeImageToFirebaseStorage(String imageUrl, final StoreImageCallback myCallback) {
+
+
         Calendar calForDate =  Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("dd-MMMM-yyyy");
         saveCurrentDate = currentDate.format(calForDate.getTime());
@@ -363,67 +366,100 @@ public class EditPostActivity extends AppCompatActivity {
         // note if image URL has anything else after .png for example the picasso load wont work
         final StorageReference filePath = postImageReference.child("Post Images").child(imageUrl.substring(imageUrlCut.lastIndexOf('/'),imageUrl.lastIndexOf('.')) + "_" +postRandomName + ".jpg");
         //InputStream stream;
-        try {
-            /*
-            URL url = new URL(imageUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            stream = connection.getInputStream(); */
-          //  final Bitmap bitmapLoad;
-          //  bitmapLoad = Picasso.with(EditPostActivity.this).load(imageUrl).resize(200,200).centerInside().get();
 
-            // reference to target need to be kept to avoid being garbage collected
-            final Target target = new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos);
-                    final byte[] fileBytes = baos.toByteArray();
+        // check if fle exist internally
+        File file = new File(imageUrl);
+        if (!file.exists()) {
+            try {
 
-                    // save post to firebase storage.
-                    filePath.putBytes(fileBytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task) {
-                            if(task.isSuccessful()){
-                                filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        myCallback.onCallback(uri.toString());
-                                        Toast.makeText(EditPostActivity.this, "Image is uploaded successfully", Toast.LENGTH_SHORT).show();
+                //  final Bitmap bitmapLoad;
+                //  bitmapLoad = Picasso.with(EditPostActivity.this).load(imageUrl).resize(200,200).centerInside().get();
 
-                                    }
-                                });
+                // reference to target need to be kept to avoid being garbage collected
+                final Target target = new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+                        final byte[] fileBytes = baos.toByteArray();
 
-                            } else {
-                                String messsage = task.getException().getMessage();
-                                Toast.makeText(EditPostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
+                        // save post to firebase storage.
+                        filePath.putBytes(fileBytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull final Task<UploadTask.TaskSnapshot> task) {
+                                if(task.isSuccessful()){
+                                    filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            myCallback.onCallback(uri.toString());
+                                            Toast.makeText(EditPostActivity.this, "Image is uploaded successfully", Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    });
+
+                                } else {
+                                    String messsage = task.getException().getMessage();
+                                    Toast.makeText(EditPostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
+                                }
                             }
+                        });
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                    }
+                };
+                Picasso.with(EditPostActivity.this).load(imageUrl).into(target);
+
+
+            } catch(Exception e){
+                e.printStackTrace();
+            }
+
+        } else {
+
+            try {
+
+                Bitmap bitmap = new Compressor(this)
+                        .setMaxHeight(300) //Set height and width
+                        .setMaxWidth(300)
+                        .setQuality(70)
+                        .compressToBitmap(new File(imageUrl));
+
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+                final byte[] fileBytes = baos.toByteArray();
+
+                filePath.putBytes(fileBytes).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
+                        if(task.isSuccessful()){
+                            filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    myCallback.onCallback(uri.toString());
+                                    Toast.makeText(EditPostActivity.this, "Image is uploaded successfully", Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                        } else {
+                            String messsage = task.getException().getMessage();
+                            Toast.makeText(EditPostActivity.this, "Error occured: " + messsage, Toast.LENGTH_SHORT).show();
                         }
-                    });
-                }
+                    }
+                });
+            } catch (Exception e){
+                e.printStackTrace();
+                Toast.makeText(EditPostActivity.this, "Image cannot be processed, try again", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-                }
-            };
-            Picasso.with(EditPostActivity.this).load(imageUrl).into(target);
-            //final Uri resultUri = result.getUri();
-                    /*
-            Bitmap bitmap;
-            bitmap = new Compressor(this)
-                    .setMaxHeight(300) //Set height and width
-                    .setMaxWidth(300)
-                    .setQuality(70)
-                    .compressToBitmap(BitmapFactory.decodeFileDescriptor(stream.g));*/
-
-
-        } catch(Exception e){
-            e.printStackTrace();
         }
 
 

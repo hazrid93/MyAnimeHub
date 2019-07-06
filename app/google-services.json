@@ -8,6 +8,36 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:310088256574:android:d525b9754de23efe",
+        "android_client_info": {
+          "package_name": "com.azad.myanimehub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "310088256574-996ti3kgm65mqt1ltqs4evgqkbpjrcdb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtxiC13klAeBqYhAr0tjrMhHI5IjvWJ38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "310088256574-996ti3kgm65mqt1ltqs4evgqkbpjrcdb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-5012041161594376~1643148417"
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:310088256574:android:287ee68dd227b292",
         "android_client_info": {
           "package_name": "com.example.blogmy"
@@ -41,8 +71,7 @@
             }
           ]
         }
-      },
-      "admob_app_id": "ca-app-pub-5012041161594376~1643148417"
+      }
     }
   ],
   "configuration_version": "1"
