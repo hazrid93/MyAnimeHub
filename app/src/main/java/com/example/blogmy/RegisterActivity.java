@@ -32,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         //animating
+        /*
         final ImageView backgroundOne = (ImageView) findViewById(R.id.background_register_1);
         final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_register_2);
 
@@ -50,6 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
         animator.start();
+        */
 
         mAuth = FirebaseAuth.getInstance();
 

@@ -9,12 +9,6 @@
     android:layout_centerVertical="false"
     tools:context=".LoginActivity">
 
-    <ImageView
-        android:id="@+id/background_login_1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/background_watercolour" />
 
     <ImageView
         android:id="@+id/background_login_2"

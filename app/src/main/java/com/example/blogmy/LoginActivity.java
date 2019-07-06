@@ -101,6 +101,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         //animating
+        /*
         final ImageView backgroundOne = (ImageView) findViewById(R.id.background_login_1);
         final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_login_2);
 
@@ -119,6 +120,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         animator.start();
+        */
 
 
         googleSignInButton = (ImageView) findViewById(R.id.google_signin_button);

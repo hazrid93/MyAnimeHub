@@ -40,6 +40,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Reset Password");
 
         //animating
+        /*
         final ImageView backgroundOne = (ImageView) findViewById(R.id.background_reset_1);
         final ImageView backgroundTwo = (ImageView) findViewById(R.id.background_reset_2);
 
@@ -58,6 +59,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
             }
         });
         animator.start();
+        */
 
         mAuth = FirebaseAuth.getInstance();
 

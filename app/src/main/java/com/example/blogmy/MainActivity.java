@@ -196,8 +196,8 @@ public class MainActivity extends AppCompatActivity {
         // https://developer.android.com/reference/android/arch/paging/PagedList.Config.html
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(true)
-                .setPrefetchDistance(1)
-                .setPageSize(10)
+                .setPrefetchDistance(0)
+                .setPageSize(15)
                 .build();
 
         // The options for the adapter combine the paging configuration with query information
