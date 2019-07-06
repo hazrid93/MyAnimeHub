@@ -183,7 +183,7 @@ public class SetupActivity extends AppCompatActivity {
                 }
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
                 final byte[] fileBytes = baos.toByteArray();
 
                 // format to save a file as
