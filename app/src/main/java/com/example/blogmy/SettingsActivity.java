@@ -30,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -58,6 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
     final int REQUEST_CODE = 123;
 
     private String currentUserId;
+    private String originalUsername;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity {
                     String myRelationStatus = dataSnapshot.child("relationship").getValue().toString();
 
                     Picasso.with(SettingsActivity.this).load(myProfileImage).placeholder(R.drawable.profile).into(userProfImage);
-
+                    originalUsername = myUserName;
                     userName.setText(myUserName);
                     userProfileName.setText(myProfileName);
                     userStatus.setText(myProfileStatus);
@@ -185,11 +187,10 @@ public class SettingsActivity extends AppCompatActivity {
         String profilename = userProfileName.getText().toString();
         String status = userStatus.getText().toString();
         String country = userCountry.getText().toString();
-        String gender = userCountry.getText().toString();
+        String gender = userGender.getText().toString();
         String dob = userDOB.getText().toString();
         String relation = userRelationship.getText().toString();
 
-        /*
         if(TextUtils.isEmpty(username)){
             Toast.makeText(SettingsActivity.this, "Please write your username", Toast.LENGTH_SHORT).show();
         } else if(TextUtils.isEmpty(profilename)){
@@ -212,20 +213,14 @@ public class SettingsActivity extends AppCompatActivity {
             loadingBar.show();
             updateAccountInfo(username, profilename, status, country, gender, dob , relation);
         }
-        */
 
-        loadingBar.setTitle("Profile Image");
-        loadingBar.setMessage("Please wait...");
-        loadingBar.setCanceledOnTouchOutside(true);
-        loadingBar.show();
-        updateAccountInfo(username, profilename, status, country, gender, dob , relation);
     }
 
     private void updateAccountInfo(final String username, String profilename, String status, String country, String gender, String dob, String relation) {
 
         final HashMap userMap = new HashMap();
         userMap.put("username", username);
-        userMap.put("profilename", profilename);
+        userMap.put("fullname", profilename);
         userMap.put("status", status);
         userMap.put("country", country);
         userMap.put("gender", gender);
@@ -242,7 +237,7 @@ public class SettingsActivity extends AppCompatActivity {
                         //Loop 1 to go through all the child nodes of users
                         //for(DataSnapshot booksSnapshot : uniqueKeySnapshot.child("username").g){
                             //loop 2 to go through all the child nodes of books node
-                            if(uniqueKeySnapshot.child("username").getValue().toString().equals(username)){
+                            if(uniqueKeySnapshot.child("username").getValue().toString().equals(username) && !username.equals(originalUsername)){
                                 userexisted = true;
                             }
                         //}
@@ -260,6 +255,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     Toast.makeText(SettingsActivity.this, "Account settings updated successfully", Toast.LENGTH_SHORT).show();
                                     loadingBar.dismiss();
                                 } else {
+                                    sendUserToMainActivity();
                                     Toast.makeText(SettingsActivity.this, "Error occured, while updating account settings", Toast.LENGTH_SHORT).show();
                                     loadingBar.dismiss();
                                 }
@@ -275,6 +271,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 Toast.makeText(SettingsActivity.this, "Account settings updated successfully", Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
                             } else {
+                                sendUserToMainActivity();
                                 Toast.makeText(SettingsActivity.this, "Error occured, while updating account settings", Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
                             }

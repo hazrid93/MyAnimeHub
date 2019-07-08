@@ -37,6 +37,11 @@
         android:icon="@drawable/settings"/>
 
     <item
+        android:id="@+id/nav_privacy_policy"
+        android:title="Privacy Policy"
+        android:icon="@drawable/file_chooser_dialog_ic_file_default"/>
+
+    <item
         android:id="@+id/nav_logout"
         android:title="Logout"
         android:icon="@drawable/logout"/>

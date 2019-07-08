@@ -516,6 +516,10 @@ public class MainActivity extends AppCompatActivity {
                 sendUserToSettingsActivity();
                 break;
 
+            case R.id.nav_privacy_policy:
+                sendUserToPolicy();
+                break;
+
             case R.id.nav_logout:
                 // Logout from current session
                 updateUserStatus("offline");
@@ -527,6 +531,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private void sendUserToPolicy() {
+        Intent policyIntent = new Intent(MainActivity.this, PrivacyPolicyActivity.class);
+        startActivity(policyIntent);
     }
 
     private void sendUserToBookmarkActivity() {
