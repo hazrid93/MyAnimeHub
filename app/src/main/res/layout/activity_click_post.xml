@@ -16,13 +16,15 @@
         layout="@layout/app_bar_layout">
     </include>
 
-    <RelativeLayout
+    <!--<RelativeLayout
         android:id="@+id/click_post_rel_ad"
         android:layout_below="@id/click_post_page_toolbar"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
-        <!-- test id : ca-app-pub-3940256099942544/6300978111 -->
-        <!-- original id: ca-app-pub-5012041161594376/8512798777 -->
+
+        <test id : ca-app-pub-3940256099942544/6300978111 >
+        <original id: ca-app-pub-5012041161594376/8512798777 >
+
         <com.google.android.gms.ads.AdView
             xmlns:ads="http://schemas.android.com/apk/res-auto"
             android:id="@+id/clickpostactivity_adView"
@@ -33,12 +35,12 @@
             ads:adSize="BANNER"
             ads:adUnitId="ca-app-pub-5012041161594376/8512798777">
         </com.google.android.gms.ads.AdView>
-    </RelativeLayout>
+    </RelativeLayout> -->
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/click_post_rel_ad"
+        android:layout_below="@id/click_post_page_toolbar"
         android:paddingTop="15dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp">

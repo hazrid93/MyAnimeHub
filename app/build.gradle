@@ -7,8 +7,8 @@ android {
         applicationId 'com.azad.myanimehub'
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 6
-        versionName "1.04"
+        versionCode 7
+        versionName "1.05"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

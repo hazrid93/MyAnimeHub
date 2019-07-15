@@ -49,7 +49,7 @@ public class ClickPostActivity extends AppCompatActivity {
     private RichTextEditor editorView;
     private GroupedCommandsEditorToolbar bottomGroupedCommandsToolbar;
     private IPermissionsService permissionsService = new PermissionsService(this);
-    private AdView mAdView;
+   // private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +57,10 @@ public class ClickPostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_click_post);
 
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-        MobileAds.initialize(this, "ca-app-pub-5012041161594376~1643148417");
-        mAdView = findViewById(R.id.clickpostactivity_adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        //MobileAds.initialize(this, "ca-app-pub-5012041161594376~1643148417");
+        //mAdView = findViewById(R.id.clickpostactivity_adView);
+        //AdRequest adRequest = new AdRequest.Builder().build();
+        //mAdView.loadAd(adRequest);
 
         postKey = getIntent().getExtras().get("PostKey").toString();
         clickPostRef = FirebaseDatabase.getInstance().getReference().child("Posts").child(postKey);
